@@ -1,0 +1,158 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Atrium API (placeholder)",
+    "version": "0.0.0",
+    "description": "Stand-in until atrium-backend-demo publishes openapi.json. Phase 2b replaces it with the contract from _spec/atrium/API.md."
+  },
+  "servers": [{ "url": "http://localhost:3100/api/v1" }],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "login",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/LoginResponse" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Problem" },
+          "422": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/auth/personas": {
+      "get": {
+        "operationId": "listPersonas",
+        "tags": ["auth"],
+        "responses": {
+          "200": {
+            "description": "Demo personas",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Persona" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "operationId": "getCurrentUser",
+        "tags": ["auth"],
+        "security": [{ "bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Current user",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CurrentUser" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": { "type": "http", "scheme": "bearer" }
+    },
+    "responses": {
+      "Problem": {
+        "description": "RFC 9457 problem details",
+        "content": {
+          "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problem" } }
+        }
+      }
+    },
+    "schemas": {
+      "Role": {
+        "type": "string",
+        "enum": [
+          "employee",
+          "manager",
+          "executive",
+          "it_admin",
+          "training_admin",
+          "travel_admin",
+          "asset_admin",
+          "people_admin",
+          "news_editor"
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "required": ["accessToken", "user"],
+        "properties": {
+          "accessToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/CurrentUser" }
+        }
+      },
+      "CurrentUser": {
+        "type": "object",
+        "required": ["id", "email", "firstName", "lastName", "displayName", "roles"],
+        "properties": {
+          "id": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "displayName": { "type": "string" },
+          "jobTitle": { "type": ["string", "null"] },
+          "department": { "type": ["string", "null"] },
+          "costCenter": { "type": ["string", "null"] },
+          "managerId": { "type": ["string", "null"] },
+          "roles": { "type": "array", "items": { "$ref": "#/components/schemas/Role" } }
+        }
+      },
+      "Persona": {
+        "type": "object",
+        "required": ["email", "displayName", "description", "roles"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "displayName": { "type": "string" },
+          "description": { "type": "string" },
+          "roles": { "type": "array", "items": { "$ref": "#/components/schemas/Role" } }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "required": ["title", "status"],
+        "properties": {
+          "type": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "integer" },
+          "detail": { "type": "string" },
+          "instance": { "type": "string" },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["field", "message"],
+              "properties": {
+                "field": { "type": "string" },
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
