@@ -1,0 +1,12 @@
+# Single-package repo; this file only carries pnpm settings.
+onlyBuiltDependencies:
+  - esbuild
+  - msw
+  - unrs-resolver
+  - vue-demi
+
+peerDependencyRules:
+  allowedVersions:
+    # @vee-validate/zod 4.15 declares zod ^3 but works with zod 4 (verified: parse, nested
+    # paths, describe). See CONVENTIONS.md "Forms".
+    '@vee-validate/zod>zod': '4'

@@ -1,0 +1,22 @@
+/*
+ * Atrium global stylesheet (Tailwind CSS v4 via @tailwindcss/vite).
+ *
+ * PLACEHOLDER (phase 2a). Phase 2b replaces the @theme block below with the design tokens from
+ * _spec/atrium/tokens.css (see DESIGN.md) and adds the chosen @fontsource-variable/* fonts.
+ */
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply min-h-dvh bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100;
+  }
+}

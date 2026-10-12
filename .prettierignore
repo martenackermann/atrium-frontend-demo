@@ -1,0 +1,14 @@
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+node_modules
+coverage
+test-results
+playwright-report
+blob-report
+pnpm-lock.yaml
+public/mockServiceWorker.js
+app/lib/api/schema.d.ts
