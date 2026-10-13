@@ -131,7 +131,7 @@ defineExpose({ trigger: (action: string) => bar.value?.trigger(action) })
       </UiField>
       <p v-if="bookError" role="alert" class="text-sm text-st-negative">{{ bookError }}</p>
       <div class="flex justify-end gap-2">
-        <UiButton variant="ghost" @click="bookOpen = false">Cancel</UiButton>
+        <UiButton variant="secondary" @click="bookOpen = false">Cancel</UiButton>
         <UiButton
           type="submit"
           variant="primary"
