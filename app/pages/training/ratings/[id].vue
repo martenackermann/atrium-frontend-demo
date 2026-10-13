@@ -2,7 +2,7 @@
 import { BellRing } from '@lucide/vue'
 import { z } from 'zod'
 import { describeError, isApiError } from '~/lib/api'
-import { trainingKeys, useRating } from '~/modules/training/api'
+import { trainingKeys, useParticipation, useRating } from '~/modules/training/api'
 import type { Likert, RatingSubmission } from '~/modules/training/api/types'
 import {
   GRADE_WORDS,
@@ -33,6 +33,14 @@ watchEffect(() => {
 useBreadcrumbTail(() => (r.value ? `Round ${r.value.loop}` : undefined))
 
 const readOnly = computed(() => !r.value?.availableActions.includes('submit'))
+
+// Round 3 is the manager's view: show the attendee's goals next to the questions (DESIGN §8.3).
+const subject = useParticipation(() => (r.value?.loop === 3 ? r.value.attendee.id : null))
+const firstName = computed(() => r.value?.attendee.user.displayName.split(' ')[0] ?? '')
+const goals = computed(() => {
+  const g = subject.data.value?.goals
+  return g ? [g.goal1, g.goal2].filter((goal): goal is string => Boolean(goal?.trim())) : []
+})
 const STATEMENTS = [
   { key: 'appliesLearned', label: 'I apply what I learned in my daily work.' },
   { key: 'supervisorSupported', label: 'My manager supported me in putting it into practice.' },
@@ -235,14 +243,45 @@ const improvementOptions = IMPROVEMENT_OPTIONS.map((option) => ({
             :value="r.state"
             :available-actions="r.availableActions"
           />
-          <span v-if="!r.submittedAt" class="text-sm text-ink-muted">
-            {{ r.state === 'upcoming' ? 'Due' : 'Due since' }} {{ formatDate(r.dueAt) }}
+          <span
+            v-if="!r.submittedAt"
+            class="text-sm"
+            :class="r.state === 'overdue' ? 'font-medium text-st-negative' : 'text-ink-muted'"
+          >
+            {{
+              r.state === 'upcoming' ? 'Due' : r.state === 'overdue' ? 'Overdue since' : 'Due since'
+            }}
+            {{ formatDate(r.dueAt) }}
           </span>
           <span v-if="r.reminderCount > 0" class="flex items-center gap-1 text-sm text-ink-muted">
             <BellRing class="size-3.5" aria-hidden="true" /> Reminder {{ r.reminderCount }} of 4
           </span>
         </template>
       </PageHeader>
+
+      <div v-if="r.loop === 3 && r.state !== 'upcoming'" class="mt-6 grid max-w-[720px] gap-5">
+        <WhySeeing
+          v-if="!r.submittedAt"
+          :text="`${firstName} attended ${r.training.topic}. As ${firstName}'s manager, you close the last feedback round; ${firstName} never sees your answers.`"
+        />
+        <section
+          v-if="goals.length"
+          class="rounded-xl border p-5"
+          :class="
+            readOnly
+              ? 'border-rule bg-well'
+              : 'border-[color-mix(in_srgb,var(--marker-strong)_30%,transparent)] bg-marker-wash'
+          "
+          aria-labelledby="subject-goals"
+        >
+          <h2 id="subject-goals" class="text-[14.5px] font-[650]">
+            {{ firstName }}'s goals before the training
+          </h2>
+          <ol class="mt-2 grid list-decimal gap-1 pl-6 font-display text-[17px] leading-[25px]">
+            <li v-for="goal in goals" :key="goal">{{ goal }}</li>
+          </ol>
+        </section>
+      </div>
 
       <p v-if="r.state === 'upcoming'" class="mt-6 max-w-[640px] text-ink-muted">
         This round opens on {{ formatDate(r.dueAt) }}. You'll get an email then.
