@@ -203,8 +203,6 @@ async function remove() {
     toast.error(describeError(error))
   }
 }
-
-const summaryLength = computed(() => (values.summary ?? '').length)
 </script>
 
 <template>
@@ -228,9 +226,6 @@ const summaryLength = computed(() => (values.summary ?? '').length)
           :error="errors.summary"
         >
           <UiTextarea v-model="summary" :rows="2" :maxlength="280" data-testid="news-summary" />
-          <span class="justify-self-end text-meta text-ink-subtle" aria-live="polite"
-            >{{ summaryLength }} / 280</span
-          >
         </UiField>
         <UiField label="Cover image" optional hint="PNG, JPEG or WebP. Shown at 2:1.">
           <div v-if="currentCover" class="flex items-center gap-3">
@@ -328,7 +323,12 @@ const summaryLength = computed(() => (values.summary ?? '').length)
         :entries="timeline.data.value"
         :loading="timeline.isPending.value"
       />
-      <WorkflowDiagram v-if="post" name="news_post" :current="post.status" />
+      <WorkflowDiagram
+        v-if="post"
+        name="news_post"
+        :current="post.status"
+        title="How a post moves"
+      />
     </aside>
 
     <UiDialog
