@@ -111,6 +111,26 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--marker-strong) 30%, transparent);
 }
 
+/* "Skip to content": the first stop for keyboard users; hidden until it has focus. */
+@utility skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: var(--round-md);
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+
+  &:focus-visible {
+    transform: none;
+    box-shadow: var(--elev-pop);
+  }
+}
+
 /* Screen-reader only text. */
 @utility sr {
   position: absolute !important;

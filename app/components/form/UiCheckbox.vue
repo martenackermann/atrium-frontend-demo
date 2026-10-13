@@ -26,7 +26,7 @@ const id = computed(() => props.id ?? `checkbox-${generated}`)
       :id="id"
       v-model="model"
       :disabled="disabled"
-      class="mt-px grid size-[18px] flex-none place-items-center rounded-[5px] border border-field bg-sheet text-primary-ink transition-colors duration-(--dur-1) ease-standard hover:border-ink-muted data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-disabled:cursor-not-allowed data-disabled:opacity-45"
+      class="relative mt-px grid size-[18px] flex-none place-items-center rounded-[5px] before:absolute before:-inset-[11px] before:content-[''] border border-field bg-sheet text-primary-ink transition-colors duration-(--dur-1) ease-standard hover:border-ink-muted data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-disabled:cursor-not-allowed data-disabled:opacity-45"
     >
       <CheckboxIndicator>
         <Minus

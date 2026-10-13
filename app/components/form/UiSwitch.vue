@@ -25,7 +25,7 @@ const id = computed(() => props.id ?? `switch-${generated}`)
       :id="id"
       v-model="model"
       :disabled="disabled"
-      class="relative mt-px h-5 w-9 flex-none rounded-pill bg-rule-strong shadow-[inset_0_0_0_1px_var(--field)] transition-colors duration-(--dur-1) ease-standard data-[state=checked]:bg-primary data-[state=checked]:shadow-none data-disabled:opacity-45"
+      class="relative mt-px h-5 w-9 flex-none rounded-pill bg-rule-strong before:absolute before:-inset-x-1 before:-inset-y-2.5 before:content-[''] shadow-[inset_0_0_0_1px_var(--field)] transition-colors duration-(--dur-1) ease-standard data-[state=checked]:bg-primary data-[state=checked]:shadow-none data-disabled:opacity-45"
     >
       <SwitchThumb
         class="absolute top-0.5 left-0.5 block size-4 rounded-full bg-sheet shadow-[0_1px_2px_rgb(40_32_20/0.25)] transition-transform duration-(--dur-2) ease-out data-[state=checked]:translate-x-4 data-[state=checked]:bg-primary-ink"

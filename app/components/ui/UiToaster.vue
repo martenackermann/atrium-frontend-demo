@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CircleCheck, Info, TriangleAlert, X } from '@lucide/vue'
+import { Check, Info, TriangleAlert, X } from '@lucide/vue'
 import {
   ToastAction,
   ToastClose,
@@ -37,12 +37,15 @@ function onOpenChange(id: number, open: boolean) {
         class="mt-0.5 size-4 text-st-negative-line"
         aria-hidden="true"
       />
-      <Info
-        v-else-if="toast.tone === 'info'"
-        class="mt-0.5 size-4 text-marker"
+      <!-- A marker disc with marker ink reads on the ink toast (light) and the paper toast (dark). -->
+      <span
+        v-else
+        class="mt-px grid size-[18px] flex-none place-items-center rounded-full bg-marker text-marker-ink"
         aria-hidden="true"
-      />
-      <CircleCheck v-else class="mt-0.5 size-4 text-marker" aria-hidden="true" />
+      >
+        <Info v-if="toast.tone === 'info'" class="size-3" :stroke-width="2.5" />
+        <Check v-else class="size-3" :stroke-width="3" />
+      </span>
       <div class="grid min-w-0 flex-1 gap-0.5">
         <ToastTitle class="font-medium">{{ toast.title }}</ToastTitle>
         <ToastDescription v-if="toast.description" class="text-sm opacity-80">{{
@@ -57,13 +60,13 @@ function onOpenChange(id: number, open: boolean) {
       >
         <button
           type="button"
-          class="h-[30px] rounded-[7px] px-2.5 text-sm font-semibold hover:bg-[rgb(255_255_255/0.1)]"
+          class="h-[30px] rounded-[7px] px-2.5 text-sm font-semibold hover:bg-[color-mix(in_srgb,var(--ink-inverse)_12%,transparent)] max-md:h-10"
         >
           {{ toast.action.label }}
         </button>
       </ToastAction>
       <ToastClose
-        class="grid size-[30px] flex-none place-items-center rounded-[7px] opacity-70 hover:bg-[rgb(255_255_255/0.1)] hover:opacity-100"
+        class="grid size-[30px] flex-none place-items-center rounded-[7px] opacity-70 hover:bg-[color-mix(in_srgb,var(--ink-inverse)_12%,transparent)] hover:opacity-100 max-md:size-10"
         aria-label="Dismiss"
       >
         <X class="size-4" aria-hidden="true" />

@@ -73,9 +73,9 @@ async function signInAs(persona: Persona) {
 </script>
 
 <template>
-  <main class="mx-auto grid max-w-[1180px] gap-10 px-4 pt-10 pb-16 md:px-10 md:pt-14">
-    <header class="flex items-center gap-3">
-      <AppBrandMark class="size-8" />
+  <main id="main" class="mx-auto grid max-w-[1180px] gap-10 px-4 pt-10 pb-16 md:px-10 md:pt-14">
+    <header class="flex items-start gap-3">
+      <AppBrandMark class="mt-[3px] size-8" />
       <div>
         <h1 class="font-display text-display-md font-normal tracking-display">Sign in to Atrium</h1>
         <p class="mt-1 text-md text-ink-muted">

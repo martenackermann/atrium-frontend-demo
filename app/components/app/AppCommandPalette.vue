@@ -12,10 +12,12 @@ import {
   Sun,
   UserRound,
   UsersRound,
+  X,
 } from '@lucide/vue'
 import type { Component } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import {
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogOverlay,
@@ -266,6 +268,12 @@ watch(activeItem, (item) => {
     nextTick(() => document.getElementById(optionId(item))?.scrollIntoView({ block: 'nearest' }))
 })
 const searching = computed(() => query.value.trim().length >= 2 && search.isFetching.value)
+// Screen readers hear how many results the query left (debounced with the search).
+const resultsAnnouncement = computed(() => {
+  if (!debounced.value.trim() || searching.value) return ''
+  const count = flatItems.value.length
+  return count === 0 ? `No results for ${debounced.value.trim()}` : `${count} results`
+})
 </script>
 
 <template>
@@ -293,12 +301,19 @@ const searching = computed(() => query.value.trim().length >= 2 && search.isFetc
             :aria-controls="listId"
             :aria-activedescendant="activeItem ? optionId(activeItem) : undefined"
             aria-autocomplete="list"
+            aria-label="Search or jump to"
             placeholder="Search, or type a reference like TRV-000031"
             class="min-w-0 flex-1 border-0 bg-transparent text-[16px] outline-none placeholder:text-ink-subtle"
             @keydown="onKeydown"
           />
           <UiSpinner v-if="searching" class="size-4 text-ink-subtle" />
-          <UiKbd>Esc</UiKbd>
+          <UiKbd class="max-md:hidden">Esc</UiKbd>
+          <DialogClose
+            class="grid size-10 flex-none place-items-center rounded-md text-ink-muted hover:bg-hover hover:text-ink md:hidden"
+            aria-label="Close"
+          >
+            <X class="size-4" aria-hidden="true" />
+          </DialogClose>
         </div>
         <div
           :id="listId"
@@ -306,8 +321,14 @@ const searching = computed(() => query.value.trim().length >= 2 && search.isFetc
           aria-label="Results"
           class="min-h-0 flex-1 overflow-y-auto p-1.5 md:max-h-[380px]"
         >
-          <template v-for="group in groups" :key="group.label">
+          <div
+            v-for="group in groups"
+            :key="group.label"
+            role="group"
+            :aria-labelledby="`${listId}-group-${group.label.replace(/\s/g, '-')}`"
+          >
             <div
+              :id="`${listId}-group-${group.label.replace(/\s/g, '-')}`"
               class="px-2.5 pt-2.5 pb-1 text-meta font-semibold text-ink-subtle"
               role="presentation"
             >
@@ -319,7 +340,7 @@ const searching = computed(() => query.value.trim().length >= 2 && search.isFetc
               :key="item.id"
               role="option"
               :aria-selected="activeItem?.id === item.id"
-              class="flex h-[38px] cursor-pointer items-center gap-2.5 rounded-md px-2.5 text-base text-ink aria-selected:bg-marker-tint"
+              class="flex h-[38px] cursor-pointer items-center gap-2.5 rounded-md px-2.5 text-base text-ink aria-selected:bg-marker-tint max-md:h-11"
               @mousemove="active = flatItems.indexOf(item)"
               @click="choose(item)"
             >
@@ -337,11 +358,15 @@ const searching = computed(() => query.value.trim().length >= 2 && search.isFetc
                 >{{ item.hint }}</span
               >
             </div>
-          </template>
-          <p v-if="!flatItems.length" class="px-3 py-6 text-center text-sm text-ink-muted">
+          </div>
+          <p
+            v-if="!flatItems.length && !searching"
+            class="px-3 py-6 text-center text-sm text-ink-muted"
+          >
             No results for “{{ query }}”. Try a request ID like TRV-000031.
           </p>
         </div>
+        <p class="sr" aria-live="polite">{{ resultsAnnouncement }}</p>
         <div
           class="flex flex-none gap-4 border-t border-rule bg-well px-4 py-2.5 text-meta text-ink-subtle max-md:hidden"
         >

@@ -38,13 +38,17 @@ async function reset() {
       :href="demo.mailpitUrl.value"
       target="_blank"
       rel="noopener"
-      class="link ml-auto inline-flex items-center gap-1 font-medium text-ink md:ml-2"
-      >Open demo mailbox<ExternalLink class="size-3.5 text-ink-subtle" aria-hidden="true"
-    /></a>
+      class="link relative ml-auto inline-flex items-center gap-1 font-medium text-ink after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] md:ml-2"
+      >Open demo mailbox<ExternalLink class="size-3.5 text-ink-subtle" aria-hidden="true" /><span
+        class="sr"
+        >(opens in a new tab)</span
+      ></a
+    >
+    <!-- after: a 40px tap area without making the 32px ribbon taller. -->
     <button
       v-else-if="demo.isMsw.value"
       type="button"
-      class="link ml-auto inline-flex items-center gap-1 font-medium text-ink md:ml-2"
+      class="link relative ml-auto inline-flex items-center gap-1 font-medium text-ink after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] disabled:opacity-60 md:ml-2"
       :disabled="resetting"
       @click="reset"
     >

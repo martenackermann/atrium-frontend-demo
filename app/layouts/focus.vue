@@ -7,6 +7,7 @@ useHead({ title: computed(() => `${route.meta.title ?? 'New request'} · Atrium`
 
 <template>
   <div class="min-h-dvh bg-desk">
+    <a href="#main" class="skip-link">Skip to content</a>
     <AppDemoRibbon v-if="demo.enabled.value" />
     <slot />
   </div>

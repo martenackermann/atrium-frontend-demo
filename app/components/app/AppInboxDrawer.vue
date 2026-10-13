@@ -133,6 +133,7 @@ const tabs = computed(() => [
           <span
             class="text-base leading-5"
             :class="!notification.readAt ? 'font-semibold' : 'font-medium'"
+            ><span v-if="!notification.readAt" class="sr">Unread: </span
             >{{ notification.title }}</span
           >
           <span class="text-sm text-ink-muted">{{ notification.body }}</span>

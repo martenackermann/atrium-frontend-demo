@@ -27,7 +27,7 @@ async function onSelect(event: Event) {
     :disabled="disabled"
     :class="
       cn(
-        'flex min-h-9 w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-base outline-none select-none data-disabled:cursor-not-allowed data-disabled:opacity-45 data-highlighted:bg-hover',
+        'flex min-h-9 w-full cursor-pointer max-md:min-h-11 items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-base outline-none select-none data-disabled:cursor-not-allowed data-disabled:opacity-45 data-highlighted:bg-hover',
         destructive ? 'text-st-negative' : 'text-ink',
         props.class,
       )

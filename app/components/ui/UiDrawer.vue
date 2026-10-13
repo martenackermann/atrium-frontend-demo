@@ -62,7 +62,7 @@ const open = defineModel<boolean>('open', { default: false })
           <DialogDescription v-else class="sr">{{ description }}</DialogDescription>
           <slot name="actions" />
           <DialogClose
-            class="grid size-[34px] place-items-center rounded-md text-ink-muted hover:bg-hover hover:text-ink"
+            class="grid size-[34px] place-items-center rounded-md text-ink-muted hover:bg-hover hover:text-ink max-md:size-10"
             aria-label="Close"
           >
             <X class="size-4" aria-hidden="true" />

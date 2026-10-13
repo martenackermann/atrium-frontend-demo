@@ -58,7 +58,7 @@ const open = defineModel<boolean>('open', { default: false })
             }}</DialogDescription>
           </div>
           <DialogClose
-            class="-mt-1 -mr-2 grid size-[34px] place-items-center rounded-md text-ink-muted hover:bg-hover hover:text-ink"
+            class="-mt-1 -mr-2 grid size-[34px] place-items-center rounded-md text-ink-muted hover:bg-hover hover:text-ink max-md:size-10"
             aria-label="Close"
           >
             <X class="size-4" aria-hidden="true" />

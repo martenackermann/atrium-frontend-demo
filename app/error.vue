@@ -43,6 +43,7 @@ const home = () => clearError({ redirect: '/' })
     <NuxtLayout :name="auth.isAuthenticated ? 'default' : 'blank'">
       <PageBody>
         <EmptyState
+          as="h1"
           :icon="view.icon"
           :title="view.title"
           :description="view.text"

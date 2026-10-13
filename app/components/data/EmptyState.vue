@@ -14,9 +14,11 @@ const props = withDefaults(
     icon?: Component
     tone?: 'positive' | 'neutral' | 'waiting'
     compact?: boolean
+    /** Heading level of the title: `h1` when the empty state is the whole page (error views). */
+    as?: 'h1' | 'h2' | 'h3'
     class?: HTMLAttributes['class']
   }>(),
-  { tone: 'neutral' },
+  { tone: 'neutral', as: 'h2' },
 )
 </script>
 
@@ -41,7 +43,9 @@ const props = withDefaults(
     >
       <component :is="icon ?? CircleCheck" class="size-5" />
     </span>
-    <h2 class="font-display text-display-sm font-normal tracking-display">{{ title }}</h2>
+    <component :is="as" class="font-display text-display-sm font-normal tracking-display">{{
+      title
+    }}</component>
     <p v-if="description" class="mt-2 text-base leading-[21px] text-ink-muted">{{ description }}</p>
     <div v-if="$slots.default" class="mt-5 flex flex-wrap justify-center gap-2">
       <slot />

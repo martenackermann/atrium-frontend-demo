@@ -47,6 +47,7 @@ const router = useRouter()
 const { mobileDetail, shortcutsOpen } = useShell()
 const isMobile = useMediaQuery('(max-width: 767px)')
 const listEl = ref<HTMLElement>()
+const listPane = ref<HTMLElement>()
 const listId = useId()
 
 const selectedId = computed(() => {
@@ -107,10 +108,21 @@ function move(delta: number) {
   })
 }
 
+/** Arrow keys move the selection only from the list (or nowhere in particular), so they still
+ * scroll the detail pane and work inside menus, tabs and segmented controls. */
+function arrowsBelongToList(event: KeyboardEvent) {
+  const target = event.target as HTMLElement | null
+  if (!target || target === document.body) return true
+  if (!listPane.value?.contains(target)) return false
+  return !target.closest('[role="tablist"],[role="radiogroup"],[role="menu"],[role="combobox"]')
+}
+
 useEventListener('keydown', (event: KeyboardEvent) => {
   if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return
   if (isTypingContext(event)) return
   const key = event.key
+  const arrow = key === 'ArrowDown' || key === 'ArrowUp'
+  if (arrow && !arrowsBelongToList(event)) return
   if (key === 'j' || key === 'J' || key === 'ArrowDown') {
     event.preventDefault()
     move(1)
@@ -144,6 +156,7 @@ const position = computed(() =>
   >
     <!-- List pane -->
     <section
+      ref="listPane"
       class="flex min-h-0 min-w-0 flex-col md:rounded-bl-xl md:border-r md:border-rule md:bg-well"
       :class="isMobile && selected && 'hidden'"
       :aria-label="title"
@@ -162,11 +175,12 @@ const position = computed(() =>
           v-model="tab"
           :tabs="tabs"
           class="mt-3.5"
+          list-class="gap-4"
           :aria-label="`${title} tabs`"
         />
-        <div
+        <FilterBar
           v-if="filters?.length || sortNote || $slots['list-tools']"
-          class="flex items-center justify-between gap-3 py-3"
+          class="items-center gap-x-3 gap-y-2 py-3"
         >
           <UiSegmented
             v-if="filters?.length"
@@ -176,10 +190,12 @@ const position = computed(() =>
             label="Filter"
           />
           <slot name="list-tools" />
-          <span v-if="sortNote" class="text-[12.5px] text-ink-subtle max-md:hidden">{{
-            sortNote
-          }}</span>
-        </div>
+          <span
+            v-if="sortNote"
+            class="ml-auto text-[12.5px] whitespace-nowrap text-ink-subtle max-md:hidden"
+            >{{ sortNote }}</span
+          >
+        </FilterBar>
       </header>
 
       <div v-if="loading" class="grid">
@@ -254,20 +270,24 @@ const position = computed(() =>
     <section
       class="min-h-0 overflow-y-auto"
       :class="isMobile && !selected && 'hidden'"
-      aria-live="polite"
       :aria-label="selected ? 'Details' : undefined"
     >
       <template v-if="selected">
         <div class="flex items-center justify-between px-1 pt-2 md:hidden">
-          <UiButton variant="ghost" :icon="ArrowLeft" @click="select(undefined, false)">{{
-            title
-          }}</UiButton>
+          <UiButton
+            variant="ghost"
+            :icon="ArrowLeft"
+            :aria-label="`Back to ${title}`"
+            @click="select(undefined, false)"
+            >{{ title }}</UiButton
+          >
           <span class="pr-3 text-[12.5px] text-ink-subtle">{{ position }}</span>
         </div>
         <header
           class="flex flex-wrap items-start gap-x-6 gap-y-3.5 border-rule bg-sheet px-4 pt-2 pb-4 md:sticky md:top-0 md:z-[2] md:border-b md:px-8 md:pt-6 md:pb-[18px] xl:pl-9"
         >
-          <div class="min-w-0 flex-[1_1_320px]">
+          <!-- Announces the newly selected item (J/K) without reading the whole detail. -->
+          <div class="min-w-0 flex-[1_1_320px]" aria-live="polite" aria-atomic="true">
             <h2
               class="font-display text-[26px] leading-8 font-normal tracking-display md:text-[30px] md:leading-9"
             >

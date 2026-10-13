@@ -10,7 +10,7 @@ defineEmits<{ select: [event: Event] }>()
 <template>
   <DropdownMenuRadioItem
     :value="value"
-    class="group flex min-h-9 w-full cursor-pointer items-center gap-2.5 rounded-md py-1.5 pr-2.5 pl-8 text-left text-base outline-none select-none data-[state=checked]:font-semibold data-highlighted:bg-hover relative"
+    class="group flex min-h-9 w-full max-md:min-h-11 cursor-pointer items-center gap-2.5 rounded-md py-1.5 pr-2.5 pl-8 text-left text-base outline-none select-none data-[state=checked]:font-semibold data-highlighted:bg-hover relative"
     @select="$emit('select', $event)"
   >
     <DropdownMenuItemIndicator class="absolute left-2.5 grid place-items-center">
