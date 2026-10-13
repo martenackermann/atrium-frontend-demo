@@ -134,7 +134,12 @@ function toggle(id: string) {
           placeholder="Action"
           class="w-32"
         />
-        <DateRangeFilter v-model="range" label="Date" />
+        <DateRangeFilter
+          :from="range.start"
+          :to="range.end"
+          label="Date"
+          @change="({ from, to }) => (range = { start: from, end: to })"
+        />
       </template>
       <template #cell-actor="{ row }">
         {{ row.actor?.displayName ?? 'Atrium' }}

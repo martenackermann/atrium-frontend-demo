@@ -3,9 +3,11 @@ import { NuxtLink } from '#components'
 import type { Component, HTMLAttributes } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import { cn } from '~/lib/cn'
+import { useControlSize } from '~/lib/field'
 
 /**
- * Icon-only button (DESIGN §9): 34px, always an aria-label + a desktop Tooltip, optional marker pip.
+ * Icon-only button (DESIGN §9): 34px (30px sm), always an aria-label + a desktop Tooltip, optional
+ * marker pip. 40px on phones (tap target), 36px in a list toolbar (FilterBar).
  */
 const props = withDefaults(
   defineProps<{
@@ -26,6 +28,7 @@ defineEmits<{ click: [event: MouseEvent] }>()
 // The tooltip wraps the button: attributes (data-testid, aria-expanded, …) go to the button.
 defineOptions({ inheritAttrs: false })
 
+const inFilterBar = useControlSize() === 'filter'
 const tag = computed(() => (props.to ? NuxtLink : 'button'))
 const showPip = computed(
   () => props.pip !== null && props.pip !== undefined && props.pip !== 0 && props.pip !== '',
@@ -44,7 +47,8 @@ const showPip = computed(
       :class="
         cn(
           'relative grid flex-none place-items-center rounded-md text-ink-muted transition-colors duration-(--dur-1) ease-standard hover:bg-hover hover:text-ink disabled:pointer-events-none disabled:opacity-45',
-          size === 'md' ? 'size-[34px]' : 'size-[30px]',
+          inFilterBar ? 'size-9' : size === 'md' ? 'size-[34px]' : 'size-[30px]',
+          'max-md:size-10',
           props.class,
         )
       "

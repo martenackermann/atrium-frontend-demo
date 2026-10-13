@@ -147,7 +147,8 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
 
 <template>
   <div class="grid min-w-0 gap-3">
-    <div v-if="list || $slots.filters || exportPath" class="flex flex-wrap items-end gap-2">
+    <!-- FilterBar: search, filters and tools all render at the 36px filter height. -->
+    <FilterBar v-if="list || $slots.filters || exportPath">
       <div v-if="list" class="relative w-full sm:w-72">
         <Search
           class="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-ink-subtle"
@@ -197,11 +198,11 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
           Export CSV
         </UiButton>
       </div>
-    </div>
+    </FilterBar>
 
     <!-- Desktop table -->
-    <div class="max-md:hidden overflow-x-auto border-t border-ink">
-      <table class="w-full border-collapse text-base">
+    <div class="overflow-x-auto border-t border-ink max-md:hidden">
+      <table class="w-full border-collapse text-base" :aria-busy="loading || undefined">
         <caption v-if="caption" class="sr">
           {{
             caption
@@ -250,7 +251,8 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
                   aria-hidden="true"
                 />
               </button>
-              <template v-else>{{ column.label }}</template>
+              <template v-else-if="column.label">{{ column.label }}</template>
+              <span v-else class="sr">Actions</span>
             </th>
           </tr>
         </thead>
@@ -339,24 +341,36 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
     </div>
 
     <!-- Mobile row list -->
-    <ul class="m-0 list-none border-t border-ink p-0 md:hidden">
+    <ul class="m-0 list-none border-t border-ink p-0 md:hidden" :aria-busy="loading || undefined">
       <template v-if="loading">
         <li v-for="index in 5" :key="index" class="grid gap-2 border-b border-rule py-3.5">
           <UiSkeleton class="h-4 w-2/3" /><UiSkeleton class="h-3 w-1/2" />
         </li>
       </template>
       <li v-else-if="error" class="grid gap-2 py-4 text-base">
-        Couldn't load {{ noun }}. Check your connection and try again.
+        Couldn't load {{ noun }}.
+        {{ describeError(error).detail ?? 'Check your connection and try again.' }}
         <UiButton size="sm" variant="secondary" class="justify-self-start" @click="emit('retry')"
           >Try again</UiButton
         >
       </li>
       <li v-else-if="!rows?.length">
-        <EmptyState
-          :title="empty?.title ?? `No ${noun} yet`"
-          :description="empty?.description"
-          compact
-        />
+        <slot name="empty">
+          <EmptyState
+            :icon="list?.activeFilterCount.value ? SearchX : undefined"
+            :title="
+              list?.activeFilterCount.value
+                ? `No ${noun} match these filters`
+                : (empty?.title ?? `No ${noun} yet`)
+            "
+            :description="
+              list?.activeFilterCount.value
+                ? 'Change or clear the filters to see more.'
+                : empty?.description
+            "
+            compact
+          />
+        </slot>
       </li>
       <li v-for="row in rows ?? []" v-else :key="row.id" class="border-b border-rule">
         <component

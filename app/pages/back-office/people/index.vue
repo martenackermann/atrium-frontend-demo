@@ -119,21 +119,22 @@ const empty = computed(() =>
       @retry="requests.refetch()"
     >
       <template #list-tools>
-        <div class="grid w-full min-w-0 flex-1 grid-cols-[repeat(3,minmax(0,1fr))] gap-2">
-          <label class="relative col-span-3">
-            <span class="sr">Search requests</span>
+        <!-- Two filters per row: three side by side truncated "Any assignee" in the 400px pane. -->
+        <div class="grid w-full min-w-0 flex-1 grid-cols-2 gap-2">
+          <div class="relative col-span-2">
             <Search
-              class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-subtle"
+              class="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-ink-subtle"
               aria-hidden="true"
             />
-            <input
+            <UiInput
               v-model="search"
               type="search"
+              aria-label="Search requests"
               placeholder="Search reference, title or name"
-              class="h-[30px] w-full rounded-md border border-field bg-sheet pr-2 pl-8 text-sm text-ink outline-none placeholder:text-ink-subtle focus-visible:border-ink"
+              class="[&_input]:pl-9 [&_input]:text-sm"
               data-testid="ops-search"
             />
-          </label>
+          </div>
           <UiSelect v-model="assignee" :options="assigneeFilters" size="sm" aria-label="Assignee" />
           <UiSelect v-model="type" :options="typeOptions" size="sm" aria-label="Type" />
           <UiSelect v-model="priority" :options="priorityOptions" size="sm" aria-label="Priority" />
