@@ -115,9 +115,9 @@ export interface InboxItem {
   quickActions: string[]
   /**
    * Resource path for quick actions (SPEC_RESOLUTIONS #4): post to `${actionsPath}/actions/{action}`,
-   * e.g. '/training/participations/<id>'.
+   * e.g. '/training/participations/<id>'. Null when the item has no quick actions (API contract).
    */
-  actionsPath: string
+  actionsPath: string | null
 }
 
 export interface InboxResponse {

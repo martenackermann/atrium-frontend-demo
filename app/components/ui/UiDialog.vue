@@ -40,7 +40,9 @@ const open = defineModel<boolean>('open', { default: false })
           cn(
             'fixed z-50 grid max-h-[calc(100dvh-32px)] gap-0 overflow-y-auto bg-raised shadow-dialog outline-none',
             'inset-x-0 bottom-0 rounded-t-[14px] pb-[env(safe-area-inset-bottom)] data-[state=open]:animate-[atrium-sheet-up_var(--dur-3)_var(--curve-out)]',
-            'md:inset-x-auto md:top-[14vh] md:bottom-auto md:left-1/2 md:w-full md:-translate-x-1/2 md:rounded-xl md:pb-0 md:data-[state=open]:animate-[atrium-pop_var(--dur-2)_var(--curve-out)]',
+            // Desktop: 14vh from the top, so the height leaves that offset (+16px) free - otherwise the
+            // footer ends below short (~720px) viewports.
+            'md:inset-x-auto md:top-[14vh] md:bottom-auto md:left-1/2 md:max-h-[calc(100dvh-14vh-16px)] md:w-full md:-translate-x-1/2 md:rounded-xl md:pb-0 md:data-[state=open]:animate-[atrium-pop_var(--dur-2)_var(--curve-out)]',
             size === 'sm' && 'md:max-w-[420px]',
             size === 'md' && 'md:max-w-[520px]',
             size === 'lg' && 'md:max-w-[680px]',

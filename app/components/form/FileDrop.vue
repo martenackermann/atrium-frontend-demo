@@ -19,6 +19,8 @@ const props = withDefaults(
   { max: 10 },
 )
 const model = defineModel<AttachmentDto[]>({ default: () => [] })
+/** True while a file is still uploading: bind `v-model:uploading` to disable the form's submit. */
+const uploading = defineModel<boolean>('uploading', { default: false })
 
 const api = useApi()
 const config = usePublicConfig()
@@ -50,6 +52,10 @@ interface Pending {
   controller: AbortController
 }
 const pending = ref<Pending[]>([])
+watchEffect(() => {
+  const busy = pending.value.some((item) => !item.error)
+  if (uploading.value !== busy) uploading.value = busy
+})
 const dragging = ref(false)
 const input = ref<HTMLInputElement>()
 const generated = useId()

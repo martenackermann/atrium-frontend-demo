@@ -57,6 +57,7 @@ const bookOpen = ref(false)
 const bookingReference = ref('')
 const bookingComment = ref('')
 const documents = ref<AttachmentDto[]>([])
+const uploading = ref(false)
 const bookError = ref<string | null>(null)
 
 function openBook() {
@@ -68,6 +69,7 @@ function openBook() {
 }
 
 async function submitBook() {
+  if (uploading.value) return
   pending.value = 'book'
   bookError.value = null
   try {
@@ -120,12 +122,23 @@ defineExpose({ trigger: (action: string) => bar.value?.trigger(action) })
         optional
         hint="Confirmation, invoice or joining instructions."
       >
-        <FileDrop v-model="documents" purpose="training_booking_document" :max="10" />
+        <FileDrop
+          v-model="documents"
+          v-model:uploading="uploading"
+          purpose="training_booking_document"
+          :max="10"
+        />
       </UiField>
       <p v-if="bookError" role="alert" class="text-sm text-st-negative">{{ bookError }}</p>
       <div class="flex justify-end gap-2">
         <UiButton variant="ghost" @click="bookOpen = false">Cancel</UiButton>
-        <UiButton type="submit" variant="primary" :loading="pending === 'book'">Book it</UiButton>
+        <UiButton
+          type="submit"
+          variant="primary"
+          :loading="pending === 'book'"
+          :disabled="uploading"
+          >Book it</UiButton
+        >
       </div>
     </form>
   </UiDialog>

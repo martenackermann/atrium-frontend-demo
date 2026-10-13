@@ -18,6 +18,7 @@ const bookingNumber = ref('')
 const pin = ref('')
 const comment = ref('')
 const files = ref<AttachmentDto[]>([])
+const uploading = ref(false)
 const errors = ref<Record<string, string | null>>({})
 const formError = ref<string | null>(null)
 
@@ -52,7 +53,7 @@ function validate(): boolean {
 
 async function submit() {
   formError.value = null
-  if (!validate() || !props.request) return
+  if (uploading.value || !validate() || !props.request) return
   try {
     const detail = await actions.run('book', {
       bookingNumber: bookingNumber.value.trim(),
@@ -115,7 +116,12 @@ async function submit() {
         hint="1–5 PDFs. They are attached to the traveller's email."
         :error="errors.attachmentIds"
       >
-        <FileDrop v-model="files" purpose="travel_booking_confirmation" :max="5" />
+        <FileDrop
+          v-model="files"
+          v-model:uploading="uploading"
+          purpose="travel_booking_confirmation"
+          :max="5"
+        />
       </UiField>
       <UiField label="Note for the traveller" optional>
         <UiTextarea v-model="comment" :maxlength="2000" :rows="3" />
@@ -123,7 +129,11 @@ async function submit() {
       <p v-if="formError" class="text-sm text-st-negative" role="alert">{{ formError }}</p>
       <div class="flex justify-end gap-2">
         <UiButton variant="secondary" @click="open = false">Cancel</UiButton>
-        <UiButton type="submit" variant="primary" :loading="actions.isPending.value"
+        <UiButton
+          type="submit"
+          variant="primary"
+          :loading="actions.isPending.value"
+          :disabled="uploading"
           >Book trip</UiButton
         >
       </div>

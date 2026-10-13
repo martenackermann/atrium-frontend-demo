@@ -150,7 +150,7 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
     <div v-if="list || $slots.filters || exportPath" class="flex flex-wrap items-end gap-2">
       <div v-if="list" class="relative w-full sm:w-72">
         <Search
-          class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-subtle"
+          class="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-ink-subtle"
           aria-hidden="true"
         />
         <UiInput

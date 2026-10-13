@@ -36,10 +36,6 @@ const inSlip = (page: Page, text: string) =>
     .first()
 
 test.describe('travel', () => {
-  // The kit dialog (UiDialog) sits at 14vh with max-height 100dvh - 32px, so on a 720 px high
-  // viewport its last row is below the fold (reported as a shared-file request). 1000 px fits.
-  test.use({ viewport: { width: 1280, height: 1000 } })
-
   test('my trips lists S-V1 and its detail explains both reasons', async ({ page }) => {
     const errors = trackConsoleErrors(page)
     await signInAs(page, 'emma', '/travel')
