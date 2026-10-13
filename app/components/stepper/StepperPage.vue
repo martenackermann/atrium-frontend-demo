@@ -44,14 +44,37 @@ const savedLabel = computed(() => {
   return minutes < 1 ? 'Draft saved in this browser' : `Draft saved ${minutes} min ago`
 })
 
+/** After a failed step: focus the first field with an error (its message is announced too). */
+function focusFirstError() {
+  const form = document.getElementById('stepper-form')
+  const alert = form?.querySelector<HTMLElement>('[role="alert"]')
+  const control = alert?.parentElement?.querySelector<HTMLElement>(
+    'input:not([type="hidden"]):not([aria-hidden="true"]),textarea,[role="combobox"],[role="radio"],button[role="checkbox"],[role="switch"]',
+  )
+  control?.focus()
+}
+
+/** After moving on: the new step's question takes focus, so screen readers start there. */
+function focusQuestion() {
+  const form = document.getElementById('stepper-form')
+  form?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  form?.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true })
+}
+
 async function onNext() {
   if (props.stepper.isLast.value) {
     emit('submit')
     return
   }
   const ok = await props.stepper.next()
-  if (ok)
-    document.getElementById('stepper-form')?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  await nextTick()
+  if (ok) focusQuestion()
+  else focusFirstError()
+}
+
+function onBack() {
+  props.stepper.back()
+  void nextTick(focusQuestion)
 }
 
 async function discard() {
@@ -100,7 +123,7 @@ async function discard() {
       </div>
     </header>
 
-    <div class="flex-1 min-[901px]:px-6 min-[901px]:pt-1 min-[901px]:pb-10">
+    <main id="main" class="flex-1 min-[901px]:px-6 min-[901px]:pt-1 min-[901px]:pb-10">
       <div
         class="mx-auto max-w-[1180px] bg-sheet min-[901px]:grid min-[901px]:grid-cols-[minmax(0,1fr)_320px] min-[901px]:items-start min-[901px]:rounded-xl min-[901px]:border min-[901px]:border-rule min-[901px]:shadow-sheet min-[1101px]:grid-cols-[minmax(0,1fr)_var(--summary-w)]"
       >
@@ -124,6 +147,7 @@ async function discard() {
                 @click="stepper.stateOf(step.id) === 'done' && stepper.goTo(step.id)"
               >
                 <span
+                  aria-hidden="true"
                   class="grid size-[26px] flex-none place-items-center rounded-full border-[1.5px] text-meta font-semibold"
                   :class="{
                     'border-ink bg-ink text-sheet': stepper.stateOf(step.id) === 'done',
@@ -141,6 +165,7 @@ async function discard() {
                   />
                   <template v-else>{{ index + 1 }}</template>
                 </span>
+                <!-- Below 1100px only the current label shows; the others stay for screen readers. -->
                 <span
                   class="ml-2.5 text-[13.5px] font-medium whitespace-nowrap"
                   :class="{
@@ -148,9 +173,16 @@ async function discard() {
                       stepper.stateOf(step.id) === 'done',
                     'font-[650] text-ink': stepper.stateOf(step.id) === 'current',
                     'text-ink-subtle': stepper.stateOf(step.id) === 'upcoming',
-                    'max-[1100px]:hidden': stepper.stateOf(step.id) !== 'current',
+                    'max-[1100px]:sr': stepper.stateOf(step.id) !== 'current',
                   }"
-                  >{{ step.label }}</span
+                  >{{ step.label
+                  }}<span class="sr">{{
+                    stepper.stateOf(step.id) === 'done'
+                      ? ', done'
+                      : stepper.stateOf(step.id) === 'upcoming'
+                        ? ', not reached yet'
+                        : ''
+                  }}</span></span
                 >
               </component>
             </li>
@@ -185,7 +217,7 @@ async function discard() {
         <!-- Form column -->
         <form
           id="stepper-form"
-          class="min-w-0 px-4 pt-6 pb-[164px] md:px-5 min-[901px]:px-8 min-[901px]:pt-8 min-[901px]:pb-0 min-[1101px]:px-12 min-[1101px]:pt-10"
+          class="min-w-0 px-4 pt-6 pb-[164px] min-[768px]:px-5 min-[901px]:px-8 min-[901px]:pt-8 min-[901px]:pb-0 min-[1101px]:px-12 min-[1101px]:pt-10"
           novalidate
           @submit.prevent="onNext"
         >
@@ -200,7 +232,7 @@ async function discard() {
               :icon="ArrowLeft"
               class="max-md:size-11 max-md:px-0"
               :aria-label="`Back to ${stepper.previousStep.value?.label}`"
-              @click="stepper.back()"
+              @click="onBack"
             >
               <span class="max-md:hidden">Back to {{ stepper.previousStep.value?.label }}</span>
             </UiButton>
@@ -247,7 +279,7 @@ async function discard() {
           </div>
         </aside>
       </div>
-    </div>
+    </main>
 
     <UiDialog v-model:open="sheetOpen" :title="title" class="min-[901px]:hidden">
       <slot name="summary" />

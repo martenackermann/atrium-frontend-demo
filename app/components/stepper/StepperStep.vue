@@ -13,8 +13,10 @@ defineProps<{ question: string; lede?: string }>()
 <template>
   <section class="grid gap-[30px]">
     <header class="max-w-[60ch]">
+      <!-- tabindex: StepperPage moves focus here when the step changes. -->
       <h2
-        class="font-display text-[26px] leading-8 font-normal tracking-display md:text-display-md"
+        tabindex="-1"
+        class="font-display text-[26px] leading-8 font-normal tracking-display outline-none md:text-display-md"
       >
         {{ question }}
       </h2>
