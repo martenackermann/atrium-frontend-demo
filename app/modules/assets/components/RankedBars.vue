@@ -8,13 +8,13 @@ import type { RouteLocationRaw } from 'vue-router'
  */
 const props = defineProps<{
   items: Array<{ id: string; label: string; value: number; to?: RouteLocationRaw }>
-  ariaLabel: string
+  listLabel: string
 }>()
 const max = computed(() => Math.max(1, ...props.items.map((item) => item.value)))
 </script>
 
 <template>
-  <ol class="m-0 grid list-none gap-2.5 p-0" :aria-label="ariaLabel">
+  <ol class="m-0 grid list-none gap-2.5 p-0" :aria-label="listLabel">
     <li v-for="item in items" :key="item.id">
       <component
         :is="item.to ? NuxtLink : 'div'"

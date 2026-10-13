@@ -105,7 +105,7 @@ const activity = computed(() => (d.value?.recentActivity ?? []).slice(0, isMobil
           </h2>
           <div class="border-t border-ink pt-4">
             <UiSkeleton v-if="dashboard.isPending.value" class="h-60 w-full" />
-            <AssetsRankedBars v-else :items="manufacturers" aria-label="Assets by manufacturer" />
+            <AssetsRankedBars v-else :items="manufacturers" list-label="Assets by manufacturer" />
           </div>
         </section>
       </div>
