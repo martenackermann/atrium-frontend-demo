@@ -106,11 +106,28 @@ async function run(
   }
 }
 
+// The dialog opens without a trigger element (D key or the detail button), so Reka returns
+// focus to <body> on close; put it back where the approver was, else on the list.
+let declineReturn: HTMLElement | null = null
 function decline(item: TravelRequestSummary) {
   if (!item.availableActions.includes('decline')) return
   declineError.value = null
+  declineReturn = document.activeElement instanceof HTMLElement ? document.activeElement : null
   declining.value = item
 }
+watch(declining, (value) => {
+  if (value) return
+  const back = declineReturn
+  declineReturn = null
+  setTimeout(() => {
+    if (document.activeElement && document.activeElement !== document.body) return
+    const target =
+      back?.isConnected && back !== document.body
+        ? back
+        : document.querySelector<HTMLElement>('[role="listbox"]')
+    target?.focus()
+  }, 320)
+})
 
 const emptyText = computed(() =>
   tab.value === 'team'
