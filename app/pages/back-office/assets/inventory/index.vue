@@ -162,7 +162,7 @@ const columns: DataTableColumn<AssetListItem>[] = [
       title="Inventory"
       :subtitle="
         assets.data.value
-          ? `${assets.data.value.meta.total} assets match. Every device, where it is and who has it.`
+          ? `${assets.data.value.meta.total === 1 ? '1 asset matches' : `${assets.data.value.meta.total} assets match`}. Every device, where it is and who has it.`
           : 'Every device, where it is and who has it.'
       "
     >
