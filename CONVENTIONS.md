@@ -480,7 +480,8 @@ E2E_MAILPIT_URL=http://localhost:8025 pnpm exec playwright test --project=chromi
 test/e2e/integration.spec.ts` (add `E2E_FRESH_SEED=1` on a fresh seed for the My day counts).
   Type dates relative to today with `dateDigitsIn(days)` from `helpers.ts` - fixed dates expire.
   Sign in with `signInAs(page, 'emma')` from `test/e2e/helpers.ts`; prefer roles and labels over
-  test ids. `pnpm screenshots` writes review screenshots to `docs/screenshots/<folder>/`.
+  test ids. `pnpm screenshots` regenerates the README screenshots in `docs/screenshots/`
+  (`test/e2e/screenshots.spec.ts`; `SCREENSHOTS_DIR=<dir>` writes a review set elsewhere).
 
 ## 13. Tooling and commits
 
