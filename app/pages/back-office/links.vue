@@ -25,7 +25,6 @@ definePageMeta({ title: 'Useful links', access: ['news_editor', 'it_admin'] })
 const api = useApi()
 const toast = useToast()
 const queryClient = useQueryClient()
-const { confirm } = useConfirm()
 const links = useLinks(true)
 
 const order = ref<UsefulLinkDto[]>([])
@@ -84,20 +83,27 @@ async function toggleActive(link: UsefulLinkDto, active: boolean) {
   }
 }
 
-async function remove(link: UsefulLinkDto) {
-  const ok = await confirm({
-    title: `Delete ${link.title}?`,
-    description: 'It disappears from Home for everyone. You can add it again later.',
-    confirmLabel: 'Delete link',
-    destructive: true,
-  })
-  if (!ok) return
+const removing = ref<UsefulLinkDto | null>(null)
+const deleteOpen = computed({
+  get: () => removing.value !== null,
+  set: (value: boolean) => {
+    if (!value) removing.value = null
+  },
+})
+const deleting = ref(false)
+async function remove() {
+  const link = removing.value
+  if (!link) return
+  deleting.value = true
   try {
     await api.delete(`/links/${link.id}`)
     toast.success('Link deleted.')
+    removing.value = null
     await invalidate()
   } catch (error) {
     toast.error(describeError(error))
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -273,12 +279,20 @@ const save = handleSubmit(async (values) => {
             :icon="Trash2"
             :label="`Delete ${link.title}`"
             size="sm"
-            @click="remove(link)"
+            @click="removing = link"
           />
         </div>
       </li>
     </ol>
 
+    <NewsConfirmDelete
+      v-model:open="deleteOpen"
+      :title="`Delete ${removing?.title ?? 'this link'}?`"
+      description="It disappears from Home for everyone. You can add it again later."
+      confirm-label="Delete link"
+      :loading="deleting"
+      @confirm="remove"
+    />
     <UiDialog
       v-model:open="dialogOpen"
       :title="editing ? `Edit ${editing.title}` : 'New link'"

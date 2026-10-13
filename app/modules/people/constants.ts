@@ -108,15 +108,7 @@ export const PEOPLE_ACTIONS: Record<string, ActionConfig> = {
     },
   },
   resume: { label: 'Resume', icon: CirclePlay, variant: 'primary' },
-  complete: {
-    label: 'Complete',
-    icon: CircleCheck,
-    confirm: {
-      title: 'Complete this request?',
-      description: 'The requester and the manager are told it is done.',
-      confirmLabel: 'Complete request',
-    },
-  },
+  complete: { label: 'Complete', icon: CircleCheck },
   reject: {
     label: 'Reject',
     icon: X,

@@ -18,7 +18,6 @@ const props = defineProps<{ post?: NewsPostDetail | null }>()
 const api = useApi()
 const toast = useToast()
 const queryClient = useQueryClient()
-const { confirm } = useConfirm()
 const timeline = useNewsTimeline(() => props.post?.id)
 
 const schema = toTypedSchema(
@@ -185,22 +184,21 @@ function submitSchedule() {
   void run('schedule', { publishAt: publishAt.value, expireAt: scheduleExpire.value || null })
 }
 
+const deleteOpen = ref(false)
+const deleting = ref(false)
 async function remove() {
   if (!props.post) return
-  const ok = await confirm({
-    title: 'Delete this post?',
-    description: 'It is removed from the editor list. The history stays in the audit log.',
-    confirmLabel: 'Delete post',
-    destructive: true,
-  })
-  if (!ok) return
+  deleting.value = true
   try {
     await api.delete(postPath(props.post.id))
     toast.success('Post deleted.')
+    deleteOpen.value = false
     await queryClient.invalidateQueries({ queryKey: newsKeys.posts.module })
     await navigateTo('/back-office/news')
   } catch (error) {
     toast.error(describeError(error))
+  } finally {
+    deleting.value = false
   }
 }
 </script>
@@ -305,7 +303,7 @@ async function remove() {
             v-if="actions.includes('delete')"
             variant="danger"
             :icon="Trash2"
-            @click="remove"
+            @click="deleteOpen = true"
             >Delete post</UiButton
           >
         </div>
@@ -331,6 +329,14 @@ async function remove() {
       />
     </aside>
 
+    <NewsConfirmDelete
+      v-model:open="deleteOpen"
+      title="Delete this post?"
+      description="It is removed from the editor list. The history stays in the audit log."
+      confirm-label="Delete post"
+      :loading="deleting"
+      @confirm="remove"
+    />
     <UiDialog
       v-model:open="scheduleOpen"
       title="Schedule this post"

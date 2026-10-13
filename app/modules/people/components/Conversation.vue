@@ -135,6 +135,7 @@ async function send() {
 
     <form v-if="canWrite" class="grid gap-3 pt-2" novalidate @submit.prevent="send">
       <UiField
+        id="people-comment"
         :label="repliesToQuestion ? 'Your reply' : 'Add a comment'"
         :hint="
           repliesToQuestion
@@ -145,7 +146,7 @@ async function send() {
         "
         :error="error"
       >
-        <UiTextarea id="people-comment" v-model="body" :rows="3" :maxlength="4000" />
+        <UiTextarea v-model="body" :rows="3" :maxlength="4000" />
       </UiField>
       <div class="flex flex-wrap items-center justify-between gap-3">
         <UiSwitch
