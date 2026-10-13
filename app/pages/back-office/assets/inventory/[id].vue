@@ -263,7 +263,7 @@ const summary = computed<FactItem[]>(() => {
               />
             </div>
             <div v-if="a.notes && !a.availableActions.includes('edit')" class="mt-6">
-              <h3 class="text-md font-semibold">Notes</h3>
+              <h2 class="text-md font-semibold">Notes</h2>
               <p class="mt-1 text-base whitespace-pre-line">{{ a.notes }}</p>
             </div>
           </div>
@@ -284,6 +284,7 @@ const summary = computed<FactItem[]>(() => {
         </template>
         <template #timeline>
           <div class="grid gap-10 pt-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+            <h2 class="sr">History of this device</h2>
             <div>
               <ProblemAlert
                 v-if="timeline.error.value"

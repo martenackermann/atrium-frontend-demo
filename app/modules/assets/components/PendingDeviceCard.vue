@@ -55,12 +55,12 @@ const dueIn = computed(() => (dueAt.value ? daysFromToday(dueAt.value) : null))
         :class="dueIn !== null && dueIn <= 0 ? 'text-st-negative' : 'text-ink-muted'"
       >
         <AlarmClock class="size-3.5" aria-hidden="true" />
-        <template v-if="dueIn !== null && dueIn <= 0">
+        <span v-if="dueIn !== null && dueIn <= 0">
           Overdue since <time :datetime="dueAt.toISOString()">{{ formatDate(dueAt) }}</time>
-        </template>
-        <template v-else>
+        </span>
+        <span v-else>
           Confirm by <time :datetime="dueAt.toISOString()">{{ formatDate(dueAt) }}</time>
-        </template>
+        </span>
       </p>
     </div>
     <AssetsAcceptanceActions :asset="asset" block class="md:justify-end" />
