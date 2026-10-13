@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, Check, ChevronUp, Moon, Stamp, Sun, X } from '@lucide/vue'
+import { ArrowLeft, ArrowRight, Check, ChevronUp, Moon, Stamp, Sun, Trash2, X } from '@lucide/vue'
 import type { RouteLocationRaw } from 'vue-router'
 import type { StepperController } from '~/composables/useStepper'
 
@@ -117,6 +117,8 @@ async function discard() {
         <UiButton variant="ghost" size="sm" class="max-md:hidden" @click="discard"
           >Discard draft</UiButton
         >
+        <!-- Phones: no room for the label, but discarding stays one tap away. -->
+        <UiIconButton :icon="Trash2" label="Discard draft" class="md:hidden" @click="discard" />
         <UiIconButton
           :icon="theme.resolved.value === 'dark' ? Moon : Sun"
           label="Switch theme"

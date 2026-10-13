@@ -60,7 +60,7 @@ const viewAll = computed(
         <NuxtLink
           v-if="viewAll"
           :to="viewAll"
-          class="inline-flex items-center gap-1 text-sm font-medium text-ink-muted no-underline hover:text-ink"
+          class="inline-flex items-center gap-1 text-sm font-medium text-ink-muted no-underline hover:text-ink max-md:min-h-10"
           >View all<ArrowRight class="size-3.5" aria-hidden="true"
         /></NuxtLink>
       </div>

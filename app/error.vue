@@ -28,13 +28,16 @@ const view = computed(() => {
   }
   return {
     icon: TriangleAlert,
-    title: 'Something went wrong',
+    title: "This page didn't load",
     text: 'Try again. If it keeps happening, contact it-support@example.com.',
+    retry: true,
   }
 })
 
 useHead({ title: computed(() => `${view.value.title} · Atrium`) })
 const home = () => clearError({ redirect: '/' })
+// Error states offer a retry (DESIGN §10): reload the page that failed.
+const retry = () => window.location.reload()
 </script>
 
 <template>
@@ -49,7 +52,10 @@ const home = () => clearError({ redirect: '/' })
           :description="view.text"
           data-testid="error-view"
         >
-          <UiButton variant="primary" @click="home">Back to Home</UiButton>
+          <UiButton v-if="'retry' in view" variant="primary" @click="retry">Try again</UiButton>
+          <UiButton :variant="'retry' in view ? 'secondary' : 'primary'" @click="home"
+            >Back to Home</UiButton
+          >
         </EmptyState>
       </PageBody>
     </NuxtLayout>

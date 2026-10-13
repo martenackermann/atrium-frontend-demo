@@ -28,6 +28,10 @@ const due = computed(() => {
   return label
 })
 
+// A subtitle that ends a sentence ("I am ill and cannot travel.") loses its full stop when the
+// due date and urgency follow it with "·".
+const subtitleClause = computed(() => (props.item.subtitle ?? '').replace(/\.$/, ''))
+
 // Asset subtitles already end with the tag ("Marlowe X5 · AST-00115"): don't repeat it.
 const showReference = computed(
   () => Boolean(props.item.reference) && !props.item.subtitle?.includes(props.item.reference!),
@@ -90,7 +94,9 @@ function submitDecline() {
         <span v-if="showReference" class="mono text-ink-subtle">{{ item.reference }}</span>
         <template v-if="item.subtitle"
           ><span v-if="showReference" aria-hidden="true"> · </span
-          ><span>{{ item.subtitle }}</span></template
+          ><span>{{
+            due || item.priority === 'high' ? subtitleClause : item.subtitle
+          }}</span></template
         >
         <template v-if="due"
           ><span v-if="showReference || item.subtitle" aria-hidden="true"> · </span

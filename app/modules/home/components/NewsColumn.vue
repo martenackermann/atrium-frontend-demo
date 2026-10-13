@@ -54,7 +54,7 @@ const ICONS: Record<string, Component> = {
         <h2 id="news-heading" class="text-lg font-[650] tracking-heading">News</h2>
         <NuxtLink
           to="/news"
-          class="ml-auto inline-flex items-center gap-1 text-sm font-medium text-ink-muted no-underline hover:text-ink"
+          class="ml-auto inline-flex items-center gap-1 text-sm font-medium text-ink-muted no-underline hover:text-ink max-md:min-h-10"
           >All news<ArrowRight class="size-3.5" aria-hidden="true"
         /></NuxtLink>
       </header>
@@ -98,7 +98,7 @@ const ICONS: Record<string, Component> = {
             :href="link.url"
             target="_blank"
             rel="noopener noreferrer"
-            class="group flex items-center gap-2.5 border-b border-rule py-[9px] text-base font-medium text-ink no-underline hover:underline hover:decoration-rule-strong"
+            class="group flex min-h-10 items-center gap-2.5 border-b border-rule py-2 text-base font-medium text-ink no-underline hover:underline hover:decoration-rule-strong"
             :title="link.description ?? undefined"
           >
             <component

@@ -53,7 +53,7 @@ const restText = computed(() => {
       </p>
       <NuxtLink
         to="/inbox"
-        class="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-ink no-underline hover:underline"
+        class="inline-flex items-center gap-1 font-semibold whitespace-nowrap text-ink no-underline hover:underline max-md:min-h-10"
         >Open Inbox<ArrowRight class="size-3.5" aria-hidden="true"
       /></NuxtLink>
     </footer>
