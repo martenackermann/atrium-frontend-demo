@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DESIGN_TONES, STATUS_MAP, resolveStatus, toDesignTone } from '~/lib/status'
+import type { EnumOption } from '~/types/api'
 
 describe('StatusBadge tone mapping', () => {
   it('uses only the seven DESIGN tones in the status map', () => {
@@ -51,7 +52,10 @@ describe('StatusBadge tone mapping', () => {
   })
 
   it('prefers enum labels and tones from /meta/enums and tolerates legacy tones', () => {
-    const enumOptions = [{ value: 'booked', label: 'Booked by desk', tone: 'success' }]
+    // A legacy tone ('success') from an older API build still maps to a DESIGN tone.
+    const enumOptions = [
+      { value: 'booked', label: 'Booked by desk', tone: 'success', description: null },
+    ] as unknown as EnumOption[]
     expect(resolveStatus('travelStatus', 'booked', { enumOptions })).toMatchObject({
       label: 'Booked by desk',
       tone: 'positive',

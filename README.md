@@ -5,8 +5,9 @@ onboarding/offboarding requests and company news. This repository holds the sing
 the API lives in `atrium-backend-demo`. Atrium is a portfolio demo set in a fictional company,
 Acme IT Services.
 
-> **Status:** foundation only (scaffold, API client, demo mode, module system). Screens, design
-> system and the final README arrive in later phases.
+> **Status:** foundation done: design system, UI kit, app shell, auth, demo mode with mock data,
+> and the foundation screens (inbox, settings, admin). The module screens (training, travel,
+> devices, people requests, news, home) are placeholders that the slices replace.
 
 ## Stack
 
@@ -37,7 +38,9 @@ Demo mode signs you in as one of the demo personas. The password for every perso
 | `pnpm lint` / `pnpm lint:fix`  | ESLint + Prettier check (or fix)                                                  |
 | `pnpm typecheck`               | `nuxt typecheck` (vue-tsc)                                                        |
 | `pnpm test`                    | Vitest (unit + Nuxt runtime projects)                                             |
-| `pnpm test:e2e`                | Playwright (Chromium) against `pnpm dev:demo`                                     |
+| `pnpm test:e2e`                | Playwright (Chromium) against a demo dev server on port 3210                      |
+| `pnpm screenshots`             | Review screenshots (light/dark, desktop/mobile) into `docs/screenshots/`          |
+| `pnpm mocks:users`             | Copy the backend's seed org export into `app/mocks/core/users.json`               |
 | `pnpm api:types`               | Regenerate `app/lib/api/schema.d.ts` from the backend's OpenAPI document          |
 
 ## Contributing

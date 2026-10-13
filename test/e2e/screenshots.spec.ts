@@ -16,7 +16,8 @@ async function useTheme(page: Page, theme: (typeof THEMES)[number]) {
     // Hide the Nuxt DevTools launcher of `nuxt dev` (not part of the app).
     document.addEventListener('DOMContentLoaded', () => {
       const style = document.createElement('style')
-      style.textContent = '#nuxt-devtools-container, #nuxt-devtools-anchor { display: none !important; }'
+      style.textContent =
+        '#nuxt-devtools-container, #nuxt-devtools-anchor { display: none !important; }'
       document.head.append(style)
     })
   }, theme)
