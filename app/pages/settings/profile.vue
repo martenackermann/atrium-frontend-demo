@@ -116,9 +116,11 @@ const themeMode = computed({
       <section class="mt-10 grid gap-3" aria-labelledby="roles-heading">
         <h2 id="roles-heading" class="text-lg font-[650] tracking-heading">Roles</h2>
         <div class="flex flex-wrap gap-2">
-          <UiTag v-for="role in profile.data.value.roles" :key="role">{{
-            ROLE_LABELS[role] ?? role
-          }}</UiTag>
+          <UiMiniChip
+            v-for="role in profile.data.value.roles"
+            :key="role"
+            :label="ROLE_LABELS[role] ?? role"
+          />
         </div>
       </section>
     </template>

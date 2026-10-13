@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { History, Play } from '@lucide/vue'
 import { describeError } from '~/lib/api'
+import { sentenceCase } from '~/lib/status'
 import { coreKeys } from '~/lib/query/core'
 import type { JobDto, JobRunDto, Page } from '~/types/api'
 
@@ -84,6 +85,36 @@ const duration = (run: JobRunDto) =>
     ? `${Math.max(0, Math.round((Date.parse(run.finishedAt) - Date.parse(run.startedAt)) / 1000))} s`
     : 'running'
 const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' } as const
+const RUN_LABEL = { running: 'Running', succeeded: 'Succeeded', failed: 'Failed' } as const
+
+/** The module a job belongs to, from its name ("assets.acceptance-reminders" → Devices). */
+const MODULE_LABEL: Record<string, string> = {
+  core: 'Core',
+  demo: 'Demo',
+  training: 'Training',
+  travel: 'Travel',
+  assets: 'Devices',
+  people: 'People',
+  news: 'News',
+}
+const moduleOf = (job: JobDto) => {
+  const prefix = job.name.split('.')[0] ?? ''
+  return MODULE_LABEL[prefix] ?? sentenceCase(prefix)
+}
+
+/** "stagedAttachments" → "Staged attachments". */
+const humanKey = (key: string | number) => {
+  const words = String(key)
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .toLowerCase()
+  return words.charAt(0).toUpperCase() + words.slice(1)
+}
+/** "13 h" → "13 h ago"; "Yesterday" stays. */
+const ago = (value: string) => {
+  const age = formatAge(value)
+  return /^\d/.test(age) ? `${age} ago` : age.toLowerCase()
+}
 </script>
 
 <template>
@@ -114,7 +145,7 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
             <h2 class="mono text-[13.5px] font-semibold">{{ job.name }}</h2>
             <p class="mt-1 text-base text-ink-muted">{{ job.description }}</p>
           </div>
-          <UiTag tone="neutral">{{ job.slice === 'F' ? 'Foundation' : job.slice }}</UiTag>
+          <UiMiniChip :label="moduleOf(job)" />
         </div>
         <FactGrid
           :columns="2"
@@ -125,9 +156,9 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
         />
         <div v-if="job.lastRun" class="grid gap-1.5 border-t border-rule pt-3 text-sm">
           <div class="flex items-center gap-2">
-            <UiTag :tone="RUN_TONE[job.lastRun.status]">{{ job.lastRun.status }}</UiTag>
+            <UiTag :tone="RUN_TONE[job.lastRun.status]">{{ RUN_LABEL[job.lastRun.status] }}</UiTag>
             <span class="text-ink-muted">
-              Last run {{ formatAge(job.lastRun.startedAt) }} · {{ duration(job.lastRun) }} ·
+              Last run {{ ago(job.lastRun.startedAt) }} · {{ duration(job.lastRun) }} ·
               {{
                 job.lastRun.triggeredBy === 'manual'
                   ? `by ${job.lastRun.triggeredByUser?.displayName ?? 'an admin'}`
@@ -140,7 +171,7 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
             class="m-0 flex flex-wrap gap-x-4 gap-y-1"
           >
             <div v-for="(value, key) in job.lastRun.summary" :key="key" class="flex gap-1.5">
-              <dt class="text-ink-muted">{{ key }}</dt>
+              <dt class="text-ink-muted">{{ humanKey(key) }}</dt>
               <dd class="num m-0 font-medium">{{ value }}</dd>
             </div>
           </dl>
@@ -161,6 +192,9 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
             >View runs</UiButton
           >
         </div>
+        <p v-if="!job.enabled" class="-mt-1 text-sm text-ink-subtle">
+          This job is off in this environment, so it can't be started from here.
+        </p>
       </li>
     </ul>
 
@@ -180,7 +214,7 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
           class="grid gap-1 border-b border-rule py-3 text-sm"
         >
           <div class="flex items-center gap-2">
-            <UiTag :tone="RUN_TONE[run.status]">{{ run.status }}</UiTag>
+            <UiTag :tone="RUN_TONE[run.status]">{{ RUN_LABEL[run.status] }}</UiTag>
             <span>{{ formatDateTime(run.startedAt) }}</span>
             <span class="ml-auto text-ink-muted">{{ duration(run) }}</span>
           </div>
@@ -194,7 +228,7 @@ const RUN_TONE = { running: 'waiting', succeeded: 'positive', failed: 'neutral' 
               ·
               {{
                 Object.entries(run.summary)
-                  .map(([key, value]) => `${key} ${value}`)
+                  .map(([key, value]) => `${humanKey(key)} ${value}`)
                   .join(' · ')
               }}
             </template>

@@ -219,7 +219,7 @@ const save = handleSubmit(async (values) => {
       <li
         v-for="(link, index) in order"
         :key="link.id"
-        class="grid grid-cols-[24px_36px_minmax(0,1fr)_auto] items-center gap-3 border-b border-rule py-3 transition-colors md:grid-cols-[24px_36px_minmax(0,1fr)_160px_auto]"
+        class="grid grid-cols-[36px_minmax(0,1fr)] items-center gap-x-3 gap-y-1.5 border-b border-rule py-3 transition-colors md:grid-cols-[24px_36px_minmax(0,1fr)_160px_auto] md:gap-y-3"
         :class="[overIndex === index && 'bg-marker-tint', !link.active && 'text-ink-muted']"
         draggable="true"
         :data-testid="`link-row-${index}`"
@@ -228,7 +228,7 @@ const save = handleSubmit(async (values) => {
         @dragleave="overIndex = null"
         @drop.prevent="onDrop(index)"
       >
-        <GripVertical class="size-4 cursor-grab text-ink-subtle" aria-hidden="true" />
+        <GripVertical class="size-4 cursor-grab text-ink-subtle max-md:hidden" aria-hidden="true" />
         <span
           class="grid size-9 place-items-center rounded-md bg-well text-ink-muted shadow-[inset_0_0_0_1px_var(--rule)]"
           aria-hidden="true"
@@ -244,12 +244,16 @@ const save = handleSubmit(async (values) => {
             :href="link.url"
             target="_blank"
             rel="noopener noreferrer"
-            class="link inline-flex max-w-full items-center gap-1 truncate text-sm text-ink-muted"
-            >{{ link.url }}<ExternalLink class="size-3 flex-none" aria-hidden="true"
-          /></a>
+            class="link inline-flex max-w-full items-center gap-1 text-sm text-ink-muted"
+            ><span class="truncate">{{ link.url }}</span
+            ><ExternalLink class="size-3 flex-none" aria-hidden="true" /><span class="sr"
+              >(opens in a new tab)</span
+            ></a
+          >
         </div>
         <span class="text-sm text-ink-muted max-md:hidden">{{ link.category ?? '—' }}</span>
-        <div class="flex items-center gap-1">
+        <!-- Phones: the controls get their own row under the title, so the title keeps the width. -->
+        <div class="flex items-center gap-1 max-md:col-start-2 max-md:-ml-1">
           <UiSwitch
             :model-value="link.active"
             @update:model-value="(value: boolean) => toggleActive(link, value)"
