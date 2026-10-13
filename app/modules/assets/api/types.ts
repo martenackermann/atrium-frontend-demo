@@ -68,6 +68,11 @@ export interface MyAssets {
   active: AssetDto[]
 }
 
+/** A device waiting for acceptance; `assignedAt` (open assignment) is the "waiting since" date. */
+export interface AssetPendingItem extends AssetListItem {
+  assignedAt: IsoDateTime
+}
+
 export interface AssetDashboard {
   totals: { all: number; byStatus: Record<AssetStatus, number> }
   byDeviceType: Array<{
@@ -77,7 +82,7 @@ export interface AssetDashboard {
     inStock: number
   }>
   byManufacturer: Array<{ manufacturer: { id: Uuid; name: string }; total: number }>
-  pendingAcceptance: { total: number; overdue: number; oldest: AssetListItem[] }
+  pendingAcceptance: { total: number; overdue: number; oldest: AssetPendingItem[] }
   recentActivity: Array<TimelineEntry & { asset: { id: Uuid; assetTag: string; model: string } }>
 }
 

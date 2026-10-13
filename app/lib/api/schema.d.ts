@@ -1757,7 +1757,7 @@ export interface components {
                 total: number;
             }[];
             pendingAcceptance: {
-                oldest: components["schemas"]["AssetListItem_Output"][];
+                oldest: components["schemas"]["AssetPendingItem_Output"][];
                 overdue: number;
                 total: number;
             };
@@ -1968,6 +1968,48 @@ export interface components {
                 total: number;
                 totalPages: number;
             };
+        };
+        AssetPendingItem_Output: {
+            assetTag: string;
+            /** Format: date-time */
+            assignedAt: string;
+            assignedUser: components["schemas"]["UserRef_Output"] | null;
+            availableActions: components["schemas"]["AssetAction_Output"][];
+            costCenter: components["schemas"]["Ref_Output"];
+            /** Format: date-time */
+            deletedAt: string | null;
+            deviceType: {
+                code: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                requiresPlatform: boolean;
+            };
+            /** Format: uuid */
+            id: string;
+            manufacturer: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            mdmEnrolled: boolean;
+            model: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            name: string | null;
+            platform: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            } | null;
+            /** Format: date */
+            purchaseDate: string | null;
+            serialNumber: string;
+            status: components["schemas"]["AssetStatus_Output"];
+            /** Format: date-time */
+            updatedAt: string;
         };
         AssetQueueCountsDto_Output: {
             admin: {
