@@ -1,6 +1,6 @@
 /**
- * Training API types (owned by slice A1) — transcribed from API.md §4 with SPEC_RESOLUTIONS
- * #14–#16. Replace with generated types once the backend exports `/training/*` (pnpm api:types).
+ * Training API types (owned by slice A1) — API.md §4 with SPEC_RESOLUTIONS #11 (`close`),
+ * #14–#16; identical to the backend's zod DTOs (atrium-backend-demo `src/modules/training/dto`).
  */
 import type {
   ActingAs,
@@ -303,6 +303,8 @@ export interface TrainingPreview {
   executiveStepRequired: boolean
   threshold: Money
   executiveCandidates: UserRef[]
+  /** Echo of the chosen executive approver (#15), null below the threshold or when not chosen. */
+  executiveApprover: UserRef | null
   attendees: Array<{
     user: UserRef
     approver: UserRef | null
@@ -317,3 +319,6 @@ export interface TrainingPreview {
     executiveAutoApproval: AutoApproval | null
   }>
 }
+
+/** Query of `GET /training/participations` (API.md §4.1 + #16 highPriority). */
+export type ParticipationScope = 'mine' | 'approvals' | 'executive' | 'deputy' | 'team' | 'all'
