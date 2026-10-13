@@ -43,9 +43,14 @@ const ordered = computed(() => {
   const rest = visible.value.filter((action) => action !== primary.value)
   return primary.value ? [...rest, primary.value] : rest
 })
-const inline = computed(() => ordered.value.slice(-props.max))
+// The sticky phone bar holds one row: two buttons, or the primary next to "More actions".
+const isMobile = useMediaQuery('(max-width: 767px)')
+const limit = computed(() =>
+  props.stickyMobile && isMobile.value ? (ordered.value.length <= 2 ? 2 : 1) : props.max,
+)
+const inline = computed(() => ordered.value.slice(-limit.value))
 const overflow = computed(() =>
-  ordered.value.slice(0, Math.max(0, ordered.value.length - props.max)),
+  ordered.value.slice(0, Math.max(0, ordered.value.length - limit.value)),
 )
 
 function variantOf(action: string): 'primary' | 'secondary' | 'danger' {

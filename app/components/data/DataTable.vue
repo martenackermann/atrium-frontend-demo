@@ -11,9 +11,10 @@ import {
   SearchX,
   TriangleAlert,
 } from '@lucide/vue'
+import type { Component } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import type { ListQueryController } from '~/composables/useListQuery'
-import { describeError } from '~/lib/api'
+import { describeError, isApiError } from '~/lib/api'
 import { PER_PAGE_OPTIONS, sortDirection } from '~/lib/list-query'
 import type { PageMeta } from '~/types/api'
 import type { DataTableColumn } from '~/types/ui'
@@ -33,6 +34,13 @@ import type { DataTableColumn } from '~/types/ui'
  *     <template #cell-status="{ row }"><StatusBadge enum="travelStatus" :value="row.status" /></template>
  *   </DataTable>
  */
+interface EmptyAction {
+  label: string
+  to?: RouteLocationRaw
+  icon?: Component
+  onClick?: () => void
+}
+
 const props = withDefaults(
   defineProps<{
     columns: readonly DataTableColumn<T>[]
@@ -44,7 +52,8 @@ const props = withDefaults(
     rowTo?: (row: T) => RouteLocationRaw
     /** Plural noun for messages: "Couldn't load assets." */
     noun?: string
-    empty?: { title: string; description?: string }
+    /** Empty state: one sentence that teaches and (optionally) the one action that fills it. */
+    empty?: { title: string; description?: string; action?: EmptyAction }
     searchPlaceholder?: string
     /** CSV export endpoint (fetched with the session, same filters). */
     exportPath?: string
@@ -97,6 +106,14 @@ const range = computed(() => {
   const start = (meta.page - 1) * meta.perPage + 1
   return { start, end: Math.min(meta.page * meta.perPage, meta.total), total: meta.total }
 })
+
+/** A 422 on a list request means the filters in the URL no longer fit (DESIGN §10: name the fix). */
+const filtersRejected = computed(() => isApiError(props.error) && props.error.status === 422)
+const errorText = computed(() =>
+  filtersRejected.value
+    ? "These filters aren't valid any more. Clear them and try again."
+    : `Couldn't load ${props.noun}. ${describeError(props.error).detail ?? 'Check your connection and try again.'}`,
+)
 
 function cellValue(row: T, column: DataTableColumn<T>): string {
   const raw = column.value ? column.value(row) : (row as Record<string, unknown>)[column.key]
@@ -271,11 +288,21 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
             <td :colspan="visibleColumns.length" class="px-3 py-6">
               <div class="flex items-center gap-3 text-base">
                 <TriangleAlert class="size-4 text-st-negative" aria-hidden="true" />
-                <span
-                  >Couldn't load {{ noun }}.
-                  {{ describeError(error).detail ?? 'Check your connection and try again.' }}</span
+                <span>{{ errorText }}</span>
+                <UiButton
+                  v-if="filtersRejected && list"
+                  size="sm"
+                  variant="secondary"
+                  class="ml-auto"
+                  @click="list.clear()"
+                  >Clear filters</UiButton
                 >
-                <UiButton size="sm" variant="secondary" class="ml-auto" @click="emit('retry')"
+                <UiButton
+                  v-else
+                  size="sm"
+                  variant="secondary"
+                  class="ml-auto"
+                  @click="emit('retry')"
                   >Try again</UiButton
                 >
               </div>
@@ -297,7 +324,18 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
                       : empty?.description
                   "
                   compact
-                />
+                >
+                  <UiButton
+                    v-if="empty?.action && !list?.activeFilterCount.value"
+                    :to="empty.action.to"
+                    :icon="empty.action.icon"
+                    @click="empty.action.onClick?.()"
+                    >{{ empty.action.label }}</UiButton
+                  >
+                  <UiButton v-else-if="list?.activeFilterCount.value" @click="list.clear()"
+                    >Clear filters</UiButton
+                  >
+                </EmptyState>
               </slot>
             </td>
           </tr>
@@ -348,9 +386,21 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
         </li>
       </template>
       <li v-else-if="error" class="grid gap-2 py-4 text-base">
-        Couldn't load {{ noun }}.
-        {{ describeError(error).detail ?? 'Check your connection and try again.' }}
-        <UiButton size="sm" variant="secondary" class="justify-self-start" @click="emit('retry')"
+        {{ errorText }}
+        <UiButton
+          v-if="filtersRejected && list"
+          size="sm"
+          variant="secondary"
+          class="justify-self-start"
+          @click="list.clear()"
+          >Clear filters</UiButton
+        >
+        <UiButton
+          v-else
+          size="sm"
+          variant="secondary"
+          class="justify-self-start"
+          @click="emit('retry')"
           >Try again</UiButton
         >
       </li>
@@ -369,7 +419,18 @@ const perPageOptions = PER_PAGE_OPTIONS.map((value) => ({ value, label: `${value
                 : empty?.description
             "
             compact
-          />
+          >
+            <UiButton
+              v-if="empty?.action && !list?.activeFilterCount.value"
+              :to="empty.action.to"
+              :icon="empty.action.icon"
+              @click="empty.action.onClick?.()"
+              >{{ empty.action.label }}</UiButton
+            >
+            <UiButton v-else-if="list?.activeFilterCount.value" @click="list.clear()"
+              >Clear filters</UiButton
+            >
+          </EmptyState>
         </slot>
       </li>
       <li v-for="row in rows ?? []" v-else :key="row.id" class="border-b border-rule">

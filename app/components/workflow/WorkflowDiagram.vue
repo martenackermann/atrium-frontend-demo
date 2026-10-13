@@ -74,7 +74,7 @@ const transitionsText = computed(() =>
     <component
       :is="collapsible ? 'button' : 'div'"
       :type="collapsible ? 'button' : undefined"
-      class="flex w-full items-center gap-2 text-left text-ink-muted hover:text-ink"
+      class="flex w-full items-center gap-2 text-left text-ink-muted hover:text-ink max-md:min-h-10"
       :aria-expanded="collapsible ? open : undefined"
       @click="collapsible && (open = !open)"
     >

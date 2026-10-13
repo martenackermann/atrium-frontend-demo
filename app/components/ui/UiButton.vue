@@ -30,6 +30,8 @@ const button = cva(
       },
       block: { true: 'w-full', false: '' },
     },
+    // Phones: a regular primary action is 44px (DESIGN §7).
+    compoundVariants: [{ variant: 'primary', size: 'md', class: 'max-md:h-11' }],
     defaultVariants: { variant: 'secondary', size: 'md', block: false },
   },
 )
