@@ -8,7 +8,7 @@
   "author": "Marten Ackermann",
   "packageManager": "pnpm@10.34.7",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.12.0 <25"
   },
   "scripts": {
     "dev": "nuxt dev --port 3000",
@@ -17,6 +17,7 @@
     "generate": "nuxt generate",
     "build:demo": "nuxt generate --dotenv .env.demo",
     "preview": "nuxt preview",
+    "preview:demo": "node scripts/serve-static.mjs .output/public 4173",
     "postinstall": "nuxt prepare",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write .",

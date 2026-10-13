@@ -1,13 +1,16 @@
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * E2E runs against the demo dev server (MSW mocks, no backend) on port E2E_PORT (default 3210, so
- * a dev server on 3000 is never reused by accident).
- * Set PLAYWRIGHT_BASE_URL to test an already running server instead (e.g. the static demo build
- * served with `npx serve -s .output/public -l 4173`); no web server is started then.
+ * E2E runs in demo mode (MSW mocks, no backend):
+ * - default: against the demo dev server (`nuxt dev --dotenv .env.demo`) on port E2E_PORT
+ *   (default 3210, so a dev server on 3000 is never reused by accident);
+ * - `E2E_STATIC=1`: against the static demo build (`pnpm build:demo` first), served like Vercel
+ *   serves it by scripts/serve-static.mjs (SPA fallback). CI uses this.
+ * Set PLAYWRIGHT_BASE_URL to test an already running server instead; no web server is started then.
  */
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL
-const port = Number(process.env.E2E_PORT ?? 3210)
+const staticBuild = !!process.env.E2E_STATIC
+const port = Number(process.env.E2E_PORT ?? (staticBuild ? 4173 : 3210))
 const baseURL = externalBaseURL ?? `http://localhost:${port}`
 
 export default defineConfig({
@@ -15,7 +18,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   timeout: 60_000,
   expect: { timeout: 15_000 },
@@ -31,7 +34,7 @@ export default defineConfig({
       testIgnore: /screenshots\.spec\.ts/,
     },
     {
-      // `pnpm screenshots`: foundation screenshots into docs/screenshots/foundation/.
+      // `pnpm screenshots`: the README screenshots in docs/screenshots/.
       name: 'screenshots',
       use: { ...devices['Desktop Chrome'] },
       testMatch: /screenshots\.spec\.ts/,
@@ -40,7 +43,9 @@ export default defineConfig({
   webServer: externalBaseURL
     ? undefined
     : {
-        command: `pnpm exec nuxt dev --port ${port} --dotenv .env.demo`,
+        command: staticBuild
+          ? `node scripts/serve-static.mjs .output/public ${port}`
+          : `pnpm exec nuxt dev --port ${port} --dotenv .env.demo`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,

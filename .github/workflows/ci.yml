@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint, typecheck, test, build, e2e
+    name: Lint, typecheck, test, build, e2e (demo mode)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -42,8 +42,11 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: E2E smoke (pnpm dev:demo)
+      # The same build Vercel deploys, served with SPA fallback by scripts/serve-static.mjs.
+      - name: E2E against the static demo build
         run: pnpm test:e2e
+        env:
+          E2E_STATIC: '1'
 
       - uses: actions/upload-artifact@v7
         if: failure()
