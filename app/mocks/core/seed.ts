@@ -1,192 +1,281 @@
 /**
- * Core seed: the organisation (users, manager hierarchy) and the demo personas.
- * Runs before every module seed, so modules can reference users via ctx.db.users.
- *
- * TODO(2b): align personas/roles with _spec/atrium/API.md + SCREENS.md.
+ * Core seed (SPEC §2, §10.1): 6 departments, 4 sites, 9 cost centres, the 52 users from
+ * users.json (the backend's export with fixed UUIDs, SPEC_RESOLUTIONS #5), deputies S-D1…S-D3 and core.* in-app
+ * notifications (#7: slices seed notifications for their own records).
+ * Runs before every module seed.
  */
-import type { Role } from '~/types/auth'
-import { defineMockSeed } from '../define'
+import type { AssignableRole, PersonaKey } from '~/types/api'
+import { defineMockSeed, type SeedContext } from '../define'
+import { recordAudit } from './audit'
 import type { MockUser } from './types'
+import usersJson from './users.json'
 
-export const LOCATIONS = ['Riverton', 'Hillford', 'Eastgate'] as const
-
-export const DEPARTMENTS = [
-  { name: 'Field Services', costCenter: 'CC-2100' },
-  { name: 'Service Desk', costCenter: 'CC-2200' },
-  { name: 'Logistics', costCenter: 'CC-2300' },
-  { name: 'Finance', costCenter: 'CC-3100' },
-  { name: 'People Operations', costCenter: 'CC-3200' },
-  { name: 'IT', costCenter: 'CC-3300' },
-] as const
-
-interface PersonaSpec {
-  key: string
+/** Shape of users.json (copied from the backend export by `pnpm mocks:users`). */
+export interface SeedUser {
+  id: string
+  /** Stable seed handle shared with the backend (`emma`, `hilTech1`, `sdkAgent3`, …). */
+  handle: string
+  email: string
   firstName: string
   lastName: string
-  jobTitle: string
-  department: string
-  costCenter: string
-  location: string
-  manager: string | null
-  roles: Role[]
-  description: string
+  jobTitle: string | null
+  employeeNumber: string
+  phone: string | null
+  departmentCode: string | null
+  siteCode: string | null
+  costCenterCode: string
+  managerId: string | null
+  isSiteManager: boolean
+  active: boolean
+  roles: string[]
+  personaKey: string | null
 }
 
-/** Stable ids so links, tests and bookmarks keep working across reseeds. */
-const personaId = (index: number) =>
-  `00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`
+interface SeedOrg {
+  sites: Array<{ id: string; code: string; name: string }>
+  departments: Array<{ id: string; code: string; name: string; headId: string | null }>
+  costCenters: Array<{
+    id: string
+    code: string
+    name: string
+    departmentId: string | null
+    active: boolean
+  }>
+  users: SeedUser[]
+}
 
-const PERSONAS: PersonaSpec[] = [
-  {
-    key: 'emma.employee',
-    firstName: 'Emma',
-    lastName: 'Employee',
-    jobTitle: 'Field Technician',
-    department: 'Field Services',
-    costCenter: 'CC-2100',
-    location: 'Riverton',
-    manager: 'mark.manager',
-    roles: ['employee'],
-    description: 'Regular employee: requests training and travel, accepts devices.',
-  },
-  {
-    key: 'mark.manager',
-    firstName: 'Mark',
-    lastName: 'Manager',
-    jobTitle: 'Team Lead Field Services',
-    department: 'Field Services',
-    costCenter: 'CC-2100',
-    location: 'Riverton',
-    manager: 'erin.executive',
-    roles: ['employee', 'manager'],
-    description: 'Line manager: approves requests of the team.',
-  },
-  {
-    key: 'erin.executive',
-    firstName: 'Erin',
-    lastName: 'Executive',
-    jobTitle: 'Managing Director',
-    department: 'Management',
-    costCenter: 'CC-1000',
-    location: 'Riverton',
-    manager: null,
-    roles: ['employee', 'manager', 'executive'],
-    description: 'Executive: approves high-cost training.',
-  },
-  {
-    key: 'tina.training',
-    firstName: 'Tina',
-    lastName: 'Training',
-    jobTitle: 'Training Coordinator',
-    department: 'People Operations',
-    costCenter: 'CC-3200',
-    location: 'Hillford',
-    manager: 'erin.executive',
-    roles: ['employee', 'training_admin'],
-    description: 'Training office: books and tracks trainings.',
-  },
-  {
-    key: 'trevor.travel',
-    firstName: 'Trevor',
-    lastName: 'Travel',
-    jobTitle: 'Travel Desk Agent',
-    department: 'Finance',
-    costCenter: 'CC-3100',
-    location: 'Eastgate',
-    manager: 'erin.executive',
-    roles: ['employee', 'travel_admin'],
-    description: 'Travel desk: books cars, trains and flights.',
-  },
-  {
-    key: 'ian.it',
-    firstName: 'Ian',
-    lastName: 'Admin',
-    jobTitle: 'IT Administrator',
-    department: 'IT',
-    costCenter: 'CC-3300',
-    location: 'Hillford',
-    manager: 'erin.executive',
-    roles: [
-      'employee',
-      'it_admin',
-      'asset_admin',
-      'people_admin',
-      'news_editor',
-      'training_admin',
-      'travel_admin',
+const ORG = usersJson as SeedOrg
+
+/** Sites, departments and cost centres with the backend's ids (users.json). */
+export const SITES = ORG.sites
+export const DEPARTMENTS = ORG.departments
+export const COST_CENTERS = ORG.costCenters
+export const SEED_USERS = ORG.users
+
+const NAMED = [
+  'emma',
+  'max',
+  'sofia',
+  'clara',
+  'tom',
+  'tina',
+  'arne',
+  'paula',
+  'ian',
+  'priya',
+  'victor',
+  'helen',
+  'grace',
+] as const
+export type NamedUser = (typeof NAMED)[number]
+
+/** Every seed user's id by handle (`USER_IDS.emma`, `USER_IDS.hilTech1`) — same ids as the backend. */
+export const USER_IDS = Object.fromEntries(
+  SEED_USERS.map((user) => [user.handle, user.id]),
+) as Record<NamedUser, string> & Record<string, string | undefined>
+
+for (const handle of NAMED) {
+  if (!USER_IDS[handle]) throw new Error(`users.json is missing the seed user "${handle}"`)
+}
+
+/** Default cost centre for assets in stock (SPEC §9 DEFAULT_COST_CENTER_CODE = CC-4900). */
+export const DEFAULT_ASSET_COST_CENTER_ID =
+  COST_CENTERS.find((row) => row.code === 'CC-4900')?.id ?? COST_CENTERS[0]!.id
+
+export interface PersonaInfo {
+  tagline: string
+  highlights: string[]
+}
+
+/** Login cards (SCREENS §2 /login, API.md Persona). Order as SPEC §2.3. */
+export const PERSONAS: Record<PersonaKey, PersonaInfo> = {
+  emma: {
+    tagline: 'Typical requester with something waiting in every module',
+    highlights: [
+      'Two new devices to accept',
+      'A car rental waiting for approval, with 2 reasons',
+      'Two ratings due and learning goals to write',
+      'A people request waiting for her reply',
     ],
-    description: 'IT superuser: sees every admin area.',
   },
-]
+  max: {
+    tagline: 'Approves for two teams – one escalated past a site manager',
+    highlights: [
+      "Approvals for Emma and for Sofia's Hillford team",
+      'Active deputy for Priya Raman',
+      'Team tab with manager-chain overrides',
+      "Owes a progress rating for Emma's training",
+    ],
+  },
+  sofia: {
+    tagline: "Site manager whose team's approvals skip to Max",
+    highlights: [
+      'Six reports; their approvals escalate past her',
+      'High-priority train trip tomorrow',
+      "Max's deputy from next week",
+      'A €5,600 training waiting for Clara',
+    ],
+  },
+  clara: {
+    tagline: 'Chief executive at the top of every chain',
+    highlights: [
+      'Three executive approvals over €5,000',
+      'Approves her department heads',
+      'Her own flight skipped approval',
+      'Helen Brooks is her permanent deputy',
+    ],
+  },
+  tom: {
+    tagline: 'Travel desk with high-priority bookings',
+    highlights: [
+      'Three high-priority bookings',
+      'Cancellations to confirm',
+      'Bookings with confirmation PDF and PIN',
+      'Car-class catalogue',
+    ],
+  },
+  tina: {
+    tagline: 'Training office: booking, billing and feedback',
+    highlights: [
+      'To-book and cancellation queues',
+      'A failed booking to retry',
+      'Billing status and actual cost',
+      'Ratings overview with overdue reminders',
+    ],
+  },
+  arne: {
+    tagline: 'Asset manager for 120 devices',
+    highlights: [
+      'Dashboard and inventory',
+      "Assigns Emma's new devices",
+      'Repair and scrap',
+      'Field-level change history',
+    ],
+  },
+  paula: {
+    tagline: 'People ops partner and news editor',
+    highlights: [
+      'People-ops queue across all statuses',
+      'Personal data and internal notes',
+      'Two scheduled news posts',
+      'Useful links',
+    ],
+  },
+  ian: {
+    tagline: 'IT admin who sees every back office',
+    highlights: [
+      'User and role administration',
+      'Audit log and job runner',
+      'Cannot approve requests',
+      'Sees personal data redacted',
+    ],
+  },
+}
+
+const byCode = <T extends { id: string; code: string }>(rows: readonly T[], code: string | null) =>
+  code ? (rows.find((row) => row.code === code)?.id ?? null) : null
+
+function seedOrg({ db }: SeedContext) {
+  for (const row of SITES) db.sites.insert({ ...row })
+  for (const row of DEPARTMENTS) db.departments.insert({ ...row })
+  for (const row of COST_CENTERS) db.costCenters.insert({ ...row })
+}
+
+function seedUsers({ db, at }: SeedContext) {
+  const createdAt = at(-400)
+  for (const user of SEED_USERS) {
+    const record: MockUser = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      displayName: `${user.firstName} ${user.lastName}`,
+      jobTitle: user.jobTitle,
+      employeeNumber: user.employeeNumber,
+      phone: user.phone,
+      departmentId: byCode(DEPARTMENTS, user.departmentCode),
+      siteId: byCode(SITES, user.siteCode),
+      costCenterId: byCode(COST_CENTERS, user.costCenterCode) ?? DEFAULT_ASSET_COST_CENTER_ID,
+      managerId: user.managerId,
+      isSiteManager: user.isSiteManager,
+      active: user.active,
+      roles: user.roles as AssignableRole[],
+      personaKey: user.personaKey as PersonaKey | null,
+      lastLoginAt: user.personaKey ? at(-1, 8, 30) : null,
+      createdAt,
+      version: 1,
+    }
+    db.users.insert(record)
+  }
+}
+
+/** S-D1 Priya → Max (d-2…d+12), S-D2 Max → Sofia (d+7…d+21), S-D3 Clara → Helen (permanent). */
+function seedDeputies(context: SeedContext) {
+  const { db, d, at } = context
+  const rows = [
+    { principal: 'priya', deputy: 'max', from: d(-2), to: d(12), note: 'Annual leave', at: -9 },
+    { principal: 'max', deputy: 'sofia', from: d(7), to: d(21), note: 'Conference week', at: -3 },
+    { principal: 'clara', deputy: 'helen', from: null, to: null, note: null, at: -120 },
+  ] as const
+  for (const row of rows) {
+    const principal = db.users.find(USER_IDS[row.principal])!
+    const deputy = db.users.find(USER_IDS[row.deputy])!
+    const createdAt = at(row.at, 10)
+    const created = db.deputies.insert({
+      principalId: principal.id,
+      deputyId: deputy.id,
+      validFrom: row.from,
+      validTo: row.to,
+      note: row.note,
+      createdById: principal.id,
+      createdAt,
+    })
+    recordAudit(db, {
+      module: 'core',
+      entityType: 'deputy',
+      entityId: created.id,
+      entityLabel: `${deputy.displayName} for ${principal.displayName}`,
+      action: 'create',
+      actorId: principal.id,
+      actingAs: 'self',
+      summary: `${principal.displayName} named ${deputy.displayName} as deputy`,
+      occurredAt: createdAt,
+    })
+    const window =
+      row.from && row.to ? `From ${row.from} to ${row.to}.` : 'Permanent, until removed.'
+    db.notifications.insert({
+      userId: deputy.id,
+      templateId: 'core.deputy_assigned',
+      module: 'core',
+      title: `${principal.displayName} named you as deputy`,
+      body: `${window}${row.note ? ` Note: ${row.note}.` : ''} You can approve training and travel requests for ${principal.firstName} during the window.`,
+      link: '/settings/deputies',
+      priority: 'normal',
+      readAt: row.at < -5 ? createdAt : null,
+      createdAt,
+    })
+  }
+}
+
+function seedJobRuns({ db, at }: SeedContext) {
+  db.jobRuns.insert({
+    jobName: 'core.purge',
+    triggeredBy: 'cron',
+    triggeredById: null,
+    startedAt: at(0, 3, 10),
+    finishedAt: at(0, 3, 10),
+    status: 'succeeded',
+    summary: { stagedAttachments: 2, idempotencyKeys: 41, sessions: 6 },
+    error: null,
+  })
+}
 
 export default defineMockSeed({
   order: 0,
-  run({ db, faker }) {
-    const idByKey = new Map(PERSONAS.map((persona, index) => [persona.key, personaId(index)]))
-
-    PERSONAS.forEach((persona, index) => {
-      db.users.insert({
-        id: personaId(index),
-        email: `${persona.key}@example.com`,
-        firstName: persona.firstName,
-        lastName: persona.lastName,
-        displayName: `${persona.firstName} ${persona.lastName}`,
-        jobTitle: persona.jobTitle,
-        department: persona.department,
-        costCenter: persona.costCenter,
-        location: persona.location,
-        managerId: persona.manager ? (idByKey.get(persona.manager) ?? null) : null,
-        roles: persona.roles,
-        active: true,
-        persona: { description: persona.description, order: index },
-      })
-    })
-
-    // A small organisation around the personas: two extra team leads, each with a team,
-    // plus colleagues in Mark Manager's team.
-    const markId = idByKey.get('mark.manager')!
-    const erinId = idByKey.get('erin.executive')!
-    const usedEmails = new Set(db.users.all().map((user) => user.email))
-
-    const createEmployee = (managerId: string, roles: Role[], jobTitle: string): MockUser => {
-      const department = faker.helpers.arrayElement(DEPARTMENTS)
-      let firstName = faker.person.firstName()
-      let lastName = faker.person.lastName()
-      let email = `${firstName}.${lastName}@example.com`.toLowerCase().replace(/[^a-z.@-]/g, '')
-      while (usedEmails.has(email)) {
-        firstName = faker.person.firstName()
-        lastName = faker.person.lastName()
-        email = `${firstName}.${lastName}@example.com`.toLowerCase().replace(/[^a-z.@-]/g, '')
-      }
-      usedEmails.add(email)
-      return db.users.insert({
-        id: faker.string.uuid(),
-        email,
-        firstName,
-        lastName,
-        displayName: `${firstName} ${lastName}`,
-        jobTitle,
-        department: department.name,
-        costCenter: department.costCenter,
-        location: faker.helpers.arrayElement(LOCATIONS),
-        managerId,
-        roles,
-        active: true,
-        persona: null,
-      })
-    }
-
-    const leads = [
-      createEmployee(erinId, ['employee', 'manager'], 'Team Lead Service Desk'),
-      createEmployee(erinId, ['employee', 'manager'], 'Team Lead Logistics'),
-    ]
-    for (let index = 0; index < 8; index++) {
-      createEmployee(markId, ['employee'], faker.person.jobTitle())
-    }
-    for (const lead of leads) {
-      for (let index = 0; index < 10; index++) {
-        createEmployee(lead.id, ['employee'], faker.person.jobTitle())
-      }
-    }
+  run(context) {
+    seedOrg(context)
+    seedUsers(context)
+    seedDeputies(context)
+    seedJobRuns(context)
   },
 })

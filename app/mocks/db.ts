@@ -9,7 +9,17 @@
  * Records must be JSON-serialisable (store dates as ISO strings). Reads return copies, so mutate
  * only through insert/update/remove.
  */
-import type { MockUser } from './core/types'
+import type {
+  MockAttachment,
+  MockAuditEntry,
+  MockCostCenter,
+  MockDepartment,
+  MockDeputy,
+  MockJobRun,
+  MockNotification,
+  MockSite,
+  MockUser,
+} from './core/types'
 import { registeredSeedIds, runSeeds } from './seeding'
 
 export interface MockRecord {
@@ -25,6 +35,14 @@ export interface MockRecord {
  */
 export interface MockCollections {
   users: MockUser
+  departments: MockDepartment
+  sites: MockSite
+  costCenters: MockCostCenter
+  deputies: MockDeputy
+  notifications: MockNotification
+  attachments: MockAttachment
+  audit: MockAuditEntry
+  jobRuns: MockJobRun
 }
 
 export type MockCollectionName = keyof MockCollections & string
@@ -36,7 +54,7 @@ export type MockDb = {
 }
 
 /** Bump when the shape of persisted data changes incompatibly (old keys are discarded). */
-export const DEMO_DB_VERSION = 1
+export const DEMO_DB_VERSION = 2
 /** Fixed faker seed: same seed + same reference date => same demo data. */
 export const DEMO_DB_SEED = 20261013
 export const DEMO_DB_STORAGE_PREFIX = 'atrium.demo-db.v'
@@ -55,7 +73,7 @@ export interface DemoDbSnapshot {
 
 export interface ResetOptions {
   seed?: number
-  /** Defaults to the start of the current UTC day, so "upcoming" demo data stays upcoming. */
+  /** Defaults to the start of the current local day, so "upcoming" demo data stays upcoming. */
   refDate?: Date
 }
 
@@ -171,9 +189,15 @@ function storage(): Storage | null {
   }
 }
 
-export function startOfUtcDay(date = new Date()): Date {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+/** Local start of the day: demo data is relative to "today" (SPEC §10). */
+export function startOfLocalDay(date = new Date()): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
+
+const sameDay = (a: Date, b: Date) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate()
 
 function sameSeeds(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((id, index) => id === b[index])
@@ -188,6 +212,8 @@ function readSnapshot(): DemoDbSnapshot | null {
     const parsed = JSON.parse(raw) as DemoDbSnapshot
     if (parsed.version !== DEMO_DB_VERSION || !parsed.collections) return null
     if (!Array.isArray(parsed.seeds) || !sameSeeds(parsed.seeds, registeredSeedIds())) return null
+    // "Data resets daily": a snapshot seeded for another day is discarded.
+    if (!sameDay(new Date(parsed.refDate), startOfLocalDay())) return null
     return parsed
   } catch {
     return null
@@ -230,7 +256,7 @@ function rowsOf(name: string): MockRecord[] {
 
 function createSnapshot(options: ResetOptions = {}): DemoDbSnapshot {
   const seed = options.seed ?? DEMO_DB_SEED
-  const refDate = options.refDate ?? startOfUtcDay()
+  const refDate = options.refDate ?? startOfLocalDay()
   state = {
     version: DEMO_DB_VERSION,
     seed,

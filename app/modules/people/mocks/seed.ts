@@ -1,15 +1,17 @@
 import { defineMockSeed } from '~/mocks/define'
 
 /**
- * People demo data (owned by slice A4). Declare this module's collections by augmenting
- * MockCollections, then insert records via ctx.db:
+ * People demo data (owned by slice A4) — SPEC §10 story records first, then filler.
+ * Declare this module's collections by augmenting MockCollections, then insert via ctx.db:
  *
  *   declare module '~/mocks/db' {
  *     interface MockCollections { peopleExample: PeopleExampleRecord }
  *   }
  *
- * Use only ctx.faker / ctx.uuid / ctx.refDate (no Math.random, no Date.now) to stay deterministic,
- * and import nothing at runtime from ~/mocks/db or ~/mocks/http here (import cycle).
+ * Dates: ctx.d(n) / ctx.at(n, hh, mm) / ctx.weekday(n) (relative to today). Randomness: ctx.faker /
+ * ctx.uuid only. Users: USER_IDS + SEED_USERS from ~/mocks/core/seed; approvers via
+ * resolveApprover(ctx.db, …) from ~/mocks/core/org; audit rows via recordAudit(ctx.db, …).
+ * Never import ~/mocks/db or ~/mocks/http at runtime here (import cycle; ESLint enforces it).
  */
 export default defineMockSeed({
   order: 100,

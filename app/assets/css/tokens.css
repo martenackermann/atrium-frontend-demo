@@ -1,0 +1,421 @@
+/* Copied verbatim from _spec/atrium/tokens.css (v1.0, 2026-10-13). Do not edit here without updating the spec. */
+/* ==========================================================================
+   Atrium design tokens  ·  v1.0  ·  2026-10-13
+   --------------------------------------------------------------------------
+   Usage in the Nuxt app (assets/css/main.css):
+
+     @import "tailwindcss";
+     @import "./tokens.css";
+
+   Fonts (self-hosted, Fontsource) — import once in app.vue or a plugin:
+     import "@fontsource-variable/schibsted-grotesk";            // wght 400–900
+     import "@fontsource-variable/schibsted-grotesk/wght-italic.css";
+     import "@fontsource-variable/hedvig-letters-serif";          // opsz 12–24
+     import "@fontsource/fragment-mono";                          // 400
+
+   Theme switching: set data-theme="light" | "dark" on <html>
+   (@nuxtjs/color-mode with { dataValue: "theme", classSuffix: "" }).
+   Without the attribute, the OS preference decides.
+
+   Naming: raw tokens deliberately avoid Tailwind's namespaces
+   (--color-*, --font-*, --radius-*, --shadow-*, --ease-*) so the
+   @theme inline block below can map them without circular references.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Theme-independent tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Type faces */
+  --face-sans:
+    'Schibsted Grotesk Variable', 'Schibsted Grotesk', ui-sans-serif, system-ui, 'Segoe UI',
+    sans-serif;
+  --face-display:
+    'Hedvig Letters Serif Variable', 'Hedvig Letters Serif', ui-serif, Georgia, 'Times New Roman',
+    serif;
+  --face-mono:
+    'Fragment Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  /* Radii — crisp paper corners, never bubbly */
+  --round-xs: 4px; /* kbd, tiny tags */
+  --round-sm: 6px; /* badges, checkboxes, chips */
+  --round-md: 8px; /* buttons, inputs, menu items */
+  --round-lg: 10px; /* radio cards, popovers, panels */
+  --round-xl: 12px; /* the main sheet, regions, dialogs */
+  --round-pill: 999px; /* persona pill, filter chips, counts */
+
+  /* Motion */
+  --curve-out: cubic-bezier(0.16, 1, 0.3, 1); /* entrances, reveals */
+  --curve-standard: cubic-bezier(0.2, 0, 0, 1); /* state changes */
+  --curve-in: cubic-bezier(0.55, 0, 0.75, 0.15); /* exits */
+  --dur-1: 120ms; /* hover, press, toggles */
+  --dur-2: 180ms; /* menus, tooltips, tabs */
+  --dur-3: 240ms; /* drawers, dialogs, toasts */
+  --dur-4: 360ms; /* route ink-in, marker swipe */
+
+  /* Layout */
+  --sidebar-w: 248px;
+  --rail-w: 64px;
+  --topbar-h: 56px;
+  --content-max: 1240px;
+  --summary-w: 360px;
+  --inbox-list-w: 400px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Light theme (default) — office paper on a desk
+   -------------------------------------------------------------------------- */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --desk: #f2f0eb; /* app ground, sidebar */
+  --sheet: #fbfaf7; /* main content sheet, cards */
+  --well: #f5f3ee; /* sunken: table heads, summary panel, inputs at rest */
+  --raised: #fffefc; /* popovers, menus, dialogs, toasts */
+  --hover: rgb(29 27 23 / 0.045);
+  --pressed: rgb(29 27 23 / 0.08);
+  --scrim: rgb(29 27 23 / 0.32);
+
+  /* Ink */
+  --ink: #1d1b17; /* 16.5:1 on sheet */
+  --ink-muted: #57524a; /* 7.4:1 — secondary text, meta */
+  --ink-subtle: #6f695e; /* 5.2:1 — placeholders, tertiary */
+  --ink-disabled: #a8a194; /* disabled only (exempt) */
+  --ink-inverse: #fbfaf7;
+
+  /* Lines */
+  --rule: #e3ded4; /* hairlines, dividers */
+  --rule-strong: #cdc6b8; /* button outlines, dashed future stops */
+  --field: #8e8679; /* input/checkbox borders, 3.45:1 (WCAG 1.4.11) */
+
+  /* The marker — the one accent. Attention only: "this needs you". */
+  --marker: #f4c02f; /* fills; ink on marker 10.2:1 */
+  --marker-strong: #e2ac12; /* hover/edge of marker fills */
+  --marker-ink: #1d1b17; /* text on marker */
+  --marker-text: #875a00; /* marker as text on paper, 5.8:1 */
+  --marker-wash: #faedc2; /* needs-you regions */
+  --marker-tint: #fdf5dc; /* selected rows */
+
+  /* Action — ink is the action colour, the marker never is */
+  --primary: #1d1b17;
+  --primary-hover: #36322c;
+  --primary-ink: #fbfaf7;
+  --focus: #8f6200; /* 5.1:1 on sheet; 2px ring + 2px offset */
+
+  /* Status tones: fg (text/icon) · bg (fill) · line (border) */
+  --st-neutral-fg: #57524a;
+  --st-neutral-bg: #efece6;
+  --st-neutral-line: #ddd7cc;
+  --st-waiting-fg: #44546a;
+  --st-waiting-bg: #e9edf2;
+  --st-waiting-line: #cdd5e0;
+  --st-you-fg: #1d1b17;
+  --st-you-bg: #f4c02f;
+  --st-you-line: #e2ac12;
+  --st-moving-fg: #2a4e8c;
+  --st-moving-bg: #e7eef8;
+  --st-moving-line: #c5d4ec;
+  --st-positive-fg: #2b6745;
+  --st-positive-bg: #e5f0e8;
+  --st-positive-line: #bed9c7;
+  --st-negative-fg: #a2392a;
+  --st-negative-bg: #f8e7e3;
+  --st-negative-line: #e8c4bb;
+  --st-blocked-fg: #7a376d;
+  --st-blocked-bg: #f4e7f1;
+  --st-blocked-line: #e1c6db;
+
+  /* Data visualisation (categorical, order matters; ≥3.5:1 on sheet) */
+  --viz-1: #3a63b0; /* ink blue */
+  --viz-2: #2f7a50; /* pine */
+  --viz-3: #b07a06; /* ochre (marker family, darkened for marks) */
+  --viz-4: #8c4a80; /* plum */
+  --viz-5: #6b7a8f; /* slate */
+  --viz-6: #b9503c; /* brick */
+  --viz-grid: #e9e5dc;
+
+  /* Elevation — hairline first, shadow second; shadows are warm, offset, soft */
+  --elev-sheet: 0 1px 2px rgb(40 32 20 / 0.04), 0 0 0 1px rgb(40 32 20 / 0.02);
+  --elev-pop: 0 8px 18px -8px rgb(40 32 20 / 0.24), 0 1px 3px rgb(40 32 20 / 0.08);
+  --elev-dialog: 0 18px 24px -12px rgb(40 32 20 / 0.3), 0 3px 8px rgb(40 32 20 / 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   3. Dark theme — warm charcoal, never pure black
+   -------------------------------------------------------------------------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --desk: #161412;
+  --sheet: #1f1d1a;
+  --well: #1a1816;
+  --raised: #2a2723;
+  --hover: rgb(238 233 224 / 0.06);
+  --pressed: rgb(238 233 224 / 0.1);
+  --scrim: rgb(8 7 6 / 0.6);
+
+  --ink: #eee9e0; /* 13.8:1 on sheet */
+  --ink-muted: #b9b1a4; /* 7.8:1 */
+  --ink-subtle: #9c9589; /* 5.6:1; 4.7:1 on marker-wash */
+  --ink-disabled: #6a645a;
+  --ink-inverse: #1a1814;
+
+  --rule: #322e29;
+  --rule-strong: #47423b;
+  --field: #7a7367; /* 3.6:1 */
+
+  --marker: #f2bf3a;
+  --marker-strong: #f7cd5c;
+  --marker-ink: #1a1712;
+  --marker-text: #f5c94f;
+  --marker-wash: #2a2419; /* lifted charcoal, not olive; regions add a marker hairline */
+  --marker-tint: #2b2414;
+
+  --primary: #eee9e0;
+  --primary-hover: #ffffff;
+  --primary-ink: #1a1814;
+  --focus: #f2bf3a;
+
+  --st-neutral-fg: #c3bcaf;
+  --st-neutral-bg: #2a2724;
+  --st-neutral-line: #3d3934;
+  --st-waiting-fg: #afbdd0;
+  --st-waiting-bg: #1f2630;
+  --st-waiting-line: #33404f;
+  --st-you-fg: #1a1712;
+  --st-you-bg: #f2bf3a;
+  --st-you-line: #f7cd5c;
+  --st-moving-fg: #a3bdeb;
+  --st-moving-bg: #1a2436;
+  --st-moving-line: #2e405f;
+  --st-positive-fg: #93d2ac;
+  --st-positive-bg: #17281f;
+  --st-positive-line: #29473a;
+  --st-negative-fg: #f2a493;
+  --st-negative-bg: #331b19;
+  --st-negative-line: #553029;
+  --st-blocked-fg: #e3aad6;
+  --st-blocked-bg: #2e1a2a;
+  --st-blocked-line: #4c2d46;
+
+  --viz-1: #7fa3e8;
+  --viz-2: #6bc497;
+  --viz-3: #e8b84a;
+  --viz-4: #d493c6;
+  --viz-5: #9aa8bb;
+  --viz-6: #ee8e78;
+  --viz-grid: #2c2925;
+
+  --elev-sheet: 0 1px 2px rgb(0 0 0 / 0.3), 0 0 0 1px rgb(255 255 255 / 0.02);
+  --elev-pop: 0 8px 18px -8px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.4);
+  --elev-dialog: 0 18px 24px -12px rgb(0 0 0 / 0.7), 0 3px 8px rgb(0 0 0 / 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --desk: #161412;
+    --sheet: #1f1d1a;
+    --well: #1a1816;
+    --raised: #2a2723;
+    --hover: rgb(238 233 224 / 0.06);
+    --pressed: rgb(238 233 224 / 0.1);
+    --scrim: rgb(8 7 6 / 0.6);
+    --ink: #eee9e0;
+    --ink-muted: #b9b1a4;
+    --ink-subtle: #9c9589;
+    --ink-disabled: #6a645a;
+    --ink-inverse: #1a1814;
+    --rule: #322e29;
+    --rule-strong: #47423b;
+    --field: #7a7367;
+    --marker: #f2bf3a;
+    --marker-strong: #f7cd5c;
+    --marker-ink: #1a1712;
+    --marker-text: #f5c94f;
+    --marker-wash: #2a2419;
+    --marker-tint: #2b2414;
+    --primary: #eee9e0;
+    --primary-hover: #ffffff;
+    --primary-ink: #1a1814;
+    --focus: #f2bf3a;
+    --st-neutral-fg: #c3bcaf;
+    --st-neutral-bg: #2a2724;
+    --st-neutral-line: #3d3934;
+    --st-waiting-fg: #afbdd0;
+    --st-waiting-bg: #1f2630;
+    --st-waiting-line: #33404f;
+    --st-you-fg: #1a1712;
+    --st-you-bg: #f2bf3a;
+    --st-you-line: #f7cd5c;
+    --st-moving-fg: #a3bdeb;
+    --st-moving-bg: #1a2436;
+    --st-moving-line: #2e405f;
+    --st-positive-fg: #93d2ac;
+    --st-positive-bg: #17281f;
+    --st-positive-line: #29473a;
+    --st-negative-fg: #f2a493;
+    --st-negative-bg: #331b19;
+    --st-negative-line: #553029;
+    --st-blocked-fg: #e3aad6;
+    --st-blocked-bg: #2e1a2a;
+    --st-blocked-line: #4c2d46;
+    --viz-1: #7fa3e8;
+    --viz-2: #6bc497;
+    --viz-3: #e8b84a;
+    --viz-4: #d493c6;
+    --viz-5: #9aa8bb;
+    --viz-6: #ee8e78;
+    --viz-grid: #2c2925;
+    --elev-sheet: 0 1px 2px rgb(0 0 0 / 0.3), 0 0 0 1px rgb(255 255 255 / 0.02);
+    --elev-pop: 0 8px 18px -8px rgb(0 0 0 / 0.6), 0 1px 3px rgb(0 0 0 / 0.4);
+    --elev-dialog: 0 18px 24px -12px rgb(0 0 0 / 0.7), 0 3px 8px rgb(0 0 0 / 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+    --dur-4: 0ms;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Tailwind CSS v4 mapping
+   `inline` makes utilities emit var(--token), so they follow the theme.
+   The default palette is removed on purpose: no stray indigo-600.
+   -------------------------------------------------------------------------- */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-desk: var(--desk);
+  --color-sheet: var(--sheet);
+  --color-well: var(--well);
+  --color-raised: var(--raised);
+  --color-hover: var(--hover);
+  --color-pressed: var(--pressed);
+  --color-scrim: var(--scrim);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-disabled: var(--ink-disabled);
+  --color-ink-inverse: var(--ink-inverse);
+
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-field: var(--field);
+
+  --color-marker: var(--marker);
+  --color-marker-strong: var(--marker-strong);
+  --color-marker-ink: var(--marker-ink);
+  --color-marker-text: var(--marker-text);
+  --color-marker-wash: var(--marker-wash);
+  --color-marker-tint: var(--marker-tint);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-focus: var(--focus);
+
+  --color-st-neutral: var(--st-neutral-fg);
+  --color-st-neutral-bg: var(--st-neutral-bg);
+  --color-st-neutral-line: var(--st-neutral-line);
+  --color-st-waiting: var(--st-waiting-fg);
+  --color-st-waiting-bg: var(--st-waiting-bg);
+  --color-st-waiting-line: var(--st-waiting-line);
+  --color-st-you: var(--st-you-fg);
+  --color-st-you-bg: var(--st-you-bg);
+  --color-st-you-line: var(--st-you-line);
+  --color-st-moving: var(--st-moving-fg);
+  --color-st-moving-bg: var(--st-moving-bg);
+  --color-st-moving-line: var(--st-moving-line);
+  --color-st-positive: var(--st-positive-fg);
+  --color-st-positive-bg: var(--st-positive-bg);
+  --color-st-positive-line: var(--st-positive-line);
+  --color-st-negative: var(--st-negative-fg);
+  --color-st-negative-bg: var(--st-negative-bg);
+  --color-st-negative-line: var(--st-negative-line);
+  --color-st-blocked: var(--st-blocked-fg);
+  --color-st-blocked-bg: var(--st-blocked-bg);
+  --color-st-blocked-line: var(--st-blocked-line);
+
+  --color-viz-1: var(--viz-1);
+  --color-viz-2: var(--viz-2);
+  --color-viz-3: var(--viz-3);
+  --color-viz-4: var(--viz-4);
+  --color-viz-5: var(--viz-5);
+  --color-viz-6: var(--viz-6);
+  --color-viz-grid: var(--viz-grid);
+
+  --font-sans: var(--face-sans);
+  --font-display: var(--face-display);
+  --font-mono: var(--face-mono);
+
+  --radius-xs: var(--round-xs);
+  --radius-sm: var(--round-sm);
+  --radius-md: var(--round-md);
+  --radius-lg: var(--round-lg);
+  --radius-xl: var(--round-xl);
+  --radius-pill: var(--round-pill);
+
+  --shadow-sheet: var(--elev-sheet);
+  --shadow-pop: var(--elev-pop);
+  --shadow-dialog: var(--elev-dialog);
+
+  --ease-out: var(--curve-out);
+  --ease-standard: var(--curve-standard);
+  --ease-in: var(--curve-in);
+}
+
+@theme {
+  /* Type scale — fixed rem, ratio ≈1.15–1.25. Sizes assume a 16px root. */
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1rem; /* 12/16 badges, timestamps */
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.125rem; /* 13/18 dense table cells, hints */
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.25rem; /* 14/20 UI default */
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.375rem; /* 15/22 reading text, card titles */
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.5rem; /* 17/24 section headings (sans 600) */
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.625rem; /* 20/26 drawer/dialog titles */
+  --text-display-sm: 1.625rem;
+  --text-display-sm--line-height: 2rem; /* 26/32 inbox detail title (serif) */
+  --text-display-md: 2rem;
+  --text-display-md--line-height: 2.375rem; /* 32/38 page titles (serif) */
+  --text-display-lg: 2.75rem;
+  --text-display-lg--line-height: 3.125rem; /* 44/50 greeting (serif) */
+
+  --tracking-display: -0.015em;
+  --tracking-heading: -0.008em;
+
+  --animate-ink-in: ink-in var(--dur-4) var(--curve-out) both;
+  --animate-swipe: swipe var(--dur-4) var(--curve-out) both;
+
+  @keyframes ink-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes swipe {
+    from {
+      background-size: 0% 1.1em;
+    }
+    to {
+      background-size: 100% 1.1em;
+    }
+  }
+}

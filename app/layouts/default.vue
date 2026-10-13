@@ -1,39 +1,40 @@
 <script setup lang="ts">
-// PLACEHOLDER shell (phase 2a): proves navigation aggregation + auth. Phase 2b builds the real
-// app shell from DESIGN.md / SCREENS.md.
-const auth = useAuthStore()
-const { sections } = useNavigation()
-const { enabled: demoMode, reset } = useDemoMode()
+/**
+ * The app shell (DESIGN §7, SCREENS §1.1): demo ribbon · sidebar on the desk (rail at 768–1023px)
+ * · inset main sheet with the top bar, scrolling inside · mobile top bar + tab bar. Overlays: ⌘K
+ * palette, Inbox drawer, mobile menu, "New" sheet, shortcuts.
+ */
+const demo = useDemoMode()
+const { mobileDetail } = useShell()
+const { title } = useBreadcrumbs()
+
+useGlobalShortcuts()
+useHead({ title: computed(() => `${title.value} · Atrium`) })
 </script>
 
 <template>
-  <div class="min-h-dvh">
-    <header
-      class="flex items-center gap-6 border-b border-neutral-200 px-6 py-3 dark:border-neutral-800"
+  <div class="flex min-h-dvh flex-col bg-desk md:h-dvh">
+    <AppDemoRibbon v-if="demo.enabled.value" />
+    <div
+      class="md:grid md:min-h-0 md:flex-1 md:grid-cols-[var(--rail-w)_minmax(0,1fr)] lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
     >
-      <NuxtLink to="/" class="font-semibold">Atrium</NuxtLink>
-      <nav aria-label="Main" class="flex flex-1 flex-wrap gap-4 text-sm">
-        <NuxtLink
-          v-for="entry in [...sections.main, ...sections.admin]"
-          :key="entry.id"
-          :to="entry.to"
-          class="inline-flex items-center gap-1.5 hover:underline"
-          active-class="font-semibold"
-        >
-          <component :is="entry.icon" v-if="entry.icon" class="size-4" aria-hidden="true" />
-          {{ entry.label }}
-        </NuxtLink>
-      </nav>
-      <div class="flex items-center gap-3 text-sm">
-        <button v-if="demoMode" type="button" class="hover:underline" @click="reset()">
-          Reset demo data
-        </button>
-        <span data-testid="current-user">{{ auth.user?.displayName }}</span>
-        <button type="button" class="hover:underline" @click="auth.logout()">Sign out</button>
-      </div>
-    </header>
-    <main class="mx-auto max-w-6xl px-6 py-8">
-      <slot />
-    </main>
+      <AppSidebar class="max-md:hidden" />
+      <main
+        id="main"
+        class="flex min-w-0 flex-col bg-sheet md:m-2 md:ml-0 md:min-h-0 md:overflow-hidden md:rounded-xl md:border md:border-rule md:shadow-sheet"
+      >
+        <AppMobileTopbar v-if="!mobileDetail" class="md:hidden" />
+        <AppTopbar class="max-md:hidden" />
+        <div class="flex min-h-0 flex-1 flex-col md:overflow-y-auto" data-testid="page">
+          <slot />
+        </div>
+      </main>
+    </div>
+    <AppMobileTabbar class="md:hidden" />
+    <AppCommandPalette />
+    <AppInboxDrawer />
+    <AppMobileMenu />
+    <AppNewSheet />
+    <AppShortcutsDialog />
   </div>
 </template>

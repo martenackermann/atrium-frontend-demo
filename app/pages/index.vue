@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// Placeholder (phase 2a). The home slice (A4) owns this page.
-const auth = useAuthStore()
+/**
+ * `/` — placeholder from the foundation (SCREENS §3). Owned by slice A4, which
+ * replaces this file; keep the route and its access rule.
+ */
+definePageMeta({ title: 'Home', hideMobileTitle: true })
 </script>
 
 <template>
-  <section class="space-y-2">
-    <h1 class="text-2xl font-semibold">Welcome, {{ auth.user?.firstName }}</h1>
-    <p class="text-neutral-600 dark:text-neutral-400">Your Atrium home dashboard is coming soon.</p>
-  </section>
+  <PagePlaceholder title="Home" slice="A4 · Home, people and news" screen="SCREENS §3" />
 </template>

@@ -1,9 +1,9 @@
 import { delay, http, type RequestHandler } from 'msw'
-import coreHandlers from './core/handlers'
+import coreHandlers, { coreFallbackHandlers } from './core/handlers'
 import type { MockContext, MockHandlersFactory } from './define'
 import { problem } from './http'
 
-/** Every app/modules/<module>/mocks/handlers.ts (default export = defineMockHandlers(...)). */
+/** Every app/modules/<module>/mocks/handlers.ts (glob index — no per-slice edits). */
 const moduleHandlerFiles = import.meta.glob<{ default: MockHandlersFactory }>(
   '~/modules/*/mocks/handlers.ts',
   { eager: true },
@@ -20,8 +20,9 @@ export interface BuildHandlersOptions {
 }
 
 /**
- * Handler order: latency passthrough -> core (auth) -> modules (alphabetical) -> 501 catch-all.
- * The catch-all turns any API call without a mock into a visible problem response.
+ * Handler order: latency passthrough → core → modules (alphabetical) → core fallbacks (zero queue
+ * counts) → 501 catch-all. The catch-all turns any API call without a mock into a visible
+ * problem response.
  */
 export function buildMockHandlers(
   apiBase: string,
@@ -43,8 +44,10 @@ export function buildMockHandlers(
         ]),
     ...coreHandlers(context),
     ...moduleHandlers,
+    ...coreFallbackHandlers(context),
     http.all(context.api('/*'), ({ request }) =>
       problem(501, {
+        code: 'internal_error',
         title: 'Not mocked',
         detail: `${request.method} ${new URL(request.url).pathname} has no mock handler yet.`,
       }),

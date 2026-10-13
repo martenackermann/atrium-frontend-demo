@@ -28,8 +28,8 @@ const options = {
 
 describe('listResult', () => {
   it('paginates with meta', () => {
-    const result = listResult(rows, query({ pageSize: '3', page: '2' }), options)
-    expect(result.meta).toEqual({ page: 2, pageSize: 3, total: 4, totalPages: 2 })
+    const result = listResult(rows, query({ perPage: '3', page: '2' }), options)
+    expect(result.meta).toEqual({ page: 2, perPage: 3, total: 4, totalPages: 2 })
     expect(result.data.map((row) => row.id)).toEqual(['2'])
   })
 
@@ -49,7 +49,7 @@ describe('listResult', () => {
     expect(result.data.map((row) => row.id)).toEqual(['4', '2', '1', '3'])
   })
 
-  it('rejects unsupported sort fields with a 400 problem response', () => {
+  it('rejects unsupported sort fields with a 422 problem (errors.sort)', () => {
     let thrown: unknown
     try {
       listResult(rows, query({ sort: 'secret' }), options)
@@ -57,7 +57,7 @@ describe('listResult', () => {
       thrown = error
     }
     expect(thrown).toBeInstanceOf(Response)
-    expect((thrown as Response).status).toBe(400)
+    expect((thrown as Response).status).toBe(422)
     expect((thrown as Response).headers.get('Content-Type')).toBe('application/problem+json')
   })
 })

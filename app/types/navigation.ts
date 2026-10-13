@@ -1,26 +1,44 @@
 import type { Component, MaybeRefOrGetter } from 'vue'
-import type { RouteLocationRaw } from 'vue-router'
-import type { Role } from './auth'
+import type { AccessRule } from '~/lib/access'
 
-/** Top-level groups of the app shell navigation. */
-export type NavSection = 'main' | 'admin'
+export type NavGroupId = 'work' | 'back-office' | 'admin' | 'settings'
 
-export interface NavEntry {
-  /** Unique, stable id, prefixed with the module name: "training.requests". */
+export interface NavItem {
+  /** Stable id; badges and commands refer to it: 'training', 'training.approvals'. */
   id: string
   label: string
-  to: RouteLocationRaw
+  to: string
   icon?: Component
-  /** Defaults to "main". */
-  section?: NavSection
-  /** Lower comes first. Defaults to 100. */
-  order?: number
-  /** Visible when the user has ANY of these roles. Omit/empty = every signed-in user. */
-  roles?: Role[]
-  /**
-   * Optional counter (e.g. queue size). Called inside the shell component's setup,
-   * so it may use Vue Query composables. Return null/undefined/0 to hide the badge.
-   */
-  badge?: () => MaybeRefOrGetter<number | null | undefined>
-  children?: NavEntry[]
+  /** Visible when ANY rule matches; omitted = every signed-in user. */
+  access?: AccessRule[]
+  /** Sub-items (indented, no icon). */
+  children?: NavItem[]
+  /** Two-key shortcut, e.g. ['g', 't']. */
+  shortcut?: [string, string]
+  /** Paths that also mark this item active (prefix match), e.g. detail pages. */
+  match?: string[]
 }
+
+export interface NavGroup {
+  id: NavGroupId
+  /** Group label in the sidebar (null = no label, the first group). */
+  label: string | null
+  items: NavItem[]
+  /** Listed in ⌘K and the account menu, but not in the sidebar. */
+  hideInSidebar?: boolean
+}
+
+/** What a badge source returns. A bare number is a plain count. */
+export interface NavBadgeValue {
+  count: number | null | undefined
+  /** plain = tabular numeral; you = marker pill (needs you); urgent = negative numeral */
+  tone?: 'plain' | 'you' | 'urgent'
+  /** Accessible label, e.g. "3 ratings due". */
+  label?: string
+}
+
+/**
+ * Badge source: called inside the shell component's setup (may use Vue Query composables).
+ * Return null/undefined/0 to hide the badge.
+ */
+export type NavBadgeSource = () => MaybeRefOrGetter<NavBadgeValue | number | null | undefined>

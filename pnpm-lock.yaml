@@ -11,6 +11,18 @@ importers:
       '@faker-js/faker':
         specifier: ^10.6.0
         version: 10.6.0
+      '@fontsource-variable/hedvig-letters-serif':
+        specifier: ^5.3.1
+        version: 5.3.1
+      '@fontsource-variable/schibsted-grotesk':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/fragment-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@internationalized/date':
+        specifier: ^3.12.4
+        version: 3.12.4
       '@lucide/vue':
         specifier: ^1.55.0
         version: 1.55.0(vue@3.5.43(typescript@5.9.3))
@@ -584,6 +596,15 @@ packages:
     resolution: {integrity: sha512-043dyEKD9TDSfz080YH2vobubgg+NIo/9Fw4RAl7sEMpD8Am1DNrrSTl/GpMBjyGHoD/FbJY2QLawY+HSQsEIA==}
     peerDependencies:
       vue: '>=3.3.0'
+
+  '@fontsource-variable/hedvig-letters-serif@5.3.1':
+    resolution: {integrity: sha512-IbQ8cgOk+i1pBWQ+3XPGcu4LGoJ/ETcQ6RsjFWBQWnxA/XOTijh/9Du6bI2V/nMNNmQ5CKEe+mYuJRzyLVHV4g==}
+
+  '@fontsource-variable/schibsted-grotesk@5.3.0':
+    resolution: {integrity: sha512-ndS6H/KICWANchlHF3q4UdZD+xrZ3Ji0rUobIuXlgvDUzDfqZDsVuXPXZb636nJZMHE9zZ9Fmwgqazm8hMB50Q==}
+
+  '@fontsource/fragment-mono@5.3.0':
+    resolution: {integrity: sha512-vpOLZhWq7Z6wUPo1qMl16Y4yjQJiN0d9TXX2oUtiYXmqUrXU23Wuto73Knyak+osdlIuHz46srpBZb2pfhHCIA==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -5788,6 +5809,12 @@ snapshots:
       '@floating-ui/dom': 1.8.0
       '@floating-ui/utils': 0.2.12
       vue: 3.5.43(typescript@5.9.3)
+
+  '@fontsource-variable/hedvig-letters-serif@5.3.1': {}
+
+  '@fontsource-variable/schibsted-grotesk@5.3.0': {}
+
+  '@fontsource/fragment-mono@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

@@ -47,6 +47,30 @@ export function createSeededFaker(seed: number, refDate: Date): Faker {
   return faker
 }
 
+const pad = (value: number) => String(value).padStart(2, '0')
+
+/** refDate ± days (local calendar), optionally at 'HH:mm' local time → ISO timestamp. */
+export function offsetDays(refDate: Date, offset: number, time?: string): Date {
+  const date = new Date(refDate.getFullYear(), refDate.getMonth(), refDate.getDate() + offset)
+  if (time) {
+    const [hours, minutes] = time.split(':').map(Number)
+    date.setHours(hours ?? 0, minutes ?? 0, 0, 0)
+  }
+  return date
+}
+
+/** Saturday → Friday, Sunday → Monday. */
+export function onWeekday(date: Date): Date {
+  const day = date.getDay()
+  if (day === 6) return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1)
+  if (day === 0) return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+  return date
+}
+
+export function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
 export function runSeeds(db: MockDb, options: { seed: number; refDate: Date }): void {
   for (const { id, seed } of registeredSeeds()) {
     const faker = createSeededFaker(hash(`${options.seed}:${id}`), options.refDate)
@@ -55,6 +79,10 @@ export function runSeeds(db: MockDb, options: { seed: number; refDate: Date }): 
       faker,
       refDate: new Date(options.refDate),
       uuid: () => faker.string.uuid(),
+      d: (offset) => toIsoDate(offsetDays(options.refDate, offset)),
+      at: (offset, hours = 9, minutes = 0) =>
+        offsetDays(options.refDate, offset, `${hours}:${minutes}`).toISOString(),
+      weekday: (offset) => toIsoDate(onWeekday(offsetDays(options.refDate, offset))),
     })
   }
 }

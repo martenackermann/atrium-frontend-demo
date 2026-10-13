@@ -1,114 +1,141 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import { isApiError, unwrap } from '~/lib/api'
+import { describeError, isApiError } from '~/lib/api'
+import { coreKeys } from '~/lib/query/core'
+import type { Persona, PersonaKey } from '~/types/api'
 
-// PLACEHOLDER (phase 2a): functional but unstyled. Phase 2b builds the real sign-in screen.
-definePageMeta({ public: true, layout: false })
+/**
+ * Sign in (SCREENS §2 /login). Demo: a grid of the 9 personas ("Sign in as Emma") above the
+ * email + password form ("Demo password: demo1234"). Without demo mode: the form only.
+ */
+definePageMeta({ public: true, layout: 'blank', title: 'Sign in' })
 
 const auth = useAuthStore()
 const api = useApi()
 const route = useRoute()
-const { enabled: demoMode } = useDemoMode()
+const demo = useDemoMode()
 
 const personas = useQuery({
-  queryKey: ['auth', 'personas'],
-  queryFn: ({ signal }) => unwrap(api.GET('/auth/personas', { signal })),
-  enabled: demoMode,
+  queryKey: coreKeys.personas,
+  queryFn: ({ signal }) => api.get<Persona[]>('/auth/personas', undefined, { signal }),
+  enabled: demo.enabled,
+  staleTime: Number.POSITIVE_INFINITY,
+  retry: false,
 })
 
 const schema = toTypedSchema(
   z.object({
-    email: z.email('Enter a valid email address.'),
+    email: z.email('Enter your work email, like emma.employee@example.com.'),
     password: z.string().min(1, 'Enter your password.'),
   }),
 )
-
-const { defineField, errors, handleSubmit, isSubmitting, setErrors, setValues } = useForm({
+const { defineField, errors, handleSubmit, isSubmitting, setErrors } = useForm({
   validationSchema: schema,
   initialValues: { email: '', password: '' },
 })
 const [email, emailAttrs] = defineField('email')
 const [password, passwordAttrs] = defineField('password')
 const formError = ref<string | null>(null)
+const signingInAs = ref<PersonaKey | null>(null)
+
+const goOn = () => navigateTo(safeRedirect(route.query.redirect))
+
+function explain(error: unknown) {
+  if (isApiError(error) && error.status === 401) return 'Email or password is incorrect.'
+  if (isApiError(error) && error.status === 429)
+    return describeError(error).detail ?? 'Too many attempts. Try again in a few minutes.'
+  return describeError(error).title
+}
 
 const onSubmit = handleSubmit(async (values) => {
   formError.value = null
   try {
     await auth.login(values)
-    await navigateTo(safeRedirect(route.query.redirect))
+    await goOn()
   } catch (error) {
-    if (isApiError(error)) {
-      setErrors(error.fieldErrors)
-      formError.value = error.detail ?? error.title
-    } else {
-      formError.value = 'Sign-in failed.'
-    }
+    if (isApiError(error) && error.isValidationError) setErrors(error.fieldErrors)
+    formError.value = explain(error)
   }
 })
 
-function signInAs(personaEmail: string) {
-  setValues({ email: personaEmail, password: 'demo1234' })
-  return onSubmit()
+async function signInAs(persona: Persona) {
+  formError.value = null
+  signingInAs.value = persona.key
+  try {
+    await auth.demoLogin(persona.key)
+    await goOn()
+  } catch (error) {
+    formError.value = explain(error)
+  } finally {
+    signingInAs.value = null
+  }
 }
 </script>
 
 <template>
-  <main class="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6 py-12">
-    <h1 class="text-2xl font-semibold">Sign in to Atrium</h1>
+  <main class="mx-auto grid max-w-[1180px] gap-10 px-4 pt-10 pb-16 md:px-10 md:pt-14">
+    <header class="flex items-center gap-3">
+      <AppBrandMark class="size-8" />
+      <div>
+        <h1 class="font-display text-display-md font-normal tracking-display">Sign in to Atrium</h1>
+        <p class="mt-1 text-md text-ink-muted">
+          Training, travel, devices and people requests in one place.
+        </p>
+      </div>
+    </header>
 
-    <form class="space-y-4" novalidate @submit="onSubmit">
-      <div class="space-y-1">
-        <label for="email" class="block text-sm font-medium">Email</label>
-        <input
-          id="email"
-          v-model="email"
-          v-bind="emailAttrs"
-          type="email"
-          autocomplete="username"
-          class="w-full rounded border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
-        />
-        <p v-if="errors.email" class="text-sm text-red-600">{{ errors.email }}</p>
+    <section v-if="demo.enabled.value" aria-labelledby="personas-heading" class="grid gap-4">
+      <div class="flex flex-wrap items-baseline gap-x-3">
+        <h2 id="personas-heading" class="text-lg font-[650] tracking-heading">Try it as someone</h2>
+        <p class="text-sm text-ink-muted">
+          Nine people at Acme IT Services, each with something waiting for them.
+        </p>
       </div>
-      <div class="space-y-1">
-        <label for="password" class="block text-sm font-medium">Password</label>
-        <input
-          id="password"
-          v-model="password"
-          v-bind="passwordAttrs"
-          type="password"
-          autocomplete="current-password"
-          class="w-full rounded border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
-        />
-        <p v-if="errors.password" class="text-sm text-red-600">{{ errors.password }}</p>
+      <div v-if="personas.isPending.value" class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <UiSkeleton v-for="index in 6" :key="index" class="h-56 rounded-lg" />
       </div>
-      <p v-if="formError" role="alert" class="text-sm text-red-600">{{ formError }}</p>
-      <button
-        type="submit"
-        :disabled="isSubmitting"
-        class="w-full rounded bg-neutral-900 px-3 py-2 font-medium text-white disabled:opacity-60 dark:bg-white dark:text-neutral-900"
+      <ul
+        v-else-if="personas.data.value?.length"
+        class="m-0 grid list-none gap-3 p-0 md:grid-cols-2 xl:grid-cols-3"
       >
-        Sign in
-      </button>
-    </form>
-
-    <section v-if="demoMode" class="space-y-3" aria-labelledby="personas-heading">
-      <h2 id="personas-heading" class="text-sm font-semibold">Demo personas (password demo1234)</h2>
-      <p v-if="personas.isPending.value" class="text-sm">Loading personas...</p>
-      <ul v-else class="space-y-2">
-        <li v-for="persona in personas.data.value" :key="persona.email">
-          <button
-            type="button"
-            class="w-full rounded border border-neutral-200 px-3 py-2 text-left hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900"
-            :data-testid="`persona-${persona.email}`"
-            @click="signInAs(persona.email)"
-          >
-            <span class="block font-medium">{{ persona.displayName }}</span>
-            <span class="block text-sm text-neutral-600 dark:text-neutral-400">
-              {{ persona.description }}
-            </span>
-          </button>
+        <li v-for="persona in personas.data.value" :key="persona.key" class="grid">
+          <PersonaCard
+            :persona="persona"
+            :loading="signingInAs === persona.key"
+            :disabled="Boolean(signingInAs) && signingInAs !== persona.key"
+            @select="signInAs"
+          />
         </li>
       </ul>
+    </section>
+
+    <section aria-labelledby="form-heading" class="max-w-md">
+      <h2 id="form-heading" class="mb-4 text-lg font-[650] tracking-heading">
+        {{ demo.enabled.value ? 'Or sign in with email' : 'Sign in with your work email' }}
+      </h2>
+      <form
+        class="grid gap-4 rounded-xl border border-rule bg-sheet p-5 shadow-sheet"
+        novalidate
+        @submit="onSubmit"
+      >
+        <UiField label="Email" :error="errors.email">
+          <UiInput v-model="email" v-bind="emailAttrs" type="email" autocomplete="username" />
+        </UiField>
+        <UiField
+          label="Password"
+          :hint="demo.enabled.value ? 'Demo password: demo1234' : undefined"
+          :error="errors.password"
+        >
+          <UiInput
+            v-model="password"
+            v-bind="passwordAttrs"
+            type="password"
+            autocomplete="current-password"
+          />
+        </UiField>
+        <p v-if="formError" role="alert" class="text-sm text-st-negative">{{ formError }}</p>
+        <UiButton type="submit" variant="primary" block :loading="isSubmitting">Sign in</UiButton>
+      </form>
     </section>
   </main>
 </template>

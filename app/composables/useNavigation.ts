@@ -1,14 +1,26 @@
-import { collectNavEntries, filterNavEntries, groupNavEntries } from '~/lib/navigation'
-import type { NavEntry } from '~/types/navigation'
+import { navigation } from '~/config/navigation'
+import { findNavEntry, flattenNavigation, visibleNavigation } from '~/lib/navigation'
 
-/** Every app/modules/<module>/nav.ts — adding a module needs no change here. */
-const navFiles = import.meta.glob<{ default: NavEntry[] }>('~/modules/*/nav.ts', { eager: true })
-const allEntries = collectNavEntries(navFiles)
-
-/** Navigation entries of all modules, filtered by the signed-in user's roles. */
+/** The navigation (app/config/navigation.ts) filtered for the signed-in user, plus the active entry. */
 export function useNavigation() {
   const auth = useAuthStore()
-  const entries = computed(() => filterNavEntries(allEntries, auth.roles))
-  const sections = computed(() => groupNavEntries(entries.value))
-  return { entries, sections, allEntries }
+  const route = useRoute()
+
+  const groups = computed(() => visibleNavigation(navigation, auth.me))
+  const sidebarGroups = computed(() => groups.value.filter((group) => !group.hideInSidebar))
+  const flat = computed(() => flattenNavigation(groups.value))
+  const active = computed(() => findNavEntry(navigation, route.path))
+
+  /** The item (or its parent) is the active section. */
+  function isActive(id: string): boolean {
+    const entry = active.value
+    return Boolean(entry && (entry.item.id === id || entry.parent?.id === id))
+  }
+
+  /** Exactly this item is the active page (aria-current="page"). */
+  function isCurrent(id: string): boolean {
+    return active.value?.item.id === id
+  }
+
+  return { groups, sidebarGroups, flat, active, isActive, isCurrent }
 }

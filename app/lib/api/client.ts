@@ -1,35 +1,36 @@
 import createClient, { type Client, type Middleware } from 'openapi-fetch'
 import type { paths } from './schema'
 import { toApiError, toNetworkError } from './errors'
+import { newIdempotencyKey } from './http'
 
-export type AtriumApiClient = Client<paths>
+export type AtriumOpenApiClient = Client<paths>
 
-export interface ApiClientOptions {
+export interface OpenApiClientOptions {
   baseUrl: string
-  /** Returns the current bearer token (or a falsy value when signed out). */
   getToken: () => string | null | undefined
-  /** Called for every 401 response to a request that carried a token. */
   onUnauthorized?: (response: Response) => void
   fetch?: typeof globalThis.fetch
 }
 
 /**
- * Typed client for the Atrium API (paths come from the generated ./schema.d.ts).
- * Use it through useApi() and unwrap() — see CONVENTIONS.md "API client".
+ * openapi-fetch client typed from the generated `schema.d.ts` (`pnpm api:types`). Paths are
+ * relative to the API base (`/health`, not `/api/v1/health`). Until the backend exports its full
+ * document, prefer the generic helpers on `useApi()` with the hand-written types in ~/types/api.
  */
-export function createApiClient(options: ApiClientOptions): AtriumApiClient {
+export function createOpenApiClient(options: OpenApiClientOptions): AtriumOpenApiClient {
   const client = createClient<paths>({
     baseUrl: options.baseUrl.replace(/\/+$/, ''),
-    // Resolve globalThis.fetch per call (not at creation) so interceptors installed later
-    // (MSW in tests) still apply.
     fetch: options.fetch ?? ((...args: Parameters<typeof fetch>) => globalThis.fetch(...args)),
     headers: { Accept: 'application/json' },
   })
 
-  const authMiddleware: Middleware = {
+  const middleware: Middleware = {
     onRequest({ request }) {
       const token = options.getToken()
       if (token) request.headers.set('Authorization', `Bearer ${token}`)
+      if (request.method === 'POST' && !request.headers.has('Idempotency-Key')) {
+        request.headers.set('Idempotency-Key', newIdempotencyKey())
+      }
       return request
     },
     onResponse({ request, response }) {
@@ -40,7 +41,7 @@ export function createApiClient(options: ApiClientOptions): AtriumApiClient {
     },
   }
 
-  client.use(authMiddleware)
+  client.use(middleware)
   return client
 }
 
@@ -53,7 +54,7 @@ interface ApiCallResult<T> {
 /**
  * Await an openapi-fetch call and return its data, or throw an ApiError (problem+json normalised).
  *
- * @example const me = await unwrap(api.GET('/me'))
+ * @example const health = await unwrap(api.client.GET('/health'))
  */
 export async function unwrap<T>(call: Promise<ApiCallResult<T>>): Promise<T> {
   let result: ApiCallResult<T>

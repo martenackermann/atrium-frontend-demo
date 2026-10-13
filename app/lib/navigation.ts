@@ -1,37 +1,52 @@
-import type { Role } from '~/types/auth'
-import type { NavEntry, NavSection } from '~/types/navigation'
+import { hasAccess } from '~/lib/access'
+import type { Me } from '~/types/api'
+import type { NavGroup, NavItem } from '~/types/navigation'
 
-/** Typed identity helper for app/modules/<module>/nav.ts files. */
-export function defineNavEntries(entries: NavEntry[]): NavEntry[] {
-  return entries
-}
-
-export function canSee(entry: Pick<NavEntry, 'roles'>, roles: readonly Role[]): boolean {
-  return !entry.roles?.length || entry.roles.some((role) => roles.includes(role))
-}
-
-const byOrder = (a: NavEntry, b: NavEntry) =>
-  (a.order ?? 100) - (b.order ?? 100) || a.label.localeCompare(b.label)
-
-/** Drop entries (and children) the user may not see, then sort by order/label. */
-export function filterNavEntries(entries: readonly NavEntry[], roles: readonly Role[]): NavEntry[] {
-  return entries
-    .filter((entry) => canSee(entry, roles))
-    .map((entry) =>
-      entry.children ? { ...entry, children: filterNavEntries(entry.children, roles) } : entry,
-    )
-    .sort(byOrder)
-}
-
-export function groupNavEntries(entries: readonly NavEntry[]): Record<NavSection, NavEntry[]> {
-  const groups: Record<NavSection, NavEntry[]> = { main: [], admin: [] }
-  for (const entry of entries) groups[entry.section ?? 'main'].push(entry)
+/** Groups with only the items (and children) the user may see; empty groups are dropped. */
+export function visibleNavigation(groups: readonly NavGroup[], me: Me | null): NavGroup[] {
+  const filterItems = (items: readonly NavItem[]): NavItem[] =>
+    items
+      .filter((item) => hasAccess(me, item.access))
+      .map((item) => (item.children ? { ...item, children: filterItems(item.children) } : item))
   return groups
+    .map((group) => ({ ...group, items: filterItems(group.items) }))
+    .filter((group) => group.items.length > 0)
 }
 
-/** Flatten the default exports of app/modules/<module>/nav.ts files (stable order by path). */
-export function collectNavEntries(modules: Record<string, { default?: NavEntry[] }>): NavEntry[] {
-  return Object.keys(modules)
-    .sort()
-    .flatMap((path) => modules[path]?.default ?? [])
+/** Depth-first list of items with their parent (for breadcrumbs, ⌘K "Jump to"). */
+export function flattenNavigation(
+  groups: readonly NavGroup[],
+): Array<{ item: NavItem; parent: NavItem | null; group: NavGroup }> {
+  const result: Array<{ item: NavItem; parent: NavItem | null; group: NavGroup }> = []
+  for (const group of groups) {
+    for (const item of group.items) {
+      result.push({ item, parent: null, group })
+      for (const child of item.children ?? []) result.push({ item: child, parent: item, group })
+    }
+  }
+  return result
+}
+
+function isPrefix(path: string, prefix: string): boolean {
+  if (prefix === '/') return path === '/'
+  return path === prefix || path.startsWith(`${prefix}/`)
+}
+
+/**
+ * The nav entry that owns a path: the longest `to` (or `match`) prefix. Used to mark the active
+ * sidebar item and to build breadcrumbs.
+ */
+export function findNavEntry(
+  groups: readonly NavGroup[],
+  path: string,
+): { item: NavItem; parent: NavItem | null; exact: boolean } | null {
+  let best: { item: NavItem; parent: NavItem | null; exact: boolean; length: number } | null = null
+  for (const { item, parent } of flattenNavigation(groups)) {
+    for (const candidate of [item.to, ...(item.match ?? [])]) {
+      if (isPrefix(path, candidate) && (!best || candidate.length > best.length)) {
+        best = { item, parent, exact: path === item.to, length: candidate.length }
+      }
+    }
+  }
+  return best ? { item: best.item, parent: best.parent, exact: best.exact } : null
 }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-// Placeholder (phase 2a). Slice A3 owns app/pages/assets/**.
+/**
+ * `/assets` — placeholder from the foundation (SCREENS §6.1). Owned by slice A3, which
+ * replaces this file; keep the route and its access rule.
+ */
+definePageMeta({ title: 'My devices' })
 </script>
 
 <template>
-  <section class="space-y-2">
-    <h1 class="text-2xl font-semibold">My devices</h1>
-    <p class="text-neutral-600 dark:text-neutral-400">Coming soon.</p>
-  </section>
+  <PagePlaceholder title="My devices" slice="A3 · Assets" screen="SCREENS §6.1" />
 </template>

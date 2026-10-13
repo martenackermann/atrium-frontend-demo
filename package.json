@@ -24,11 +24,17 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
-    "api:types": "node scripts/generate-api-types.mjs"
+    "test:e2e": "playwright test --project=chromium",
+    "screenshots": "playwright test --project=screenshots",
+    "api:types": "node scripts/generate-api-types.mjs",
+    "mocks:users": "node scripts/mock-users.mjs"
   },
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
+    "@fontsource-variable/hedvig-letters-serif": "^5.3.1",
+    "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "@fontsource/fragment-mono": "^5.3.0",
+    "@internationalized/date": "^3.12.4",
     "@lucide/vue": "^1.55.0",
     "@pinia/nuxt": "^1.0.2",
     "@tailwindcss/vite": "^4.3.3",

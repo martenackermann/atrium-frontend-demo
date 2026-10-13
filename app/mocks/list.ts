@@ -1,14 +1,15 @@
 /**
- * Server-side list behaviour for mocks: filter -> search -> sort -> paginate, returning the
- * standard Paginated<T> envelope. Query parameters (see ListQuery in ~/types/api):
+ * Server-side list behaviour for mocks (API.md §1): filter → search → sort → paginate into
+ * `Page<T> = { data, meta: { page, perPage, total, totalPages } }`.
  *
- *   ?page=2&pageSize=20&sort=-createdAt,title&q=excel&status=booked,to_book
+ *   ?page=2&perPage=25&sort=-createdAt,title&q=excel&status=booked,to_book
  *
- * Unknown sort fields produce a 400 problem (like the real API); unknown filters are ignored.
+ * Unknown sort fields → 422 `errors.sort` (like the real API); unknown filters are ignored;
+ * a page beyond the end returns `data: []`.
  */
-import { HttpResponse } from 'msw'
-import type { Paginated } from '~/types/api'
-import { badRequest } from './http'
+import { HttpResponse, type JsonBodyType } from 'msw'
+import type { Page } from '~/types/api'
+import { validationProblem } from './http'
 
 type SortValue = string | number | boolean | Date | null | undefined
 type FieldOf<T> = Extract<keyof T, string>
@@ -16,18 +17,18 @@ type FieldOf<T> = Extract<keyof T, string>
 export interface ListOptions<T> {
   /** Fields (or a projection) searched by `q`; every whitespace-separated term must match. */
   search?: Array<FieldOf<T>> | ((item: T) => string)
-  /** Query param -> field (exact match, comma-separated = any of) or custom predicate. */
+  /** Query param → field (exact match, comma-separated = any of) or custom predicate. */
   filters?: Record<string, FieldOf<T> | ((item: T, values: string[]) => boolean)>
-  /** Sortable keys: field names, or param -> accessor. */
+  /** Sortable keys: field names, or param → accessor. */
   sort?: Array<FieldOf<T>> | Record<string, FieldOf<T> | ((item: T) => SortValue)>
   /** e.g. "-createdAt". */
   defaultSort?: string
-  defaultPageSize?: number
-  maxPageSize?: number
+  defaultPerPage?: number
+  maxPerPage?: number
 }
 
-const DEFAULT_PAGE_SIZE = 20
-const MAX_PAGE_SIZE = 100
+const DEFAULT_PER_PAGE = 25
+const MAX_PER_PAGE = 100
 
 function paramsOf(input: Request | URL | URLSearchParams): URLSearchParams {
   if (input instanceof URLSearchParams) return input
@@ -62,22 +63,25 @@ function matchesValue(fieldValue: unknown, values: string[]): boolean {
   return values.includes(String(fieldValue))
 }
 
+/** Split a comma-separated query param ('' / missing → []). */
+export function csv(params: URLSearchParams, key: string): string[] {
+  return (params.get(key) ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+}
+
 export function listResult<T>(
   items: readonly T[],
   input: Request | URL | URLSearchParams,
   options: ListOptions<T> = {},
-): Paginated<T> {
+): Page<T> {
   const params = paramsOf(input)
   let rows = [...items]
 
-  // Filters
   for (const [param, filter] of Object.entries(options.filters ?? {})) {
-    const raw = params.get(param)
-    if (raw === null || raw === '') continue
-    const values = raw
-      .split(',')
-      .map((value) => value.trim())
-      .filter(Boolean)
+    const values = csv(params, param)
+    if (values.length === 0) continue
     rows = rows.filter((item) =>
       typeof filter === 'function'
         ? filter(item, values)
@@ -85,7 +89,6 @@ export function listResult<T>(
     )
   }
 
-  // Search
   const q = params.get('q')?.trim().toLowerCase()
   if (q && options.search) {
     const terms = q.split(/\s+/)
@@ -101,7 +104,6 @@ export function listResult<T>(
     })
   }
 
-  // Sort
   const sortParam = params.get('sort') || options.defaultSort
   if (sortParam) {
     const accessors: Record<string, (item: T) => SortValue> = {}
@@ -122,7 +124,11 @@ export function listResult<T>(
         const descending = part.startsWith('-')
         const name = descending ? part.slice(1) : part
         const accessor = accessors[name]
-        if (!accessor) throw badRequest(`Sorting by "${name}" is not supported.`)
+        if (!accessor) {
+          throw validationProblem({
+            sort: `Sorting by "${name}" is not supported. Use one of: ${Object.keys(accessors).join(', ')}.`,
+          })
+        }
         return { accessor, direction: descending ? -1 : 1 }
       })
     rows = rows
@@ -133,9 +139,8 @@ export function listResult<T>(
           const right = accessor(b.item)
           const result = compare(left, right)
           if (result !== 0) {
-            const leftNull = normalise(left) === null
-            const rightNull = normalise(right) === null
-            return leftNull || rightNull ? result : result * direction
+            const eitherNull = normalise(left) === null || normalise(right) === null
+            return eitherNull ? result : result * direction
           }
         }
         return a.index - b.index
@@ -143,28 +148,28 @@ export function listResult<T>(
       .map(({ item }) => item)
   }
 
-  // Paginate
-  const maxPageSize = options.maxPageSize ?? MAX_PAGE_SIZE
-  const pageSize = Math.min(
-    Math.max(toInt(params.get('pageSize'), options.defaultPageSize ?? DEFAULT_PAGE_SIZE), 1),
-    maxPageSize,
+  const perPage = Math.min(
+    Math.max(toInt(params.get('perPage'), options.defaultPerPage ?? DEFAULT_PER_PAGE), 1),
+    options.maxPerPage ?? MAX_PER_PAGE,
   )
   const total = rows.length
-  const totalPages = Math.max(Math.ceil(total / pageSize), 1)
+  const totalPages = Math.max(Math.ceil(total / perPage), 1)
   const page = Math.max(toInt(params.get('page'), 1), 1)
-  const start = (page - 1) * pageSize
+  const start = (page - 1) * perPage
 
   return {
-    data: rows.slice(start, start + pageSize),
-    meta: { page, pageSize, total, totalPages },
+    data: rows.slice(start, start + perPage),
+    meta: { page, perPage, total, totalPages },
   }
 }
 
-/** listResult(...) wrapped in a JSON response. */
-export function listResponse<T>(
+/** listResult(...) as a JSON response. Map rows to DTOs with `map` (after paging, cheaper). */
+export function listResponse<T, D = T>(
   items: readonly T[],
   input: Request | URL | URLSearchParams,
-  options?: ListOptions<T>,
+  options: ListOptions<T> & { map?: (item: T) => D } = {},
 ) {
-  return HttpResponse.json(listResult(items, input, options))
+  const page = listResult(items, input, options)
+  const data = options.map ? page.data.map(options.map) : page.data
+  return HttpResponse.json({ data, meta: page.meta } as unknown as JsonBodyType)
 }
