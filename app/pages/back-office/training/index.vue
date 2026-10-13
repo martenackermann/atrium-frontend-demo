@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Download, Hotel } from '@lucide/vue'
+import { Download, Hotel, Search } from '@lucide/vue'
 import { describeError } from '~/lib/api'
 import type { TabItem } from '~/types/ui'
 import { useParticipations, useTrainingCounts } from '~/modules/training/api'
@@ -126,6 +126,14 @@ const items = computed(() => {
     : rows
 })
 
+const sortNote = computed(() =>
+  queue.value === 'all'
+    ? 'Newest first'
+    : queue.value === 'to_book'
+      ? 'High priority first'
+      : 'Earliest start first',
+)
+
 const exporting = ref(false)
 async function exportCsv() {
   exporting.value = true
@@ -158,7 +166,6 @@ const label = (item: TrainingParticipationListItem) =>
       title="Training office"
       :count-label="list.data.value ? `${list.data.value.meta.total} in this queue` : undefined"
       :tabs="tabs"
-      :sort-note="queue === 'all' ? 'Newest first' : 'Earliest start first'"
       :items="items"
       :item-key="(item) => item.id"
       :item-label="label"
@@ -169,30 +176,42 @@ const label = (item: TrainingParticipationListItem) =>
       @retry="list.refetch()"
     >
       <template #list-tools>
-        <div class="grid gap-2">
-          <UiInput
-            v-model="search"
-            type="search"
-            placeholder="Search topic, provider, attendee or TRN-…"
-            aria-label="Search participations"
-          />
-          <div class="flex flex-wrap items-center gap-3">
-            <DateRangeFilter
-              :from="range.from"
-              :to="range.to"
-              label="Starts"
-              @change="(value) => (range = value)"
-            />
-            <UiSwitch v-model="highOnly" label="High priority only" class="text-sm" />
-            <UiButton
-              size="sm"
-              variant="ghost"
+        <div class="grid w-full min-w-0 gap-2">
+          <div class="flex items-center gap-2">
+            <div class="relative min-w-0 flex-1">
+              <Search
+                class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-ink-subtle"
+                aria-hidden="true"
+              />
+              <UiInput
+                v-model="search"
+                type="search"
+                placeholder="Topic, provider, attendee or TRN-…"
+                aria-label="Search participations"
+                class="[&_input]:h-[30px] [&_input]:pl-8 [&_input]:text-sm"
+              />
+            </div>
+            <UiIconButton
               :icon="Download"
-              :loading="exporting"
+              label="Export CSV"
+              size="sm"
+              :disabled="exporting"
               @click="exportCsv"
-            >
-              Export CSV
-            </UiButton>
+            />
+          </div>
+          <DateRangeFilter
+            :from="range.from"
+            :to="range.to"
+            label="Starts"
+            @change="(value) => (range = value)"
+          />
+          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+            <UiSwitch
+              v-model="highOnly"
+              label="High priority only"
+              class="shrink-0 text-sm whitespace-nowrap"
+            />
+            <span class="text-[12.5px] text-ink-subtle max-md:hidden">{{ sortNote }}</span>
           </div>
         </div>
       </template>

@@ -61,6 +61,18 @@ function segments(dist: Record<Likert, number>) {
   }))
 }
 
+const improvement = computed(() => {
+  const dist = s.value?.loop3.distribution
+  if (!dist) return []
+  const values = IMPROVEMENT_OPTIONS.map((option) => dist[Number(option.value) as 1] ?? 0)
+  const max = Math.max(1, ...values)
+  return IMPROVEMENT_OPTIONS.map((option, index) => ({
+    label: option.label,
+    value: values[index]!,
+    width: `${(values[index]! / max) * 100}%`,
+  }))
+})
+
 const columns: DataTableColumn<TrainingRatingDto>[] = [
   {
     key: 'training',
@@ -122,29 +134,33 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
 
     <div v-if="s" class="mt-6 grid gap-6 xl:grid-cols-3">
       <section class="rounded-lg border border-rule bg-sheet p-5" aria-labelledby="loop1-title">
-        <h2 id="loop1-title" class="font-display text-[18px]">Round 1 · Your feedback</h2>
+        <h2 id="loop1-title" class="text-lg font-[650] tracking-heading">
+          Round 1 · Your feedback
+        </h2>
         <p class="mt-1 text-sm text-ink-muted">School grades, 1 excellent … 6 insufficient.</p>
         <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
           <div>
             <dt class="text-ink-subtle">Took part</dt>
-            <dd class="num text-[22px] font-medium">{{ pct(s.loop1.participatedRate) }}</dd>
+            <dd class="text-[22px] leading-8 font-semibold">{{ pct(s.loop1.participatedRate) }}</dd>
           </div>
           <div>
             <dt class="text-ink-subtle">Overall</dt>
-            <dd class="num text-[22px] font-medium">{{ grade(s.loop1.avgOverall) }}</dd>
+            <dd class="text-[22px] leading-8 font-semibold">{{ grade(s.loop1.avgOverall) }}</dd>
           </div>
           <div>
             <dt class="text-ink-subtle">Trainer</dt>
-            <dd class="num text-[22px] font-medium">{{ grade(s.loop1.avgTrainer) }}</dd>
+            <dd class="text-[22px] leading-8 font-semibold">{{ grade(s.loop1.avgTrainer) }}</dd>
           </div>
           <div>
             <dt class="text-ink-subtle">Expectations</dt>
-            <dd class="num text-[22px] font-medium">{{ grade(s.loop1.avgExpectations) }}</dd>
+            <dd class="text-[22px] leading-8 font-semibold">
+              {{ grade(s.loop1.avgExpectations) }}
+            </dd>
           </div>
         </dl>
       </section>
       <section class="rounded-lg border border-rule bg-sheet p-5" aria-labelledby="loop2-title">
-        <h2 id="loop2-title" class="font-display text-[18px]">Round 2 · In practice</h2>
+        <h2 id="loop2-title" class="text-lg font-[650] tracking-heading">Round 2 · In practice</h2>
         <p class="mt-1 text-sm text-ink-muted">{{ s.loop2.submitted }} answers.</p>
         <ul class="mt-4 grid gap-3">
           <li v-for="statement in STATEMENTS" :key="statement.key" class="grid gap-1">
@@ -157,32 +173,40 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
                 :style="{ width: seg.width }"
               />
             </span>
-            <span class="text-meta text-ink-muted">
-              {{
-                segments(s.loop2.distribution[statement.key])
-                  .map((seg) => `${seg.label} ${seg.count}`)
-                  .join(' · ')
-              }}
+            <span class="flex flex-wrap gap-x-3 gap-y-0.5 text-meta text-ink-muted">
+              <span
+                v-for="seg in segments(s.loop2.distribution[statement.key])"
+                :key="seg.value"
+                class="inline-flex items-center gap-1.5"
+              >
+                <span class="size-2 rounded-full" :class="LIKERT_FILL[seg.value]" />
+                {{ seg.label }} <span class="num text-ink">{{ seg.count }}</span>
+              </span>
             </span>
           </li>
         </ul>
       </section>
       <section class="rounded-lg border border-rule bg-sheet p-5" aria-labelledby="loop3-title">
-        <h2 id="loop3-title" class="font-display text-[18px]">Round 3 · Manager's view</h2>
+        <h2 id="loop3-title" class="text-lg font-[650] tracking-heading">
+          Round 3 · Manager's view
+        </h2>
         <p class="mt-1 text-sm text-ink-muted">
           {{ s.loop3.submitted }} answers · certification {{ pct(s.loop3.certificationRate) }}
         </p>
-        <StatCard
-          class="mt-4"
-          :value="s.loop3.submitted"
-          label="Improvement seen"
-          :bars="
-            IMPROVEMENT_OPTIONS.map((option) => ({
-              label: option.label,
-              value: s!.loop3.distribution[Number(option.value) as 1],
-            }))
-          "
-        />
+        <p class="mt-4 text-sm text-ink-subtle">Improvement seen</p>
+        <ul class="mt-2 grid list-none gap-2.5 p-0">
+          <li
+            v-for="bar in improvement"
+            :key="bar.label"
+            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+          >
+            <span class="truncate">{{ bar.label }}</span>
+            <span class="num font-semibold">{{ bar.value }}</span>
+            <span class="col-span-2 h-1.5 rounded-pill bg-viz-grid" aria-hidden="true">
+              <span class="block h-full rounded-pill bg-viz-1" :style="{ width: bar.width }" />
+            </span>
+          </li>
+        </ul>
       </section>
     </div>
 
@@ -207,7 +231,6 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
       <template #filters>
         <UiSelect
           v-model="stateFilter"
-          size="sm"
           aria-label="State"
           :options="[
             { value: ANY, label: 'Any state' },
@@ -220,7 +243,6 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
         />
         <UiSelect
           v-model="loopFilter"
-          size="sm"
           aria-label="Round"
           :options="[
             { value: ANY, label: 'Any round' },

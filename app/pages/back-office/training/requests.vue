@@ -89,7 +89,6 @@ const columns: DataTableColumn<TrainingRequestSummary>[] = [
       <template #filters>
         <UiSelect
           v-model="billingFilter"
-          size="sm"
           aria-label="Billing status"
           :options="[
             { value: ANY, label: 'Any billing' },
@@ -102,7 +101,6 @@ const columns: DataTableColumn<TrainingRequestSummary>[] = [
         />
         <UiSelect
           v-model="statusFilter"
-          size="sm"
           aria-label="Attendee status"
           :options="[
             { value: ANY, label: 'Any attendee status' },

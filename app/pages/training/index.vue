@@ -147,7 +147,6 @@ const requestColumns: DataTableColumn<TrainingRequestSummary>[] = [
       <template #filters>
         <UiSelect
           v-model="statusFilter"
-          size="sm"
           aria-label="Status"
           :options="[{ value: ANY, label: 'Any status' }, ...statusOptions]"
           class="w-52"

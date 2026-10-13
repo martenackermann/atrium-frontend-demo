@@ -71,7 +71,7 @@ async function save() {
 
 <template>
   <section class="rounded-lg border border-rule bg-well p-5" aria-labelledby="bo-title">
-    <h2 id="bo-title" class="flex items-center gap-2 font-display text-[20px] leading-7">
+    <h2 id="bo-title" class="flex items-center gap-2 text-lg font-[650] tracking-heading">
       <Receipt class="size-4 text-ink-muted" aria-hidden="true" /> Back office
     </h2>
     <p class="mt-1 text-sm text-ink-muted">
