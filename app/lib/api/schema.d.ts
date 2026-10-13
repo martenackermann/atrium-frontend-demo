@@ -5,6 +5,510 @@
  */
 
 export interface paths {
+    "/admin/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Admin_listJobs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/jobs/{name}/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run a job now (asynchronously) */
+        post: operations["Admin_runJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/jobs/{name}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Admin_jobRuns"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Admin_listUsers"];
+        put?: never;
+        post: operations["Admin_createUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Admin_getUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Admin_updateUser"];
+        trace?: never;
+    };
+    "/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Inventory (asset_admin, it_admin) */
+        get: operations["Assets_list"];
+        put?: never;
+        /** Add an asset (optionally assign it right away) */
+        post: operations["Assets_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Assets_detail"];
+        put?: never;
+        post?: never;
+        delete: operations["Assets_remove"];
+        options?: never;
+        head?: never;
+        /** Edit fields (audited with a field diff) */
+        patch: operations["Assets_update"];
+        trace?: never;
+    };
+    "/assets/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Run a lifecycle action
+         * @description assign {userId, note?} · accept {platformId?} · decline {reason} · unassign {reason?} · return {condition, note?} · send_to_repair {note} · complete_repair {note?} · scrap {reason}
+         */
+        post: operations["Assets_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/{id}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Assignment history, newest first (admins) */
+        get: operations["Assets_assignments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Timeline with field diffs and cost-centre syncs, oldest first (admins) */
+        get: operations["Assets_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/catalog/device-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Device types (laptop, monitor, ...) */
+        get: operations["Catalog_deviceTypes"];
+        put?: never;
+        post: operations["Catalog_createDeviceType"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/catalog/device-types/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Catalog_deleteDeviceType"];
+        options?: never;
+        head?: never;
+        patch: operations["Catalog_updateDeviceType"];
+        trace?: never;
+    };
+    "/assets/catalog/manufacturers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Manufacturers and the device types they make */
+        get: operations["Catalog_manufacturers"];
+        put?: never;
+        post: operations["Catalog_createManufacturer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/catalog/manufacturers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Catalog_updateManufacturer"];
+        trace?: never;
+    };
+    "/assets/catalog/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Asset models (paged) */
+        get: operations["Catalog_models"];
+        put?: never;
+        post: operations["Catalog_createModel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/catalog/models/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Catalog_deleteModel"];
+        options?: never;
+        head?: never;
+        patch: operations["Catalog_updateModel"];
+        trace?: never;
+    };
+    "/assets/catalog/platforms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Platforms (operating systems) and their device types */
+        get: operations["Catalog_platforms"];
+        put?: never;
+        post: operations["Catalog_createPlatform"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/catalog/platforms/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["Catalog_updatePlatform"];
+        trace?: never;
+    };
+    "/assets/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Asset admin dashboard */
+        get: operations["Assets_dashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** CSV export with the list filters */
+        get: operations["Assets_exportCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My devices: waiting for my acceptance, and in use / in repair */
+        get: operations["Assets_mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/queues/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Badge counts (mine for everyone, admin for asset_admin / it_admin) */
+        get: operations["Assets_counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stage an upload; link it later by id from the owning resource */
+        post: operations["Attachments_upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attachments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Attachments_get"];
+        put?: never;
+        post?: never;
+        delete: operations["Attachments_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attachments/{id}/download-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Short-lived signed URL for GET /files/{token} */
+        get: operations["Attachments_downloadUrl"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Global audit log (it_admin) */
+        get: operations["Audit_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/demo-login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** One-click persona login (only when DEMO_MODE=true) */
+        post: operations["Auth_demoLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Email + password login; returns a bearer token */
+        post: operations["Auth_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/personas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Demo personas for the login screen (only when DEMO_MODE=true) */
+        get: operations["Auth_personas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/files/{token}": {
         parameters: {
             query?: never;
@@ -12,10 +516,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Download a file through a signed, expiring URL
-         * @description URLs are created server-side by StorageService.createDownloadUrl(); no bearer token needed.
-         */
+        /** Stream a file through a signed, expiring token (no bearer token needed) */
         get: operations["Files_download"];
         put?: never;
         post?: never;
@@ -32,8 +533,1080 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Liveness/readiness: database and job queue */
+        /** Liveness/readiness: database, job queue and SMTP */
         get: operations["Health_check"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/home/my-day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Home "My day": inbox head, upcoming trainings and trips, devices, news, links */
+        get: operations["Home_myDay"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/links": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Useful links in display order (includeInactive for editors) */
+        get: operations["Links_list"];
+        put?: never;
+        post: operations["Links_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/links/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Links_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Links_update"];
+        trace?: never;
+    };
+    "/links/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reorder: all link ids in the new order */
+        put: operations["Links_reorder"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The current user, with effective roles and active deputy assignments */
+        get: operations["Me_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/deputies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My deputies, and whom I stand in for */
+        get: operations["Deputies_list"];
+        put?: never;
+        /** Name a deputy (managers and executives) */
+        post: operations["Deputies_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/deputies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Deputies_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["Deputies_update"];
+        trace?: never;
+    };
+    "/me/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** To-do items from every module (max 200, not paged) */
+        get: operations["Inbox_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/inbox/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Badge counts for the inbox */
+        get: operations["Inbox_counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Notifications_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Notifications_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Notifications_readAll"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meta/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Meta_getConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meta/enums": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Labels and badge tones for every enum (registered by the modules) */
+        get: operations["Meta_getEnums"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meta/workflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Meta_listWorkflows"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meta/workflows/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** States and transitions of a workflow, for diagrams */
+        get: operations["Meta_getWorkflow"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** News feed (published; editors may filter by status) */
+        get: operations["News_list"];
+        put?: never;
+        /** Create a draft post (body is sanitised) */
+        post: operations["News_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/news/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["News_detail"];
+        put?: never;
+        post?: never;
+        delete: operations["News_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["News_update"];
+        trace?: never;
+    };
+    "/news/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lifecycle action: publish, schedule { publishAt, expireAt? }, unschedule, archive, restore */
+        post: operations["News_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/news/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["News_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/org/cost-centers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Org_costCenters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/org/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Org_departments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/org/sites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Org_sites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/job-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Job-role catalogue (name order; includeInactive for People Ops) */
+        get: operations["JobRoles_list"];
+        put?: never;
+        post: operations["JobRoles_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/job-roles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["JobRoles_update"];
+        trace?: never;
+    };
+    "/people/queues/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Badge and queue counts (ops = null unless People Ops / IT admin) */
+        get: operations["PeopleQueues_counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** People requests (scope=mine: requester, manager or deputy; scope=all: People Ops) */
+        get: operations["PeopleRequests_list"];
+        put?: never;
+        /** Create an onboarding, offboarding or role change request */
+        post: operations["PeopleRequests_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PeopleRequests_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit fields (requester while open; People Ops until closed) or internal fields */
+        patch: operations["PeopleRequests_update"];
+        trace?: never;
+    };
+    "/people/requests/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Workflow action: start_work, wait_internal, wait_on_requester, resume, complete, reject, cancel, reopen */
+        post: operations["PeopleRequests_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/requests/{id}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conversation, oldest first (internal comments only for People Ops) */
+        get: operations["PeopleRequests_comments"];
+        put?: never;
+        /** Add a comment; a requester reply while waiting moves the request back to In progress */
+        post: operations["PeopleRequests_addComment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/requests/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PeopleRequests_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Command-palette search across modules (<= 5 hits per module) */
+        get: operations["Search_search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Participations by scope: mine, approvals, executive, deputy, team, all */
+        get: operations["TrainingParticipations_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TrainingParticipations_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lifecycle action: approve, decline, withdraw, request_cancellation, confirm_cancellation, reject_cancellation, book, mark_booking_impossible, retry_booking, close */
+        post: operations["TrainingParticipations_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations/{id}/goals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set the two learning goals (attendee, until the start) */
+        put: operations["TrainingParticipations_putGoals"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TrainingParticipations_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/participations/export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** CSV export of all participations with the list filters (training office) */
+        get: operations["TrainingParticipations_exportCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/queues/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Counts for my training, approvals and (training office) queues */
+        get: operations["TrainingQueues_counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Feedback rounds I rate (scope=mine) or all (scope=all, training office) */
+        get: operations["TrainingRatings_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/ratings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TrainingRatings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/ratings/{id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit a due feedback round (loop must match the row) */
+        post: operations["TrainingRatings_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/ratings/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Rating statistics by training end date (training office) */
+        get: operations["TrainingRatings_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Requests I created (scope=created) or all requests (scope=all, training office) */
+        get: operations["TrainingRequests_list"];
+        put?: never;
+        /** Create a training request with 1-20 attendees */
+        post: operations["TrainingRequests_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TrainingRequests_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit request details (requester while all attendees await the manager; training office) */
+        patch: operations["TrainingRequests_update"];
+        trace?: never;
+    };
+    "/training/requests/{id}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Link staged documents (purpose training_document); returns all request documents */
+        post: operations["TrainingRequests_addAttachments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests/{id}/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["TrainingRequests_removeAttachment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests/{id}/attendees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an attendee (before the start) */
+        post: operations["TrainingRequests_addAttendee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests/{id}/back-office": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Billing status, actual cost and back-office comment (training office) */
+        patch: operations["TrainingRequests_updateBackOffice"];
+        trace?: never;
+    };
+    "/training/requests/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit timeline of the request and the attendees visible to the viewer */
+        get: operations["TrainingRequests_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/training/requests/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Routing preview for the stepper: approvers, auto-approvals, executive step */
+        post: operations["TrainingRequests_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/car-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Car-rental classes (active; includeInactive for the desk), sortOrder */
+        get: operations["CarClasses_list"];
+        put?: never;
+        post: operations["CarClasses_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/car-classes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["CarClasses_update"];
+        trace?: never;
+    };
+    "/travel/queues/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Badge counts: my active trips, approvals, desk queues */
+        get: operations["TravelQueues_counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Travel requests by scope (mine | approvals | deputy | team | all) */
+        get: operations["TravelRequests_list"];
+        put?: never;
+        /** Submit a car, train or flight request */
+        post: operations["TravelRequests_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TravelRequests_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/{id}/actions/{action}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Workflow action: approve, decline, withdraw, request_cancellation, confirm_cancellation, reject_cancellation, book, mark_booking_impossible, retry_booking, close */
+        post: operations["TravelRequests_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/{id}/booking/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reveal the booking PIN (traveller, requester, travel desk); audited as view_pin */
+        get: operations["TravelRequests_pin"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TravelRequests_timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** CSV export of all requests (travel desk, it_admin) */
+        get: operations["TravelRequests_exportCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/travel/requests/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** needsApproval, reasons and approver candidates for a (partial) draft */
+        post: operations["TravelRequests_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** User picker / directory search */
+        get: operations["Users_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Users_profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/approvers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Approver chain of a user (SPEC §6.1), for approver selection */
+        get: operations["Users_approvers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -46,41 +1619,2999 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        HealthDto: {
-            checks: {
-                database: {
-                    durationMs: number;
-                    /** @enum {string} */
-                    status: "up" | "down";
+        Address: {
+            city: string;
+            countryCode: string;
+            houseNumber: string;
+            postalCode: string;
+            street: string;
+        };
+        Address_Output: {
+            city: string;
+            countryCode: string;
+            houseNumber: string;
+            postalCode: string;
+            street: string;
+        };
+        AdminUserDto_Output: {
+            active: boolean;
+            costCenter: components["schemas"]["Ref_Output"];
+            /** Format: date-time */
+            createdAt: string;
+            department: components["schemas"]["Ref_Output"] | null;
+            directReportsCount: number;
+            displayName: string;
+            email: string;
+            employeeNumber: string;
+            firstName: string;
+            /** Format: uuid */
+            id: string;
+            initials: string;
+            isManager: boolean;
+            isSiteManager: boolean;
+            jobTitle: string[];
+            /** Format: date-time */
+            lastLoginAt: string | null;
+            lastName: string;
+            manager: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string|null} */
+            personaKey: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian" | null;
+            phone: string[];
+            roles: ("executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            site: components["schemas"]["Ref_Output"] | null;
+            version: number;
+        };
+        AdminUserPageDto_Output: {
+            data: {
+                active: boolean;
+                costCenter: components["schemas"]["Ref_Output"];
+                /** Format: date-time */
+                createdAt: string;
+                department: components["schemas"]["Ref_Output"] | null;
+                directReportsCount: number;
+                displayName: string;
+                email: string;
+                employeeNumber: string;
+                firstName: string;
+                /** Format: uuid */
+                id: string;
+                initials: string;
+                isManager: boolean;
+                isSiteManager: boolean;
+                jobTitle: string | null;
+                /** Format: date-time */
+                lastLoginAt: string | null;
+                lastName: string;
+                manager: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string|null} */
+                personaKey: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian" | null;
+                phone: string | null;
+                roles: ("executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+                site: components["schemas"]["Ref_Output"] | null;
+                version: number;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        ApproverCandidate_Output: {
+            isDefault: boolean;
+            isSiteManager: boolean;
+            level: number;
+            /** @enum {string|null} */
+            reason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback" | null;
+            selectable: boolean;
+            user: components["schemas"]["UserRef_Output"];
+        };
+        ApproverChainDto_Output: {
+            candidates: components["schemas"]["ApproverCandidate_Output"][];
+            default: components["schemas"]["ApproverCandidate_Output"] | null;
+            /** @enum {string|null} */
+            exemption: "executive_traveller" | null;
+            subject: components["schemas"]["UserRef_Output"];
+        };
+        /** @enum {string} */
+        AssetAction_Output: "assign" | "accept" | "decline" | "unassign" | "return" | "send_to_repair" | "complete_repair" | "scrap" | "edit" | "delete";
+        AssetAssignmentDto_Output: {
+            /** Format: date-time */
+            acceptedAt: string | null;
+            /** Format: date-time */
+            assignedAt: string;
+            assignedBy: components["schemas"]["UserRef_Output"];
+            /** Format: date-time */
+            declinedAt: string | null;
+            declineReason: string[];
+            /** Format: uuid */
+            id: string;
+            note: string[];
+            reminderCount: number;
+            returnCondition: components["schemas"]["ReturnCondition_Output"] | null;
+            /** Format: date-time */
+            returnedAt: string | null;
+            returnNote: string[];
+            /** Format: date-time */
+            unassignedAt: string | null;
+            user: components["schemas"]["UserRef_Output"];
+        };
+        AssetDashboardDto_Output: {
+            byDeviceType: {
+                deviceType: {
+                    code: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
                 };
-                queue: {
-                    durationMs: number;
-                    /** @enum {string} */
-                    status: "up" | "down";
+                inStock: number;
+                inUse: number;
+                total: number;
+            }[];
+            byManufacturer: {
+                manufacturer: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                total: number;
+            }[];
+            pendingAcceptance: {
+                oldest: components["schemas"]["AssetListItem_Output"][];
+                overdue: number;
+                total: number;
+            };
+            recentActivity: {
+                /** @enum {string} */
+                actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+                action: string;
+                actor: components["schemas"]["UserRef_Output"] | null;
+                asset: {
+                    assetTag: string;
+                    /** Format: uuid */
+                    id: string;
+                    model: string;
+                };
+                changes: components["schemas"]["FieldChange_Output"][] | null;
+                /** Format: uuid */
+                entityId: string;
+                entityLabel: string;
+                entityType: string;
+                fromState: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                occurredAt: string;
+                reason: string | null;
+                summary: string;
+                toState: string | null;
+            }[];
+            totals: {
+                all: number;
+                byStatus: {
+                    in_repair: number;
+                    in_stock: number;
+                    in_use: number;
+                    pending_acceptance: number;
+                    scrapped: number;
                 };
             };
-            /** @enum {string} */
-            status: "ok" | "error";
         };
-        /** @description RFC 9457 problem details */
+        AssetDto_Output: {
+            applicablePlatforms: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            }[];
+            assetTag: string;
+            assignedUser: components["schemas"]["UserRef_Output"] | null;
+            availableActions: components["schemas"]["AssetAction_Output"][];
+            costCenter: components["schemas"]["Ref_Output"];
+            /** Format: date-time */
+            createdAt: string;
+            createdBy: components["schemas"]["UserRef_Output"] | null;
+            currentAssignment: {
+                /** Format: date-time */
+                acceptedAt: string | null;
+                /** Format: date-time */
+                assignedAt: string;
+                assignedBy: components["schemas"]["UserRef_Output"];
+                /** Format: date-time */
+                declinedAt: string | null;
+                declineReason: string | null;
+                /** Format: uuid */
+                id: string;
+                note: string | null;
+                reminderCount: number;
+                returnCondition: components["schemas"]["ReturnCondition_Output"] | null;
+                /** Format: date-time */
+                returnedAt: string | null;
+                returnNote: string | null;
+                /** Format: date-time */
+                unassignedAt: string | null;
+                user: components["schemas"]["UserRef_Output"];
+            } | null;
+            /** Format: date-time */
+            deletedAt: string | null;
+            deviceType: {
+                code: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                requiresPlatform: boolean;
+            };
+            /** Format: uuid */
+            id: string;
+            manufacturer: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            mdmEnrolled: boolean;
+            model: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            name: string[];
+            notes: string[];
+            platform: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            } | null;
+            /** Format: date */
+            purchaseDate: string | null;
+            serialNumber: string;
+            status: components["schemas"]["AssetStatus_Output"];
+            /** Format: date-time */
+            updatedAt: string;
+            version: number;
+        };
+        AssetListItem_Output: {
+            assetTag: string;
+            assignedUser: components["schemas"]["UserRef_Output"] | null;
+            availableActions: components["schemas"]["AssetAction_Output"][];
+            costCenter: components["schemas"]["Ref_Output"];
+            /** Format: date-time */
+            deletedAt: string | null;
+            deviceType: {
+                code: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                requiresPlatform: boolean;
+            };
+            /** Format: uuid */
+            id: string;
+            manufacturer: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            mdmEnrolled: boolean;
+            model: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            name: string | null;
+            platform: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            } | null;
+            /** Format: date */
+            purchaseDate: string | null;
+            serialNumber: string;
+            status: components["schemas"]["AssetStatus_Output"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AssetModelDto_Output: {
+            archived: boolean;
+            assetCount: number;
+            color: string[];
+            /** Format: date-time */
+            createdAt: string;
+            deviceType: {
+                code: string;
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            /** Format: uuid */
+            id: string;
+            manufacturer: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            name: string;
+            storageGb: number | null;
+        };
+        AssetModelPageDto_Output: {
+            data: {
+                archived: boolean;
+                assetCount: number;
+                color: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                deviceType: {
+                    code: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                /** Format: uuid */
+                id: string;
+                manufacturer: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                name: string;
+                storageGb: number | null;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        AssetPageDto_Output: {
+            data: components["schemas"]["AssetListItem_Output"][];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        AssetQueueCountsDto_Output: {
+            admin: {
+                acceptanceOverdue: number;
+                inRepair: number;
+                inStock: number;
+                pendingAcceptance: number;
+            } | null;
+            mine: {
+                pending: number;
+            };
+        };
+        /** @enum {string} */
+        AssetStatus_Output: "in_stock" | "pending_acceptance" | "in_use" | "in_repair" | "scrapped";
+        AssetTimelineEntryDto_Output: {
+            /** @enum {string} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+            action: string;
+            actor: components["schemas"]["UserRef_Output"] | null;
+            changes: components["schemas"]["FieldChange_Output"][] | null;
+            /** Format: uuid */
+            entityId: string;
+            entityLabel: string;
+            entityType: string;
+            fromState: string[];
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            occurredAt: string;
+            reason: string[];
+            summary: string;
+            toState: string[];
+        };
+        AttachmentDto_Output: {
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            id: string;
+            mimeType: string;
+            originalName: string;
+            /** @enum {string} */
+            purpose: "training_document" | "training_booking_document" | "travel_booking_confirmation" | "news_cover" | "people_document";
+            sizeBytes: number;
+            uploadedBy: components["schemas"]["UserRef_Output"];
+        };
+        AttendeeInputDto: {
+            /** Format: uuid */
+            costCenterId?: string | null;
+            hotel?: {
+                /** Format: date */
+                checkInOn: string;
+                /** Format: date */
+                checkOutOn: string;
+                cost?: {
+                    amountCents: number;
+                    /** @enum {string} */
+                    currency: "EUR";
+                } | null;
+            } | null;
+            /** Format: uuid */
+            userId: string;
+        };
+        AuditEntryPageDto_Output: {
+            data: {
+                /** @enum {string} */
+                actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+                action: string;
+                actor: components["schemas"]["UserRef_Output"] | null;
+                changes: components["schemas"]["FieldChange_Output"][] | null;
+                correlationId: string;
+                /** Format: uuid */
+                entityId: string;
+                entityLabel: string;
+                entityType: string;
+                fromState: string | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                module: "core" | "training" | "travel" | "assets" | "people" | "news";
+                /** Format: date-time */
+                occurredAt: string;
+                reason: string | null;
+                summary: string;
+                toState: string | null;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        AugmentedZodDto: {
+            /** Format: uuid */
+            approverId?: string | null;
+            car: {
+                /** Format: uuid */
+                carClassId: string;
+                destination: string;
+                driver: {
+                    additionalDrivers?: string | null;
+                    /** Format: date */
+                    birthDate: string;
+                    /** Format: email */
+                    email: string;
+                    firstName: string;
+                    lastName: string;
+                    licenceNumber?: string | null;
+                    phone: string;
+                };
+                dropOff: {
+                    address?: components["schemas"]["Address"] | null;
+                    branch?: string | null;
+                    /** @enum {string} */
+                    mode: "branch" | "collection";
+                };
+                equipment: {
+                    automaticPreferred: boolean;
+                    automaticRequired: boolean;
+                    childSeat: boolean;
+                    diesel: boolean;
+                    estate: boolean;
+                    foreignTravel: boolean;
+                    navigation: boolean;
+                    winterTyres: boolean;
+                };
+                expectedKmPerDay?: number | null;
+                /** @default [] */
+                foreignCountries: string[];
+                handover: {
+                    address?: components["schemas"]["Address"] | null;
+                    branch?: string | null;
+                    /** @enum {string} */
+                    mode: "branch" | "delivery";
+                };
+                minPayloadKg?: number | null;
+                /** Format: date-time */
+                pickupAt: string;
+                /** Format: date-time */
+                returnAt: string;
+                specialEquipmentReason?: string | null;
+                /** @enum {string} */
+                vehicleType: "car" | "van";
+            };
+            comment?: string | null;
+            /** Format: uuid */
+            costCenterId?: string | null;
+            costCenterReason?: string | null;
+            /** @enum {string} */
+            kind: "car";
+            recharge?: {
+                customer: string;
+                projectNumber: string;
+            } | null;
+            /** Format: uuid */
+            travellerId: string;
+        } | {
+            /** Format: uuid */
+            approverId?: string | null;
+            comment?: string | null;
+            /** Format: uuid */
+            costCenterId?: string | null;
+            costCenterReason?: string | null;
+            /** @enum {string} */
+            kind: "train";
+            recharge?: {
+                customer: string;
+                projectNumber: string;
+            } | null;
+            train: {
+                /** @default [] */
+                companionIds: string[];
+                /** @enum {string} */
+                fareType: "saver" | "flex";
+                fromStation: string;
+                localTransportTicket: boolean;
+                notes?: string | null;
+                /** Format: date-time */
+                outboundAt: string;
+                /** Format: date-time */
+                returnAt?: string | null;
+                seatReservations: number;
+                separateTickets: boolean;
+                toStation: string;
+                /** @enum {string} */
+                tripType: "one_way" | "return";
+                viaStation?: string | null;
+            };
+            /** Format: uuid */
+            travellerId: string;
+        } | {
+            /** Format: uuid */
+            approverId?: string | null;
+            comment?: string | null;
+            /** Format: uuid */
+            costCenterId?: string | null;
+            costCenterReason?: string | null;
+            flight: {
+                handLuggageOnly: boolean;
+                notes?: string | null;
+                /** Format: date-time */
+                outboundDepartureAt: string;
+                outboundFrom: string;
+                outboundTo: string;
+                /** Format: date-time */
+                returnDepartureAt?: string | null;
+                returnFrom?: string | null;
+                returnTo?: string | null;
+                /** @enum {string} */
+                tripType: "one_way" | "return";
+            };
+            /** @enum {string} */
+            kind: "flight";
+            recharge?: {
+                customer: string;
+                projectNumber: string;
+            } | null;
+            /** Format: uuid */
+            travellerId: string;
+        };
+        CarDetailDto_Output: {
+            carClass: {
+                code: string;
+                /** Format: uuid */
+                id: string;
+                isDefault: boolean;
+                name: string;
+            };
+            destination: string;
+            driver: {
+                additionalDrivers: string | null;
+                /** Format: date */
+                birthDate: string;
+                email: string;
+                firstName: string;
+                lastName: string;
+                licenceNumber: string | null;
+                phone: string;
+            } | null;
+            dropOff: {
+                address: components["schemas"]["Address_Output"] | null;
+                branch: string | null;
+                /** @enum {string} */
+                mode: "branch" | "collection";
+            };
+            equipment: {
+                automaticPreferred: boolean;
+                automaticRequired: boolean;
+                childSeat: boolean;
+                diesel: boolean;
+                estate: boolean;
+                foreignTravel: boolean;
+                navigation: boolean;
+                winterTyres: boolean;
+            };
+            expectedKmPerDay: number | null;
+            foreignCountries: string[];
+            handover: {
+                address: components["schemas"]["Address_Output"] | null;
+                branch: string | null;
+                /** @enum {string} */
+                mode: "branch" | "delivery";
+            };
+            minPayloadKg: number | null;
+            /** Format: date-time */
+            pickupAt: string;
+            /** Format: date-time */
+            returnAt: string;
+            specialEquipmentReason: string | null;
+            /** @enum {string} */
+            vehicleType: "car" | "van";
+        };
+        CarRentalClass_Output: {
+            active: boolean;
+            code: string;
+            description: string | null;
+            exampleModels: string | null;
+            /** Format: uuid */
+            id: string;
+            isDefault: boolean;
+            name: string;
+            sortOrder: number;
+            /** @enum {string} */
+            vehicleType: "car" | "van";
+        };
+        CarRentalClassDto_Output: {
+            active: boolean;
+            code: string;
+            description: string[];
+            exampleModels: string[];
+            /** Format: uuid */
+            id: string;
+            isDefault: boolean;
+            name: string;
+            sortOrder: number;
+            /** @enum {string} */
+            vehicleType: "car" | "van";
+        };
+        CarRentalClassListDto_Output: components["schemas"]["CarRentalClass_Output"][];
+        CostCenterDto_Output: {
+            active: boolean;
+            code: string;
+            department: components["schemas"]["Ref_Output"] | null;
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        CreateAdminUserDto: {
+            /** Format: uuid */
+            costCenterId: string;
+            /** Format: uuid */
+            departmentId?: string | null;
+            /** Format: email */
+            email: string;
+            employeeNumber?: string | null;
+            firstName: string;
+            initialPassword: string;
+            isSiteManager?: boolean;
+            jobTitle?: string | null;
+            lastName: string;
+            /** Format: uuid */
+            managerId?: string | null;
+            roles?: ("executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            /** Format: uuid */
+            siteId?: string | null;
+        };
+        CreateAssetDto: {
+            /** Format: uuid */
+            assignToUserId?: string | null;
+            /** Format: uuid */
+            costCenterId?: string | null;
+            mdmEnrolled?: boolean;
+            /** Format: uuid */
+            modelId: string;
+            name?: string | null;
+            notes?: string | null;
+            /** Format: uuid */
+            platformId?: string | null;
+            /** Format: date */
+            purchaseDate?: string | null;
+            serialNumber: string;
+        };
+        CreateCarClassDto: {
+            /** @default true */
+            active: boolean;
+            code: string;
+            description?: string | null;
+            exampleModels?: string | null;
+            /** @default false */
+            isDefault: boolean;
+            name: string;
+            /** @default 0 */
+            sortOrder: number;
+            /** @enum {string} */
+            vehicleType: "car" | "van";
+        };
+        CreateDeputyDto: {
+            /** Format: uuid */
+            deputyId: string;
+            note?: string | null;
+            /** Format: uuid */
+            principalId?: string;
+            /** Format: date */
+            validFrom?: string | null;
+            /** Format: date */
+            validTo?: string | null;
+        };
+        CreateDeviceTypeDto: {
+            code: string;
+            name: string;
+            /** @default false */
+            requiresPlatform: boolean;
+            /** @default 0 */
+            sortOrder: number;
+        };
+        CreateJobRoleDto: {
+            active?: boolean;
+            category?: string | null;
+            name: string;
+        };
+        CreateManufacturerDto: {
+            archived?: boolean;
+            deviceTypeIds: string[];
+            name: string;
+        };
+        CreateModelDto: {
+            archived?: boolean;
+            color?: string | null;
+            /** Format: uuid */
+            deviceTypeId: string;
+            /** Format: uuid */
+            manufacturerId: string;
+            name: string;
+            storageGb?: number | null;
+        };
+        CreateNewsPostDto: {
+            bodyHtml: string;
+            /** Format: uuid */
+            coverImageId?: string | null;
+            /** Format: date-time */
+            expireAt?: string | null;
+            pinned?: boolean;
+            summary: string;
+            title: string;
+            /** @enum {string} */
+            type: "changelog" | "update" | "information";
+        };
+        CreatePeopleCommentDto: {
+            body: string;
+            internal?: boolean;
+        };
+        CreatePeopleRequestDto: {
+            attachmentIds?: string[];
+            /** Format: uuid */
+            departmentId?: string | null;
+            /** Format: date */
+            effectiveDate: string;
+            equipmentNotes?: string | null;
+            firstName?: string | null;
+            furtherInformation?: string | null;
+            /** Format: uuid */
+            jobRoleId?: string | null;
+            lastName?: string | null;
+            /** Format: uuid */
+            managerDeputyId?: string | null;
+            /** Format: uuid */
+            managerId?: string | null;
+            personalData?: {
+                /** Format: date */
+                birthDate?: string | null;
+                nationality?: string | null;
+                placeOfBirth?: string | null;
+                privateAddress?: components["schemas"]["Address"] | null;
+                privateEmail?: string | null;
+                privatePhone?: string | null;
+            } | null;
+            /** @enum {string} */
+            priority?: "critical" | "high" | "normal" | "low";
+            reason?: string | null;
+            /** @enum {string|null} */
+            salutation?: "mr" | "ms" | "mx" | null;
+            /** Format: uuid */
+            siteId?: string | null;
+            /** Format: uuid */
+            subjectUserId?: string | null;
+            title: string;
+            /** @enum {string} */
+            type: "onboarding" | "offboarding" | "role_change";
+        };
+        CreatePlatformDto: {
+            archived?: boolean;
+            deviceTypeIds: string[];
+            name: string;
+        };
+        CreateTrainingRequestDto: {
+            attachmentIds?: string[] | null;
+            attendees: {
+                /** Format: uuid */
+                costCenterId?: string | null;
+                hotel?: {
+                    /** Format: date */
+                    checkInOn: string;
+                    /** Format: date */
+                    checkOutOn: string;
+                    cost?: {
+                        amountCents: number;
+                        /** @enum {string} */
+                        currency: "EUR";
+                    } | null;
+                } | null;
+                /** Format: uuid */
+                userId: string;
+            }[];
+            certificateExpected: boolean;
+            cost: {
+                amountCents: number;
+                /** @enum {string} */
+                currency: "EUR";
+            };
+            /** Format: uuid */
+            costCenterId?: string | null;
+            /** Format: date */
+            endsOn: string;
+            /** Format: uuid */
+            executiveApproverId?: string | null;
+            /** @enum {string} */
+            format: "in_person" | "online" | "hybrid";
+            location?: string | null;
+            provider: string;
+            registrationDetails?: string | null;
+            registrationUrl?: string | null;
+            reimbursementAgreement: boolean;
+            requesterComment?: string | null;
+            /** Format: date */
+            startsOn: string;
+            topic: string;
+        };
+        Decision_Output: {
+            /** @enum {string} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+            /** Format: date-time */
+            at: string;
+            /** @enum {string|null} */
+            autoApproval: "executive_self" | "requester_is_approver" | "same_approver" | null;
+            by: components["schemas"]["UserRef_Output"] | null;
+            comment: string | null;
+        };
+        DemoLoginDto: {
+            /** @enum {string} */
+            personaKey: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian";
+        };
+        DepartmentDto_Output: {
+            code: string;
+            head: components["schemas"]["UserRef_Output"] | null;
+            /** Format: uuid */
+            id: string;
+            memberCount: number;
+            name: string;
+        };
+        DeputyDto_Output: {
+            /** Format: date-time */
+            createdAt: string;
+            deputy: components["schemas"]["UserRef_Output"];
+            /** Format: uuid */
+            id: string;
+            isActiveNow: boolean;
+            note: string[];
+            principal: components["schemas"]["UserRef_Output"];
+            /** @enum {string} */
+            state: "active" | "upcoming" | "expired";
+            /** Format: date */
+            validFrom: string | null;
+            /** Format: date */
+            validTo: string | null;
+        };
+        DeviceTypeDto_Output: {
+            assetCount: number;
+            code: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            requiresPlatform: boolean;
+            sortOrder: number;
+        };
+        DownloadUrlDto_Output: {
+            /** Format: date-time */
+            expiresAt: string;
+            url: string;
+        };
+        EnumOption: {
+            description: string | null;
+            label: string;
+            /** @enum {string|null} */
+            tone: "neutral" | "waiting" | "you" | "moving" | "positive" | "negative" | "blocked" | null;
+            value: string | number;
+        };
+        EnumsDto: {
+            [key: string]: components["schemas"]["EnumOption"][];
+        };
+        FieldChange_Output: {
+            field: string;
+            from: unknown;
+            label: string;
+            to: unknown;
+        };
+        FlightDetailDto_Output: {
+            handLuggageOnly: boolean;
+            notes: string | null;
+            /** Format: date-time */
+            outboundDepartureAt: string;
+            outboundFrom: string;
+            outboundTo: string;
+            /** Format: date-time */
+            returnDepartureAt: string | null;
+            returnFrom: string | null;
+            returnTo: string | null;
+            /** @enum {string} */
+            tripType: "one_way" | "return";
+        };
+        GoalsDto: {
+            goal1: string | null;
+            goal2: string | null;
+        };
+        HealthDto: {
+            checks: {
+                /** @enum {string} */
+                database: "up" | "down";
+                /** @enum {string} */
+                mail: "up" | "down";
+                /** @enum {string} */
+                queue: "up" | "down";
+            };
+            /** @enum {string} */
+            status: "ok" | "degraded";
+        };
+        InboxCountsDto_Output: {
+            assets: number;
+            high: number;
+            people: number;
+            total: number;
+            training: number;
+            travel: number;
+        };
+        InboxItem_Output: {
+            /** @enum {string|null} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system" | null;
+            actionsPath: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            dueAt: string | null;
+            /** Format: uuid */
+            entityId: string;
+            id: string;
+            link: string;
+            /** @enum {string} */
+            module: "training" | "travel" | "assets" | "people";
+            /** @enum {string} */
+            priority: "high" | "normal";
+            quickActions: string[];
+            reference: string | null;
+            subtitle: string | null;
+            title: string;
+            /** @enum {string} */
+            type: "training.approval_required" | "training.booking_required" | "training.cancellation_review" | "training.rating_due" | "training.goals_missing" | "travel.approval_required" | "travel.booking_required" | "travel.cancellation_review" | "assets.acceptance_required" | "people.reply_required" | "people.triage_required";
+        };
+        InboxResponseDto_Output: {
+            data: components["schemas"]["InboxItem_Output"][];
+            meta: {
+                byModule: {
+                    assets: number;
+                    people: number;
+                    training: number;
+                    travel: number;
+                };
+                high: number;
+                total: number;
+            };
+        };
+        JobDto_Output: {
+            cron: string[];
+            description: string;
+            enabled: boolean;
+            lastRun: {
+                error: string | null;
+                /** Format: date-time */
+                finishedAt: string | null;
+                /** Format: uuid */
+                id: string;
+                jobName: string;
+                /** Format: date-time */
+                startedAt: string;
+                /** @enum {string} */
+                status: "running" | "succeeded" | "failed";
+                summary: {
+                    [key: string]: number | string;
+                };
+                /** @enum {string} */
+                triggeredBy: "cron" | "manual";
+                triggeredByUser: components["schemas"]["UserRef_Output"] | null;
+            } | null;
+            name: string;
+            /** Format: date-time */
+            nextRunAt: string | null;
+            /** @enum {string} */
+            slice: "F" | "A1" | "A2" | "A3" | "A4";
+        };
+        JobRoleDto_Output: {
+            active: boolean;
+            category: string[];
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        JobRunPageDto_Output: {
+            data: {
+                error: string | null;
+                /** Format: date-time */
+                finishedAt: string | null;
+                /** Format: uuid */
+                id: string;
+                jobName: string;
+                /** Format: date-time */
+                startedAt: string;
+                /** @enum {string} */
+                status: "running" | "succeeded" | "failed";
+                summary: {
+                    [key: string]: number | string;
+                };
+                /** @enum {string} */
+                triggeredBy: "cron" | "manual";
+                triggeredByUser: components["schemas"]["UserRef_Output"] | null;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        JobRunStartedDto_Output: {
+            /** Format: uuid */
+            jobRunId: string;
+        };
+        LinkAttachmentsDto: {
+            attachmentIds: string[];
+        };
+        LoginDto: {
+            email: string;
+            password: string;
+        };
+        LoginResponseDto_Output: {
+            accessToken: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** @enum {string} */
+            tokenType: "Bearer";
+            user: {
+                active: boolean;
+                activeDeputyFor: {
+                    principal: components["schemas"]["UserRef_Output"];
+                    /** Format: date */
+                    validFrom: string | null;
+                    /** Format: date */
+                    validTo: string | null;
+                }[];
+                costCenter: components["schemas"]["Ref_Output"];
+                department: components["schemas"]["Ref_Output"] | null;
+                displayName: string;
+                email: string;
+                firstName: string;
+                /** Format: uuid */
+                id: string;
+                initials: string;
+                isExecutive: boolean;
+                isManager: boolean;
+                isSiteManager: boolean;
+                jobTitle: string | null;
+                lastName: string;
+                manager: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string|null} */
+                personaKey: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian" | null;
+                phone: string | null;
+                roles: ("employee" | "manager" | "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+                site: components["schemas"]["Ref_Output"] | null;
+            };
+        };
+        ManufacturerDto_Output: {
+            archived: boolean;
+            assetCount: number;
+            deviceTypeIds: string[];
+            /** Format: uuid */
+            id: string;
+            modelCount: number;
+            name: string;
+        };
+        MeDto_Output: {
+            active: boolean;
+            activeDeputyFor: {
+                principal: components["schemas"]["UserRef_Output"];
+                /** Format: date */
+                validFrom: string | null;
+                /** Format: date */
+                validTo: string | null;
+            }[];
+            costCenter: components["schemas"]["Ref_Output"];
+            department: components["schemas"]["Ref_Output"] | null;
+            displayName: string;
+            email: string;
+            firstName: string;
+            /** Format: uuid */
+            id: string;
+            initials: string;
+            isExecutive: boolean;
+            isManager: boolean;
+            isSiteManager: boolean;
+            jobTitle: string[];
+            lastName: string;
+            manager: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string|null} */
+            personaKey: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian" | null;
+            phone: string[];
+            roles: ("employee" | "manager" | "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            site: components["schemas"]["Ref_Output"] | null;
+        };
+        Money_Output: {
+            amountCents: number;
+            /** @enum {string} */
+            currency: "EUR";
+        };
+        MyAssetsDto_Output: {
+            active: {
+                applicablePlatforms: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                }[];
+                assetTag: string;
+                assignedUser: components["schemas"]["UserRef_Output"] | null;
+                availableActions: components["schemas"]["AssetAction_Output"][];
+                costCenter: components["schemas"]["Ref_Output"];
+                /** Format: date-time */
+                createdAt: string;
+                createdBy: components["schemas"]["UserRef_Output"] | null;
+                currentAssignment: {
+                    /** Format: date-time */
+                    acceptedAt: string | null;
+                    /** Format: date-time */
+                    assignedAt: string;
+                    assignedBy: components["schemas"]["UserRef_Output"];
+                    /** Format: date-time */
+                    declinedAt: string | null;
+                    declineReason: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    note: string | null;
+                    reminderCount: number;
+                    returnCondition: components["schemas"]["ReturnCondition_Output"] | null;
+                    /** Format: date-time */
+                    returnedAt: string | null;
+                    returnNote: string | null;
+                    /** Format: date-time */
+                    unassignedAt: string | null;
+                    user: components["schemas"]["UserRef_Output"];
+                } | null;
+                /** Format: date-time */
+                deletedAt: string | null;
+                deviceType: {
+                    code: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    requiresPlatform: boolean;
+                };
+                /** Format: uuid */
+                id: string;
+                manufacturer: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                mdmEnrolled: boolean;
+                model: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                name: string | null;
+                notes: string | null;
+                platform: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                } | null;
+                /** Format: date */
+                purchaseDate: string | null;
+                serialNumber: string;
+                status: components["schemas"]["AssetStatus_Output"];
+                /** Format: date-time */
+                updatedAt: string;
+                version: number;
+            }[];
+            pending: {
+                applicablePlatforms: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                }[];
+                assetTag: string;
+                assignedUser: components["schemas"]["UserRef_Output"] | null;
+                availableActions: components["schemas"]["AssetAction_Output"][];
+                costCenter: components["schemas"]["Ref_Output"];
+                /** Format: date-time */
+                createdAt: string;
+                createdBy: components["schemas"]["UserRef_Output"] | null;
+                currentAssignment: {
+                    /** Format: date-time */
+                    acceptedAt: string | null;
+                    /** Format: date-time */
+                    assignedAt: string;
+                    assignedBy: components["schemas"]["UserRef_Output"];
+                    /** Format: date-time */
+                    declinedAt: string | null;
+                    declineReason: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    note: string | null;
+                    reminderCount: number;
+                    returnCondition: components["schemas"]["ReturnCondition_Output"] | null;
+                    /** Format: date-time */
+                    returnedAt: string | null;
+                    returnNote: string | null;
+                    /** Format: date-time */
+                    unassignedAt: string | null;
+                    user: components["schemas"]["UserRef_Output"];
+                } | null;
+                /** Format: date-time */
+                deletedAt: string | null;
+                deviceType: {
+                    code: string;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    requiresPlatform: boolean;
+                };
+                /** Format: uuid */
+                id: string;
+                manufacturer: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                mdmEnrolled: boolean;
+                model: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+                name: string | null;
+                notes: string | null;
+                platform: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                } | null;
+                /** Format: date */
+                purchaseDate: string | null;
+                serialNumber: string;
+                status: components["schemas"]["AssetStatus_Output"];
+                /** Format: date-time */
+                updatedAt: string;
+                version: number;
+            }[];
+        };
+        MyDayDto_Output: {
+            assets: {
+                active: number;
+                pendingAcceptance: number;
+            } | null;
+            /** Format: date */
+            date: string;
+            inbox: {
+                high: number;
+                top: components["schemas"]["InboxItem_Output"][];
+                total: number;
+            };
+            links: {
+                active: boolean;
+                category: string | null;
+                description: string | null;
+                icon: string | null;
+                /** Format: uuid */
+                id: string;
+                sortOrder: number;
+                title: string;
+                url: string;
+            }[];
+            news: {
+                author: components["schemas"]["UserRef_Output"];
+                availableActions: ("publish" | "schedule" | "unschedule" | "archive" | "restore" | "edit" | "delete")[];
+                coverImage: {
+                    /** Format: uuid */
+                    attachmentId: string;
+                    /** Format: date-time */
+                    expiresAt: string;
+                    url: string;
+                } | null;
+                /** Format: date-time */
+                expireAt: string | null;
+                /** Format: uuid */
+                id: string;
+                pinned: boolean;
+                /** Format: date-time */
+                publishAt: string | null;
+                /** Format: date-time */
+                publishedAt: string | null;
+                /** @enum {string} */
+                status: "draft" | "scheduled" | "published" | "archived";
+                summary: string;
+                title: string;
+                /** @enum {string} */
+                type: "changelog" | "update" | "information";
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+            upcoming: components["schemas"]["UpcomingItem_Output"][];
+        };
+        MyDeputiesDto_Output: {
+            asDeputy: {
+                /** Format: date-time */
+                createdAt: string;
+                deputy: components["schemas"]["UserRef_Output"];
+                /** Format: uuid */
+                id: string;
+                isActiveNow: boolean;
+                note: string | null;
+                principal: components["schemas"]["UserRef_Output"];
+                /** @enum {string} */
+                state: "active" | "upcoming" | "expired";
+                /** Format: date */
+                validFrom: string | null;
+                /** Format: date */
+                validTo: string | null;
+            }[];
+            asPrincipal: {
+                /** Format: date-time */
+                createdAt: string;
+                deputy: components["schemas"]["UserRef_Output"];
+                /** Format: uuid */
+                id: string;
+                isActiveNow: boolean;
+                note: string | null;
+                principal: components["schemas"]["UserRef_Output"];
+                /** @enum {string} */
+                state: "active" | "upcoming" | "expired";
+                /** Format: date */
+                validFrom: string | null;
+                /** Format: date */
+                validTo: string | null;
+            }[];
+        };
+        NewsPostDetailDto_Output: {
+            author: components["schemas"]["UserRef_Output"];
+            availableActions: ("publish" | "schedule" | "unschedule" | "archive" | "restore" | "edit" | "delete")[];
+            bodyHtml: string;
+            coverImage: {
+                /** Format: uuid */
+                attachmentId: string;
+                /** Format: date-time */
+                expiresAt: string;
+                url: string;
+            } | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            expireAt: string | null;
+            /** Format: uuid */
+            id: string;
+            pinned: boolean;
+            /** Format: date-time */
+            publishAt: string | null;
+            /** Format: date-time */
+            publishedAt: string | null;
+            /** @enum {string} */
+            status: "draft" | "scheduled" | "published" | "archived";
+            summary: string;
+            title: string;
+            /** @enum {string} */
+            type: "changelog" | "update" | "information";
+            /** Format: date-time */
+            updatedAt: string;
+            version: number;
+        };
+        NewsPostPageDto_Output: {
+            data: {
+                author: components["schemas"]["UserRef_Output"];
+                availableActions: ("publish" | "schedule" | "unschedule" | "archive" | "restore" | "edit" | "delete")[];
+                coverImage: {
+                    /** Format: uuid */
+                    attachmentId: string;
+                    /** Format: date-time */
+                    expiresAt: string;
+                    url: string;
+                } | null;
+                /** Format: date-time */
+                expireAt: string | null;
+                /** Format: uuid */
+                id: string;
+                pinned: boolean;
+                /** Format: date-time */
+                publishAt: string | null;
+                /** Format: date-time */
+                publishedAt: string | null;
+                /** @enum {string} */
+                status: "draft" | "scheduled" | "published" | "archived";
+                summary: string;
+                title: string;
+                /** @enum {string} */
+                type: "changelog" | "update" | "information";
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        NotificationPageDto_Output: {
+            data: {
+                body: string;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: uuid */
+                id: string;
+                link: string | null;
+                /** @enum {string} */
+                module: "core" | "training" | "travel" | "assets" | "people" | "news";
+                /** @enum {string} */
+                priority: "high" | "normal";
+                /** Format: date-time */
+                readAt: string | null;
+                templateId: string;
+                title: string;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+                unread: number;
+            };
+        };
+        PeopleCommentDto_Output: {
+            author: components["schemas"]["UserRef_Output"];
+            body: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            id: string;
+            internal: boolean;
+            /** @enum {string} */
+            kind: "comment" | "question" | "status_note";
+        };
+        PeopleQueueCountsDto_Output: {
+            mine: {
+                open: number;
+                waitingOnMe: number;
+            };
+            ops: {
+                critical: number;
+                inProgress: number;
+                open: number;
+                reopened: number;
+                unassigned: number;
+                waiting: number;
+            } | null;
+        };
+        PeopleRequestDetailDto_Output: {
+            assignee: components["schemas"]["UserRef_Output"] | null;
+            attachments: components["schemas"]["AttachmentDto_Output"][];
+            availableActions: ("start_work" | "wait_internal" | "wait_on_requester" | "resume" | "complete" | "reject" | "cancel" | "reopen" | "edit" | "edit_internal" | "comment" | "comment_internal")[];
+            /** Format: date-time */
+            closedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            department: components["schemas"]["Ref_Output"] | null;
+            /** Format: date */
+            effectiveDate: string;
+            equipmentNotes: string[];
+            firstName: string;
+            furtherInformation: string[];
+            /** Format: uuid */
+            id: string;
+            internalNote: string[];
+            jobRole: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            } | null;
+            lastName: string;
+            manager: components["schemas"]["UserRef_Output"] | null;
+            managerDeputy: components["schemas"]["UserRef_Output"] | null;
+            openQuestion: {
+                author: components["schemas"]["UserRef_Output"];
+                body: string;
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: uuid */
+                id: string;
+                internal: boolean;
+                /** @enum {string} */
+                kind: "comment" | "question" | "status_note";
+            } | null;
+            personalData: {
+                /** Format: date */
+                birthDate: string | null;
+                nationality: string | null;
+                placeOfBirth: string | null;
+                privateAddress: {
+                    city: string;
+                    countryCode: string;
+                    houseNumber: string;
+                    postalCode: string;
+                    street: string;
+                } | null;
+                privateEmail: string | null;
+                privatePhone: string | null;
+            } | null;
+            personalDataRedacted: boolean;
+            /** @enum {string} */
+            priority: "critical" | "high" | "normal" | "low";
+            reason: string[];
+            reference: string;
+            requester: components["schemas"]["UserRef_Output"];
+            /** @enum {string|null} */
+            salutation: "mr" | "ms" | "mx" | null;
+            site: components["schemas"]["Ref_Output"] | null;
+            /** @enum {string} */
+            status: "open" | "in_progress" | "waiting_internal" | "waiting_on_requester" | "reopened" | "completed" | "rejected" | "cancelled";
+            statusReason: string[];
+            subjectName: string;
+            subjectUser: components["schemas"]["UserRef_Output"] | null;
+            title: string;
+            /** @enum {string} */
+            type: "onboarding" | "offboarding" | "role_change";
+            /** Format: date-time */
+            updatedAt: string;
+            version: number;
+        };
+        PeopleRequestPageDto_Output: {
+            data: {
+                assignee: components["schemas"]["UserRef_Output"] | null;
+                availableActions: ("start_work" | "wait_internal" | "wait_on_requester" | "resume" | "complete" | "reject" | "cancel" | "reopen" | "edit" | "edit_internal" | "comment" | "comment_internal")[];
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date */
+                effectiveDate: string;
+                /** Format: uuid */
+                id: string;
+                jobRole: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                } | null;
+                manager: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string} */
+                priority: "critical" | "high" | "normal" | "low";
+                reference: string;
+                requester: components["schemas"]["UserRef_Output"];
+                /** @enum {string} */
+                status: "open" | "in_progress" | "waiting_internal" | "waiting_on_requester" | "reopened" | "completed" | "rejected" | "cancelled";
+                subjectName: string;
+                subjectUser: components["schemas"]["UserRef_Output"] | null;
+                title: string;
+                /** @enum {string} */
+                type: "onboarding" | "offboarding" | "role_change";
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        PersonaDto_Output: {
+            department: string;
+            displayName: string;
+            email: string;
+            highlights: string[];
+            jobTitle: string;
+            /** @enum {string} */
+            key: "emma" | "max" | "sofia" | "clara" | "tom" | "tina" | "arne" | "paula" | "ian";
+            roles: ("employee" | "manager" | "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            tagline: string;
+        };
+        PlatformDto_Output: {
+            archived: boolean;
+            assetCount: number;
+            deviceTypeIds: string[];
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        /** @description RFC 9457 problem details (API.md §2.4) */
         ProblemDetails: {
+            /** @enum {string} */
+            code: "validation_failed" | "unauthenticated" | "invalid_credentials" | "forbidden" | "not_found" | "invalid_transition" | "version_conflict" | "conflict" | "serial_taken" | "model_in_use" | "in_use" | "deputy_overlap" | "payload_too_large" | "unsupported_media_type" | "idempotency_key_reused" | "rate_limited" | "internal_error";
             detail?: string;
-            /** @description Field errors keyed by dotted path (422 only). "_root" holds payload-level errors. */
+            /** @description Field errors keyed by dot path (422 only). "_root" holds payload-level errors. */
             errors?: {
                 [key: string]: string[];
             };
-            /** @example /api/v1/example */
+            /** @example /api/v1/me/deputies */
             instance?: string;
-            requestId?: string;
             /** @example 422 */
             status: number;
             /** @example Validation failed */
             title: string;
+            /** @description Same value as the X-Request-Id response header */
+            traceId: string;
             /**
              * Format: uri
-             * @example https://atrium.example.com/problems/validation-error
+             * @example https://atrium.example.com/problems/validation_failed
              */
             type: string;
+        };
+        PublicConfigDto_Output: {
+            allowedMimeTypes: {
+                [key: string]: string[];
+            };
+            assetAcceptanceDueDays: number;
+            demoMode: boolean;
+            goalsReminderDaysBefore: number;
+            peopleReopenWindowDays: number;
+            ratingDelaysDays: {
+                loop1: number;
+                loop2: number;
+                loop3: number;
+            };
+            ratingOverdueDays: number;
+            ratingReminderCadenceDays: number;
+            ratingReminderMax: number;
+            timezone: string;
+            trainingExecutiveThreshold: components["schemas"]["Money_Output"];
+            trainingHighPriorityDays: number;
+            travelHighPriorityDays: number;
+            uploadMaxBytes: number;
+        };
+        RatingStatsDto_Output: {
+            /** Format: date */
+            from: string | null;
+            loop1: {
+                avgExpectations: number | null;
+                avgOverall: number | null;
+                avgTrainer: number | null;
+                participatedRate: number;
+                submitted: number;
+            };
+            loop2: {
+                distribution: {
+                    appliesLearned: {
+                        A: number;
+                        B: number;
+                        C: number;
+                        D: number;
+                    };
+                    supervisorSupported: {
+                        A: number;
+                        B: number;
+                        C: number;
+                        D: number;
+                    };
+                    worthwhileForOrganization: {
+                        A: number;
+                        B: number;
+                        C: number;
+                        D: number;
+                    };
+                };
+                submitted: number;
+            };
+            loop3: {
+                certificationRate: number | null;
+                distribution: {
+                    1: number;
+                    2: number;
+                    3: number;
+                    4: number;
+                };
+                submitted: number;
+            };
+            open: {
+                due: number;
+                maxedOut: number;
+                overdue: number;
+            };
+            /** Format: date */
+            to: string | null;
+        };
+        RatingSubmissionDto: {
+            /** @enum {string} */
+            appliesLearned?: "A" | "B" | "C" | "D";
+            certificationComment?: string | null;
+            certificationGained?: boolean;
+            comment?: string | null;
+            expectationsGrade?: number | null;
+            improvementObserved?: number;
+            loop: 1 | 2 | 3;
+            overallGrade?: number | null;
+            participated?: boolean;
+            /** @enum {string} */
+            supervisorSupported?: "A" | "B" | "C" | "D";
+            trainerGrade?: number | null;
+            /** @enum {string} */
+            worthwhileForOrganization?: "A" | "B" | "C" | "D";
+        };
+        Ref_Output: {
+            code: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        ReorderLinksDto: {
+            ids: string[];
+        };
+        /** @enum {string} */
+        ReturnCondition_Output: "ok" | "damaged";
+        SearchHit_Output: {
+            /** Format: uuid */
+            id: string;
+            link: string;
+            /** @enum {string} */
+            module: "training" | "travel" | "assets" | "people" | "news";
+            reference: string | null;
+            subtitle: string | null;
+            title: string;
+            /** @enum {string} */
+            type: "training_request" | "training_participation" | "travel_request" | "asset" | "people_request" | "news_post";
+        };
+        SearchResponseDto_Output: {
+            data: components["schemas"]["SearchHit_Output"][];
+        };
+        SiteDto_Output: {
+            code: string;
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        TimelineDto_Output: {
+            /** @enum {string} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+            action: string;
+            actor: components["schemas"]["UserRef_Output"] | null;
+            changes: components["schemas"]["FieldChange_Output"][] | null;
+            /** Format: uuid */
+            entityId: string;
+            entityLabel: string;
+            entityType: string;
+            fromState: string[];
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            occurredAt: string;
+            reason: string[];
+            summary: string;
+            toState: string[];
+        };
+        TimelineEntry_Output: {
+            /** @enum {string} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+            action: string;
+            actor: components["schemas"]["UserRef_Output"] | null;
+            changes: components["schemas"]["FieldChange_Output"][] | null;
+            /** Format: uuid */
+            entityId: string;
+            entityLabel: string;
+            entityType: string;
+            fromState: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            occurredAt: string;
+            reason: string | null;
+            summary: string;
+            toState: string | null;
+        };
+        TrainDetailDto_Output: {
+            companions: components["schemas"]["UserRef_Output"][];
+            /** @enum {string} */
+            fareType: "saver" | "flex";
+            fromStation: string;
+            localTransportTicket: boolean;
+            notes: string | null;
+            /** Format: date-time */
+            outboundAt: string;
+            /** Format: date-time */
+            returnAt: string | null;
+            seatReservations: number;
+            separateTickets: boolean;
+            toStation: string;
+            /** @enum {string} */
+            tripType: "one_way" | "return";
+            viaStation: string | null;
+        };
+        TrainingAttachmentDto_Output: {
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: uuid */
+            id: string;
+            mimeType: string;
+            originalName: string;
+            /** @enum {string} */
+            purpose: "training_document" | "training_booking_document" | "travel_booking_confirmation" | "news_cover" | "people_document";
+            sizeBytes: number;
+            uploadedBy: components["schemas"]["UserRef_Output"];
+        };
+        TrainingAttendeeDto_Output: {
+            approver: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string} */
+            approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback";
+            attachments: components["schemas"]["AttachmentDto_Output"][];
+            availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "edit_goals")[];
+            /** Format: date-time */
+            bookedAt: string | null;
+            bookingImpossibleReason: string[];
+            bookingReference: string[];
+            cancellationReason: string[];
+            /** Format: date-time */
+            cancellationRequestedAt: string | null;
+            /** Format: date-time */
+            cancelledAt: string | null;
+            costCenter: components["schemas"]["Ref_Output"];
+            declineReason: string[];
+            escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+            executiveApprover: components["schemas"]["UserRef_Output"] | null;
+            executiveDecision: components["schemas"]["Decision_Output"] | null;
+            goals: {
+                goal1: string | null;
+                goal2: string | null;
+                /** Format: date-time */
+                updatedAt: string | null;
+            };
+            hotel: {
+                /** Format: date */
+                checkInOn: string;
+                /** Format: date */
+                checkOutOn: string;
+                cost: components["schemas"]["Money_Output"] | null;
+            } | null;
+            /** Format: uuid */
+            id: string;
+            isHighPriority: boolean;
+            managerDecision: components["schemas"]["Decision_Output"] | null;
+            ratings: components["schemas"]["TrainingRatingBrief_Output"][];
+            /** Format: uuid */
+            requestId: string;
+            /** @enum {string} */
+            status: "pending_manager_approval" | "pending_executive_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled" | "attended" | "not_attended";
+            /** Format: date-time */
+            updatedAt: string;
+            user: components["schemas"]["UserRef_Output"];
+            version: number;
+        };
+        TrainingCountsDto_Output: {
+            approvals: {
+                deputy: number;
+                executive: number;
+                manager: number;
+                team: number;
+            };
+            mine: {
+                active: number;
+                goalsMissing: number;
+                ratingsDue: number;
+            };
+            office: {
+                billingOpen: number;
+                bookingImpossible: number;
+                cancellationRequested: number;
+                pendingApproval: number;
+                ratingsOverdue: number;
+                toBook: number;
+            } | null;
+        };
+        TrainingParticipationDetailDto_Output: {
+            approver: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string} */
+            approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback";
+            attachments: components["schemas"]["AttachmentDto_Output"][];
+            availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "edit_goals")[];
+            /** Format: date-time */
+            bookedAt: string | null;
+            bookingImpossibleReason: string[];
+            bookingReference: string[];
+            cancellationReason: string[];
+            /** Format: date-time */
+            cancellationRequestedAt: string | null;
+            /** Format: date-time */
+            cancelledAt: string | null;
+            costCenter: components["schemas"]["Ref_Output"];
+            declineReason: string[];
+            escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+            executiveApprover: components["schemas"]["UserRef_Output"] | null;
+            executiveDecision: components["schemas"]["Decision_Output"] | null;
+            goals: {
+                goal1: string | null;
+                goal2: string | null;
+                /** Format: date-time */
+                updatedAt: string | null;
+            };
+            hotel: {
+                /** Format: date */
+                checkInOn: string;
+                /** Format: date */
+                checkOutOn: string;
+                cost: components["schemas"]["Money_Output"] | null;
+            } | null;
+            /** Format: uuid */
+            id: string;
+            isHighPriority: boolean;
+            managerDecision: components["schemas"]["Decision_Output"] | null;
+            ratings: components["schemas"]["TrainingRatingBrief_Output"][];
+            request: {
+                actualCost: components["schemas"]["Money_Output"] | null;
+                attachments: components["schemas"]["AttachmentDto_Output"][];
+                attendeeCount: number;
+                /** @enum {string} */
+                billingStatus: "open" | "invoice_received" | "free_of_charge";
+                certificateExpected: boolean;
+                cost: components["schemas"]["Money_Output"];
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date */
+                endsOn: string;
+                executiveStepRequired: boolean;
+                /** @enum {string} */
+                format: "in_person" | "online" | "hybrid";
+                /** Format: uuid */
+                id: string;
+                location: string | null;
+                provider: string;
+                reference: string;
+                registrationDetails: string | null;
+                registrationUrl: string | null;
+                reimbursementAgreement: boolean;
+                requester: components["schemas"]["UserRef_Output"];
+                requesterComment: string | null;
+                /** Format: date */
+                startsOn: string;
+                statusCounts: {
+                    [key: string]: number;
+                };
+                topic: string;
+                /** Format: date-time */
+                updatedAt: string;
+            };
+            /** Format: uuid */
+            requestId: string;
+            /** @enum {string} */
+            status: "pending_manager_approval" | "pending_executive_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled" | "attended" | "not_attended";
+            /** Format: date-time */
+            updatedAt: string;
+            user: components["schemas"]["UserRef_Output"];
+            version: number;
+        };
+        TrainingParticipationPageDto_Output: {
+            data: {
+                /** @enum {string|null} */
+                actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system" | null;
+                approver: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string} */
+                approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback";
+                availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "edit_goals")[];
+                escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+                executiveApprover: components["schemas"]["UserRef_Output"] | null;
+                goalsSet: boolean;
+                hotelNeeded: boolean;
+                /** Format: uuid */
+                id: string;
+                isHighPriority: boolean;
+                openRating: {
+                    /** Format: date-time */
+                    dueAt: string;
+                    /** Format: uuid */
+                    id: string;
+                    loop: 1 | 2 | 3;
+                    /** @enum {string} */
+                    state: "upcoming" | "due" | "overdue" | "submitted";
+                } | null;
+                request: {
+                    cost: components["schemas"]["Money_Output"];
+                    /** Format: date */
+                    endsOn: string;
+                    executiveStepRequired: boolean;
+                    /** @enum {string} */
+                    format: "in_person" | "online" | "hybrid";
+                    /** Format: uuid */
+                    id: string;
+                    provider: string;
+                    reference: string;
+                    requester: components["schemas"]["UserRef_Output"];
+                    /** Format: date */
+                    startsOn: string;
+                    topic: string;
+                };
+                /** @enum {string} */
+                status: "pending_manager_approval" | "pending_executive_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled" | "attended" | "not_attended";
+                /** Format: date-time */
+                updatedAt: string;
+                user: components["schemas"]["UserRef_Output"];
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        TrainingPreviewDto_Output: {
+            attendees: {
+                activeDeputies: components["schemas"]["UserRef_Output"][];
+                allowed: boolean;
+                approver: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string} */
+                approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback";
+                /** @enum {string|null} */
+                autoApproval: "executive_self" | "requester_is_approver" | "same_approver" | null;
+                escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string|null} */
+                executiveAutoApproval: "executive_self" | "requester_is_approver" | "same_approver" | null;
+                /** @enum {string} */
+                initialState: "pending_manager_approval" | "pending_executive_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled" | "attended" | "not_attended";
+                notAllowedReason: string | null;
+                user: components["schemas"]["UserRef_Output"];
+            }[];
+            executiveApprover: components["schemas"]["UserRef_Output"] | null;
+            executiveCandidates: components["schemas"]["UserRef_Output"][];
+            executiveStepRequired: boolean;
+            threshold: components["schemas"]["Money_Output"];
+        };
+        TrainingPreviewRequestDto: {
+            /** @default [] */
+            attendees: {
+                /** Format: uuid */
+                userId: string;
+            }[];
+            cost?: {
+                amountCents: number;
+                /** @enum {string} */
+                currency: "EUR";
+            } | null;
+            /** Format: uuid */
+            executiveApproverId?: string | null;
+        };
+        TrainingRatingBrief_Output: {
+            /** Format: date-time */
+            dueAt: string;
+            /** Format: uuid */
+            id: string;
+            loop: 1 | 2 | 3;
+            rater: components["schemas"]["UserRef_Output"];
+            /** @enum {string} */
+            state: "upcoming" | "due" | "overdue" | "submitted";
+            /** Format: date-time */
+            submittedAt: string | null;
+        };
+        TrainingRatingDto_Output: {
+            answers: ({
+                comment: string | null;
+                expectationsGrade: number | null;
+                /** @enum {number} */
+                loop: 1;
+                overallGrade: number | null;
+                participated: boolean;
+                trainerGrade: number | null;
+            } | {
+                /** @enum {string} */
+                appliesLearned: "A" | "B" | "C" | "D";
+                comment: string | null;
+                /** @enum {number} */
+                loop: 2;
+                /** @enum {string} */
+                supervisorSupported: "A" | "B" | "C" | "D";
+                /** @enum {string} */
+                worthwhileForOrganization: "A" | "B" | "C" | "D";
+            } | {
+                certificationComment: string | null;
+                certificationGained: boolean;
+                comment: string | null;
+                improvementObserved: number;
+                /** @enum {number} */
+                loop: 3;
+            }) | null;
+            attendee: {
+                /** Format: uuid */
+                id: string;
+                user: components["schemas"]["UserRef_Output"];
+            };
+            availableActions: "submit"[];
+            /** Format: date-time */
+            dueAt: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            lastRemindedAt: string | null;
+            loop: 1 | 2 | 3;
+            rater: components["schemas"]["UserRef_Output"];
+            reminderCount: number;
+            /** @enum {string} */
+            state: "upcoming" | "due" | "overdue" | "submitted";
+            /** Format: date-time */
+            submittedAt: string | null;
+            training: {
+                /** Format: date */
+                endsOn: string;
+                provider: string;
+                reference: string;
+                /** Format: uuid */
+                requestId: string;
+                /** Format: date */
+                startsOn: string;
+                topic: string;
+            };
+        };
+        TrainingRatingPageDto_Output: {
+            data: {
+                answers: ({
+                    comment: string | null;
+                    expectationsGrade: number | null;
+                    /** @enum {number} */
+                    loop: 1;
+                    overallGrade: number | null;
+                    participated: boolean;
+                    trainerGrade: number | null;
+                } | {
+                    /** @enum {string} */
+                    appliesLearned: "A" | "B" | "C" | "D";
+                    comment: string | null;
+                    /** @enum {number} */
+                    loop: 2;
+                    /** @enum {string} */
+                    supervisorSupported: "A" | "B" | "C" | "D";
+                    /** @enum {string} */
+                    worthwhileForOrganization: "A" | "B" | "C" | "D";
+                } | {
+                    certificationComment: string | null;
+                    certificationGained: boolean;
+                    comment: string | null;
+                    improvementObserved: number;
+                    /** @enum {number} */
+                    loop: 3;
+                }) | null;
+                attendee: {
+                    /** Format: uuid */
+                    id: string;
+                    user: components["schemas"]["UserRef_Output"];
+                };
+                availableActions: "submit"[];
+                /** Format: date-time */
+                dueAt: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                lastRemindedAt: string | null;
+                loop: 1 | 2 | 3;
+                rater: components["schemas"]["UserRef_Output"];
+                reminderCount: number;
+                /** @enum {string} */
+                state: "upcoming" | "due" | "overdue" | "submitted";
+                /** Format: date-time */
+                submittedAt: string | null;
+                training: {
+                    /** Format: date */
+                    endsOn: string;
+                    provider: string;
+                    reference: string;
+                    /** Format: uuid */
+                    requestId: string;
+                    /** Format: date */
+                    startsOn: string;
+                    topic: string;
+                };
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        TrainingRequestDetailDto_Output: {
+            actualCost: components["schemas"]["Money_Output"] | null;
+            attachments: components["schemas"]["AttachmentDto_Output"][];
+            attendeeCount: number;
+            attendees: {
+                approver: components["schemas"]["UserRef_Output"] | null;
+                /** @enum {string} */
+                approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback";
+                attachments: components["schemas"]["AttachmentDto_Output"][];
+                availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "edit_goals")[];
+                /** Format: date-time */
+                bookedAt: string | null;
+                bookingImpossibleReason: string | null;
+                bookingReference: string | null;
+                cancellationReason: string | null;
+                /** Format: date-time */
+                cancellationRequestedAt: string | null;
+                /** Format: date-time */
+                cancelledAt: string | null;
+                costCenter: components["schemas"]["Ref_Output"];
+                declineReason: string | null;
+                escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+                executiveApprover: components["schemas"]["UserRef_Output"] | null;
+                executiveDecision: components["schemas"]["Decision_Output"] | null;
+                goals: {
+                    goal1: string | null;
+                    goal2: string | null;
+                    /** Format: date-time */
+                    updatedAt: string | null;
+                };
+                hotel: {
+                    /** Format: date */
+                    checkInOn: string;
+                    /** Format: date */
+                    checkOutOn: string;
+                    cost: components["schemas"]["Money_Output"] | null;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                isHighPriority: boolean;
+                managerDecision: components["schemas"]["Decision_Output"] | null;
+                ratings: components["schemas"]["TrainingRatingBrief_Output"][];
+                /** Format: uuid */
+                requestId: string;
+                /** @enum {string} */
+                status: "pending_manager_approval" | "pending_executive_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled" | "attended" | "not_attended";
+                /** Format: date-time */
+                updatedAt: string;
+                user: components["schemas"]["UserRef_Output"];
+                version: number;
+            }[];
+            availableActions: ("edit" | "edit_back_office" | "add_attendee" | "add_attachment")[];
+            backOffice: {
+                actualCost: components["schemas"]["Money_Output"] | null;
+                /** @enum {string} */
+                billingStatus: "open" | "invoice_received" | "free_of_charge";
+                comment: string | null;
+            } | null;
+            /** @enum {string} */
+            billingStatus: "open" | "invoice_received" | "free_of_charge";
+            certificateExpected: boolean;
+            cost: components["schemas"]["Money_Output"];
+            costCenter: components["schemas"]["Ref_Output"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date */
+            endsOn: string;
+            executiveApprover: components["schemas"]["UserRef_Output"] | null;
+            executiveStepRequired: boolean;
+            /** @enum {string} */
+            format: "in_person" | "online" | "hybrid";
+            /** Format: uuid */
+            id: string;
+            location: string[];
+            provider: string;
+            reference: string;
+            registrationDetails: string[];
+            registrationUrl: string[];
+            reimbursementAgreement: boolean;
+            requester: components["schemas"]["UserRef_Output"];
+            requesterComment: string[];
+            /** Format: date */
+            startsOn: string;
+            statusCounts: {
+                [key: string]: number;
+            };
+            topic: string;
+            /** Format: date-time */
+            updatedAt: string;
+            version: number;
+        };
+        TrainingRequestPageDto_Output: {
+            data: {
+                actualCost: components["schemas"]["Money_Output"] | null;
+                attendeeCount: number;
+                /** @enum {string} */
+                billingStatus: "open" | "invoice_received" | "free_of_charge";
+                cost: components["schemas"]["Money_Output"];
+                /** Format: date-time */
+                createdAt: string;
+                /** Format: date */
+                endsOn: string;
+                executiveStepRequired: boolean;
+                /** @enum {string} */
+                format: "in_person" | "online" | "hybrid";
+                /** Format: uuid */
+                id: string;
+                location: string | null;
+                provider: string;
+                reference: string;
+                requester: components["schemas"]["UserRef_Output"];
+                /** Format: date */
+                startsOn: string;
+                statusCounts: {
+                    [key: string]: number;
+                };
+                topic: string;
+                /** Format: date-time */
+                updatedAt: string;
+            }[];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        TrainingTimelineEntryDto_Output: {
+            /** @enum {string} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+            action: string;
+            actor: components["schemas"]["UserRef_Output"] | null;
+            changes: components["schemas"]["FieldChange_Output"][] | null;
+            /** Format: uuid */
+            entityId: string;
+            entityLabel: string;
+            entityType: string;
+            fromState: string[];
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            occurredAt: string;
+            reason: string[];
+            summary: string;
+            toState: string[];
+        };
+        TravelBookingDto_Output: {
+            attachments: components["schemas"]["AttachmentDto_Output"][];
+            /** Format: date-time */
+            bookedAt: string;
+            bookedBy: components["schemas"]["UserRef_Output"];
+            bookingNumber: string;
+            comment: string | null;
+            pinAvailable: boolean;
+        };
+        TravelCountsDto_Output: {
+            approvals: {
+                deputy: number;
+                mine: number;
+                team: number;
+            };
+            desk: {
+                bookingImpossible: number;
+                cancellationRequested: number;
+                pendingApproval: number;
+                toBook: number;
+                toBookHighPriority: number;
+            } | null;
+            mine: {
+                active: number;
+            };
+        };
+        TravelExemptionDto_Output: {
+            /** @enum {string} */
+            code: "executive_traveller";
+            label: string;
+        };
+        TravelPinDto_Output: {
+            pin: string;
+        };
+        TravelPreviewDto_Output: {
+            approverCandidates: components["schemas"]["ApproverCandidate_Output"][];
+            /** @enum {string|null} */
+            autoApproval: "executive_self" | "requester_is_approver" | "same_approver" | null;
+            /** Format: uuid */
+            defaultApproverId: string | null;
+            exemption: components["schemas"]["TravelExemptionDto_Output"] | null;
+            isHighPriority: boolean;
+            needsApproval: boolean;
+            reasons: components["schemas"]["TravelReasonDto_Output"][];
+            specialEquipmentReasonRequired: boolean;
+        };
+        TravelPreviewRequestDto: {
+            /**
+             * Format: uuid
+             * @default null
+             */
+            approverId: string | null;
+            /** @default null */
+            car: {
+                /**
+                 * Format: uuid
+                 * @default null
+                 */
+                carClassId: string | null;
+                /** @default null */
+                destination: string | null;
+                /** @default null */
+                driver: {
+                    /** @default null */
+                    additionalDrivers: string | null;
+                    /** @default null */
+                    birthDate: string | null;
+                    /** @default null */
+                    email: string | null;
+                    /** @default null */
+                    firstName: string | null;
+                    /** @default null */
+                    lastName: string | null;
+                    /** @default null */
+                    licenceNumber: string | null;
+                    /** @default null */
+                    phone: string | null;
+                } | null;
+                /** @default null */
+                dropOff: {
+                    /** @default null */
+                    address: {
+                        /** @default null */
+                        city: string | null;
+                        /** @default null */
+                        countryCode: string | null;
+                        /** @default null */
+                        houseNumber: string | null;
+                        /** @default null */
+                        postalCode: string | null;
+                        /** @default null */
+                        street: string | null;
+                    } | null;
+                    /** @default null */
+                    branch: string | null;
+                    /**
+                     * @default null
+                     * @enum {string|null}
+                     */
+                    mode: "branch" | "collection" | null;
+                } | null;
+                /** @default null */
+                equipment: {
+                    /** @default null */
+                    automaticPreferred: boolean | null;
+                    /** @default null */
+                    automaticRequired: boolean | null;
+                    /** @default null */
+                    childSeat: boolean | null;
+                    /** @default null */
+                    diesel: boolean | null;
+                    /** @default null */
+                    estate: boolean | null;
+                    /** @default null */
+                    foreignTravel: boolean | null;
+                    /** @default null */
+                    navigation: boolean | null;
+                    /** @default null */
+                    winterTyres: boolean | null;
+                } | null;
+                /** @default null */
+                expectedKmPerDay: number | null;
+                /** @default null */
+                foreignCountries: string[] | null;
+                /** @default null */
+                handover: {
+                    /** @default null */
+                    address: {
+                        /** @default null */
+                        city: string | null;
+                        /** @default null */
+                        countryCode: string | null;
+                        /** @default null */
+                        houseNumber: string | null;
+                        /** @default null */
+                        postalCode: string | null;
+                        /** @default null */
+                        street: string | null;
+                    } | null;
+                    /** @default null */
+                    branch: string | null;
+                    /**
+                     * @default null
+                     * @enum {string|null}
+                     */
+                    mode: "branch" | "delivery" | null;
+                } | null;
+                /** @default null */
+                minPayloadKg: number | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                pickupAt: string | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                returnAt: string | null;
+                /** @default null */
+                specialEquipmentReason: string | null;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                vehicleType: "car" | "van" | null;
+            } | null;
+            /** @default null */
+            comment: string[];
+            /**
+             * Format: uuid
+             * @default null
+             */
+            costCenterId: string | null;
+            /** @default null */
+            costCenterReason: string[];
+            /** @default null */
+            flight: {
+                /** @default null */
+                handLuggageOnly: boolean | null;
+                /** @default null */
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                outboundDepartureAt: string | null;
+                /** @default null */
+                outboundFrom: string | null;
+                /** @default null */
+                outboundTo: string | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                returnDepartureAt: string | null;
+                /** @default null */
+                returnFrom: string | null;
+                /** @default null */
+                returnTo: string | null;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                tripType: "one_way" | "return" | null;
+            } | null;
+            /** @enum {string} */
+            kind: "car" | "train" | "flight";
+            /** @default null */
+            recharge: {
+                /** @default null */
+                customer: string | null;
+                /** @default null */
+                projectNumber: string | null;
+            } | null;
+            /** @default null */
+            train: {
+                /** @default null */
+                companionIds: string[] | null;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                fareType: "saver" | "flex" | null;
+                /** @default null */
+                fromStation: string | null;
+                /** @default null */
+                localTransportTicket: boolean | null;
+                /** @default null */
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                outboundAt: string | null;
+                /**
+                 * Format: date-time
+                 * @default null
+                 */
+                returnAt: string | null;
+                /** @default null */
+                seatReservations: number | null;
+                /** @default null */
+                separateTickets: boolean | null;
+                /** @default null */
+                toStation: string | null;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                tripType: "one_way" | "return" | null;
+                /** @default null */
+                viaStation: string | null;
+            } | null;
+            /** Format: uuid */
+            travellerId: string;
+        };
+        TravelReasonDto_Output: {
+            /** @enum {string} */
+            code: "vehicle_class_upgrade" | "car_estate" | "car_automatic_preferred" | "car_automatic_required" | "car_diesel" | "car_foreign_travel" | "car_delivery" | "car_collection" | "train_saver_fare" | "train_separate_tickets" | "flight";
+            label: string;
+        };
+        TravelRequestDetailDto_Output: {
+            /** @enum {string|null} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system" | null;
+            approval: components["schemas"]["Decision_Output"] | null;
+            approvalExemption: components["schemas"]["TravelExemptionDto_Output"] | null;
+            approvalReasons: components["schemas"]["TravelReasonDto_Output"][];
+            approver: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string|null} */
+            approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback" | null;
+            /** @enum {string|null} */
+            approverSelection: "auto" | "manual" | null;
+            availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "view_pin")[];
+            booking: components["schemas"]["TravelBookingDto_Output"] | null;
+            bookingImpossibleReason: string[];
+            cancellationReason: string[];
+            /** Format: date-time */
+            cancellationRequestedAt: string | null;
+            /** Format: date-time */
+            cancelledAt: string | null;
+            car: components["schemas"]["CarDetailDto_Output"] | null;
+            comment: string[];
+            costCenter: components["schemas"]["Ref_Output"];
+            costCenterReason: string[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            declinedAt: string | null;
+            declineReason: string[];
+            /** Format: date-time */
+            endsAt: string | null;
+            escalatedFrom: components["schemas"]["UserRef_Output"] | null;
+            flight: components["schemas"]["FlightDetailDto_Output"] | null;
+            /** Format: uuid */
+            id: string;
+            isHighPriority: boolean;
+            /** @enum {string} */
+            kind: "car" | "train" | "flight";
+            needsApproval: boolean;
+            recharge: {
+                customer: string;
+                projectNumber: string;
+            } | null;
+            reference: string;
+            requester: components["schemas"]["UserRef_Output"];
+            route: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** @enum {string} */
+            status: "pending_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled";
+            train: components["schemas"]["TrainDetailDto_Output"] | null;
+            traveller: components["schemas"]["UserRef_Output"];
+            /** Format: date-time */
+            updatedAt: string;
+            version: number;
+        };
+        TravelRequestPageDto_Output: {
+            data: components["schemas"]["TravelRequestSummary_Output"][];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        TravelRequestSummary_Output: {
+            /** @enum {string|null} */
+            actingAs: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system" | null;
+            approvalExemption: components["schemas"]["TravelExemptionDto_Output"] | null;
+            approvalReasons: components["schemas"]["TravelReasonDto_Output"][];
+            approver: components["schemas"]["UserRef_Output"] | null;
+            /** @enum {string|null} */
+            approverReason: "direct_manager" | "site_manager_escalation" | "manager_unavailable" | "executive_self" | "fallback" | null;
+            availableActions: ("approve" | "decline" | "withdraw" | "request_cancellation" | "confirm_cancellation" | "reject_cancellation" | "book" | "mark_booking_impossible" | "retry_booking" | "close" | "view_pin")[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            endsAt: string | null;
+            /** Format: uuid */
+            id: string;
+            isHighPriority: boolean;
+            /** @enum {string} */
+            kind: "car" | "train" | "flight";
+            needsApproval: boolean;
+            reference: string;
+            requester: components["schemas"]["UserRef_Output"];
+            route: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** @enum {string} */
+            status: "pending_approval" | "to_book" | "booked" | "declined" | "booking_impossible" | "cancellation_requested" | "cancelled";
+            traveller: components["schemas"]["UserRef_Output"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TravelTimelineDto_Output: components["schemas"]["TimelineEntry_Output"][];
+        UpcomingItem_Output: {
+            /** Format: date-time */
+            endsAt: string | null;
+            /** Format: uuid */
+            entityId: string;
+            /** @enum {string} */
+            kind: "training" | "car" | "train" | "flight";
+            link: string;
+            /** @enum {string} */
+            module: "training" | "travel";
+            /** Format: date-time */
+            startsAt: string;
+            status: string;
+            subtitle: string | null;
+            title: string;
+        };
+        UpdateAdminUserDto: {
+            active?: boolean;
+            /** Format: uuid */
+            costCenterId?: string;
+            /** Format: uuid */
+            departmentId?: string | null;
+            employeeNumber?: string;
+            firstName?: string;
+            isSiteManager?: boolean;
+            jobTitle?: string | null;
+            lastName?: string;
+            /** Format: uuid */
+            managerId?: string | null;
+            roles?: ("executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            /** Format: uuid */
+            siteId?: string | null;
+            version?: number;
+        };
+        UpdateAssetDto: {
+            /** Format: uuid */
+            costCenterId?: string | null;
+            mdmEnrolled?: boolean;
+            /** Format: uuid */
+            modelId?: string;
+            name?: string | null;
+            notes?: string | null;
+            /** Format: uuid */
+            platformId?: string | null;
+            /** Format: date */
+            purchaseDate?: string | null;
+            serialNumber?: string;
+            version?: number;
+        };
+        UpdateBackOfficeDto: {
+            actualCost?: {
+                amountCents: number;
+                /** @enum {string} */
+                currency: "EUR";
+            } | null;
+            backOfficeComment?: string | null;
+            /** @enum {string} */
+            billingStatus?: "open" | "invoice_received" | "free_of_charge";
+            version?: number;
+        };
+        UpdateCarClassDto: {
+            active?: boolean;
+            code?: string;
+            description?: string | null;
+            exampleModels?: string | null;
+            isDefault?: boolean;
+            name?: string;
+            sortOrder?: number;
+            /** @enum {string} */
+            vehicleType?: "car" | "van";
+        };
+        UpdateDeputyDto: {
+            note?: string | null;
+            /** Format: date */
+            validFrom?: string | null;
+            /** Format: date */
+            validTo?: string | null;
+        };
+        UpdateDeviceTypeDto: {
+            code?: string;
+            name?: string;
+            requiresPlatform?: boolean;
+            sortOrder?: number;
+        };
+        UpdateJobRoleDto: {
+            active?: boolean;
+            category?: string | null;
+            name?: string;
+        };
+        UpdateManufacturerDto: {
+            archived?: boolean;
+            deviceTypeIds?: string[];
+            name?: string;
+        };
+        UpdateModelDto: {
+            archived?: boolean;
+            color?: string | null;
+            /** Format: uuid */
+            deviceTypeId?: string;
+            /** Format: uuid */
+            manufacturerId?: string;
+            name?: string;
+            storageGb?: number | null;
+        };
+        UpdateNewsPostDto: {
+            bodyHtml?: string;
+            /** Format: uuid */
+            coverImageId?: string | null;
+            /** Format: date-time */
+            expireAt?: string | null;
+            pinned?: boolean;
+            summary?: string;
+            title?: string;
+            /** @enum {string} */
+            type?: "changelog" | "update" | "information";
+            version?: number;
+        };
+        UpdatePeopleRequestDto: {
+            /** Format: uuid */
+            assigneeId?: string | null;
+            /** Format: uuid */
+            departmentId?: string | null;
+            /** Format: date */
+            effectiveDate?: string;
+            equipmentNotes?: string | null;
+            firstName?: string;
+            furtherInformation?: string | null;
+            internalNote?: string | null;
+            /** Format: uuid */
+            jobRoleId?: string | null;
+            lastName?: string;
+            /** Format: uuid */
+            managerDeputyId?: string | null;
+            /** Format: uuid */
+            managerId?: string | null;
+            personalData?: {
+                /** Format: date */
+                birthDate?: string | null;
+                nationality?: string | null;
+                placeOfBirth?: string | null;
+                privateAddress?: components["schemas"]["Address"] | null;
+                privateEmail?: string | null;
+                privatePhone?: string | null;
+            } | null;
+            /** @enum {string} */
+            priority?: "critical" | "high" | "normal" | "low";
+            reason?: string | null;
+            /** @enum {string|null} */
+            salutation?: "mr" | "ms" | "mx" | null;
+            /** Format: uuid */
+            siteId?: string | null;
+            /** Format: uuid */
+            subjectUserId?: string | null;
+            title?: string;
+            version?: number;
+        };
+        UpdatePlatformDto: {
+            archived?: boolean;
+            deviceTypeIds?: string[];
+            name?: string;
+        };
+        UpdateTrainingRequestDto: {
+            certificateExpected?: boolean;
+            cost?: {
+                amountCents: number;
+                /** @enum {string} */
+                currency: "EUR";
+            };
+            /** Format: uuid */
+            costCenterId?: string | null;
+            /** Format: date */
+            endsOn?: string;
+            /** Format: uuid */
+            executiveApproverId?: string | null;
+            /** @enum {string} */
+            format?: "in_person" | "online" | "hybrid";
+            location?: string | null;
+            provider?: string;
+            registrationDetails?: string | null;
+            registrationUrl?: string | null;
+            reimbursementAgreement?: boolean;
+            requesterComment?: string | null;
+            /** Format: date */
+            startsOn?: string;
+            topic?: string;
+            version?: number;
+        };
+        UpdateUsefulLinkDto: {
+            active?: boolean;
+            category?: string | null;
+            description?: string | null;
+            /** @enum {string|null} */
+            icon?: "book" | "utensils" | "receipt" | "bed" | "life-buoy" | "calendar" | "network" | "palette" | "shield" | "heart" | "link" | null;
+            sortOrder?: number;
+            title?: string;
+            url?: string;
+        };
+        UsefulLinkDto_Output: {
+            active: boolean;
+            category: string[];
+            description: string[];
+            icon: string[];
+            /** Format: uuid */
+            id: string;
+            sortOrder: number;
+            title: string;
+            url: string;
+        };
+        UsefulLinkInputDto: {
+            active?: boolean;
+            category?: string | null;
+            description?: string | null;
+            /** @enum {string|null} */
+            icon?: "book" | "utensils" | "receipt" | "bed" | "life-buoy" | "calendar" | "network" | "palette" | "shield" | "heart" | "link" | null;
+            sortOrder?: number;
+            title: string;
+            url: string;
+        };
+        UserProfileDto_Output: {
+            active: boolean;
+            costCenter: components["schemas"]["Ref_Output"];
+            department: components["schemas"]["Ref_Output"] | null;
+            directReports: components["schemas"]["UserRef_Output"][];
+            displayName: string;
+            email: string;
+            firstName: string;
+            /** Format: uuid */
+            id: string;
+            initials: string;
+            isSiteManager: boolean;
+            jobTitle: string[];
+            lastName: string;
+            manager: components["schemas"]["UserRef_Output"] | null;
+            phone: string[];
+            roles: ("employee" | "manager" | "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin")[];
+            site: components["schemas"]["Ref_Output"] | null;
+        };
+        UserRef_Output: {
+            displayName: string;
+            email: string;
+            /** Format: uuid */
+            id: string;
+            initials: string;
+            jobTitle: string | null;
+        };
+        UserSummary_Output: {
+            active: boolean;
+            department: components["schemas"]["Ref_Output"] | null;
+            displayName: string;
+            email: string;
+            /** Format: uuid */
+            id: string;
+            initials: string;
+            jobTitle: string | null;
+            site: components["schemas"]["Ref_Output"] | null;
+        };
+        UserSummaryPageDto_Output: {
+            data: components["schemas"]["UserSummary_Output"][];
+            meta: {
+                page: number;
+                perPage: number;
+                total: number;
+                totalPages: number;
+            };
+        };
+        WorkflowDefinitionDto_Output: {
+            initialStates: string[];
+            label: string;
+            name: string;
+            states: {
+                id: string;
+                label: string;
+                terminal: boolean;
+                /** @enum {string} */
+                tone: "neutral" | "waiting" | "you" | "moving" | "positive" | "negative" | "blocked";
+            }[];
+            transitions: {
+                actors: string[];
+                event: string;
+                from: string;
+                label: string;
+                to: string;
+            }[];
+        };
+        WorkflowListItemDto_Output: {
+            label: string;
+            name: string;
         };
     };
     responses: never;
@@ -91,24 +4622,578 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    Files_download: {
+    Admin_listJobs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobDto_Output"][];
+                };
+            };
+        };
+    };
+    Admin_runJob: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                token: string;
+                name: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description File content */
-            200: {
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/octet-stream": unknown;
+                    "application/json": components["schemas"]["JobRunStartedDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Admin_jobRuns: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRunPageDto_Output"];
+                };
+            };
+        };
+    };
+    Admin_listUsers: {
+        parameters: {
+            query?: {
+                active?: "true" | "false";
+                departmentId?: string;
+                page?: number;
+                perPage?: number;
+                q?: string;
+                role?: "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin";
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: displayName, lastLoginAt. */
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPageDto_Output"];
+                };
+            };
+        };
+    };
+    Admin_createUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdminUserDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Admin_getUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserDto_Output"];
+                };
+            };
+        };
+    };
+    Admin_updateUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdminUserDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_list: {
+        parameters: {
+            query?: {
+                assignedUserId?: string;
+                costCenterId?: string;
+                deviceTypeId?: string;
+                from?: string;
+                includeDeleted?: "true" | "false";
+                manufacturerId?: string;
+                modelId?: string;
+                page?: number;
+                perPage?: number;
+                platformId?: string;
+                q?: string;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: assetTag, serialNumber, status, purchaseDate, updatedAt, model. */
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetPageDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAssetDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Assets_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Asset soft-deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
             /** @description Not allowed */
@@ -129,8 +5214,1527 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Gone */
-            410: {
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Assets_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAssetDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_assignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetAssignmentDto_Output"][];
+                };
+            };
+        };
+    };
+    Assets_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetTimelineEntryDto_Output"][];
+                };
+            };
+        };
+    };
+    Catalog_deviceTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeviceTypeDto_Output"][];
+                };
+            };
+        };
+    };
+    Catalog_createDeviceType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeviceTypeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeviceTypeDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_deleteDeviceType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Device type deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_updateDeviceType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeviceTypeDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeviceTypeDto_Output"];
+                };
+            };
+        };
+    };
+    Catalog_manufacturers: {
+        parameters: {
+            query?: {
+                deviceTypeId?: string;
+                includeArchived?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManufacturerDto_Output"][];
+                };
+            };
+        };
+    };
+    Catalog_createManufacturer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateManufacturerDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManufacturerDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_updateManufacturer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateManufacturerDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManufacturerDto_Output"];
+                };
+            };
+        };
+    };
+    Catalog_models: {
+        parameters: {
+            query?: {
+                deviceTypeId?: string;
+                includeArchived?: "true" | "false";
+                manufacturerId?: string;
+                page?: number;
+                perPage?: number;
+                q?: string;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: name, assetCount. */
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetModelPageDto_Output"];
+                };
+            };
+        };
+    };
+    Catalog_createModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateModelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetModelDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_deleteModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Model deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_updateModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateModelDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetModelDto_Output"];
+                };
+            };
+        };
+    };
+    Catalog_platforms: {
+        parameters: {
+            query?: {
+                deviceTypeId?: string;
+                includeArchived?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformDto_Output"][];
+                };
+            };
+        };
+    };
+    Catalog_createPlatform: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePlatformDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Catalog_updatePlatform: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlatformDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlatformDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_dashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetDashboardDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_exportCsv: {
+        parameters: {
+            query?: {
+                assignedUserId?: string;
+                costCenterId?: string;
+                deviceTypeId?: string;
+                from?: string;
+                includeDeleted?: "true" | "false";
+                manufacturerId?: string;
+                modelId?: string;
+                platformId?: string;
+                q?: string;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: assetTag, serialNumber, status, purchaseDate, updatedAt, model. */
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Assets_mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyAssetsDto_Output"];
+                };
+            };
+        };
+    };
+    Assets_counts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetQueueCountsDto_Output"];
+                };
+            };
+        };
+    };
+    Attachments_upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                    /** @enum {string} */
+                    purpose: "training_document" | "training_booking_document" | "travel_booking_confirmation" | "news_cover" | "people_document";
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttachmentDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Payload too large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unsupported media type */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Attachments_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttachmentDto_Output"];
+                };
+            };
+        };
+    };
+    Attachments_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Staged attachment deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Attachments_downloadUrl: {
+        parameters: {
+            query?: {
+                disposition?: "attachment" | "inline";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadUrlDto_Output"];
+                };
+            };
+        };
+    };
+    Audit_list: {
+        parameters: {
+            query?: {
+                actingAs?: "self" | "requester" | "approver" | "deputy" | "manager_chain" | "executive" | "back_office" | "admin" | "system";
+                action?: string;
+                actorId?: string;
+                entityId?: string;
+                entityType?: string;
+                from?: string;
+                module?: "core" | "training" | "travel" | "assets" | "people" | "news";
+                page?: number;
+                perPage?: number;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: occurredAt. */
+                sort?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /**
+             * @description Not allowed
+             *
+             *     Not allowed
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEntryPageDto_Output"];
+                };
+            };
+        };
+    };
+    Auth_demoLogin: {
+        parameters: {
+            query?: never;
+            header: {
+                "user-agent": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoLoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto_Output"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Auth_login: {
+        parameters: {
+            query?: never;
+            header: {
+                "user-agent": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Auth_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session revoked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Auth_personas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaDto_Output"][];
+                };
+            };
+        };
+    };
+    Files_download: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File content */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -149,7 +6753,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description All dependencies are up */
+            /** @description ok, or degraded when queue/mail are down */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -158,13 +6762,3214 @@ export interface operations {
                     "application/json": components["schemas"]["HealthDto"];
                 };
             };
-            /** @description At least one dependency is down */
+            /** @description The database is down */
             503: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["HealthDto"];
+                };
+            };
+        };
+    };
+    Home_myDay: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyDayDto_Output"];
+                };
+            };
+        };
+    };
+    Links_list: {
+        parameters: {
+            query?: {
+                includeInactive?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsefulLinkDto_Output"][];
+                };
+            };
+        };
+    };
+    Links_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UsefulLinkInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsefulLinkDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Links_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Link deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Links_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUsefulLinkDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsefulLinkDto_Output"];
+                };
+            };
+        };
+    };
+    Links_reorder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderLinksDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsefulLinkDto_Output"][];
+                };
+            };
+        };
+    };
+    Me_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDto_Output"];
+                };
+            };
+        };
+    };
+    Deputies_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyDeputiesDto_Output"];
+                };
+            };
+        };
+    };
+    Deputies_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeputyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeputyDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Deputies_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deputy removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Deputies_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeputyDto"];
+            };
+        };
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeputyDto_Output"];
+                };
+            };
+        };
+    };
+    Inbox_list: {
+        parameters: {
+            query?: {
+                module?: string;
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxResponseDto_Output"];
+                };
+            };
+        };
+    };
+    Inbox_counts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxCountsDto_Output"];
+                };
+            };
+        };
+    };
+    Notifications_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+                unread?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPageDto_Output"];
+                };
+            };
+        };
+    };
+    Notifications_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Marked as read */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Notifications_readAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All notifications marked as read */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Meta_getConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicConfigDto_Output"];
+                };
+            };
+        };
+    };
+    Meta_getEnums: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnumsDto"];
+                };
+            };
+        };
+    };
+    Meta_listWorkflows: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowListItemDto_Output"][];
+                };
+            };
+        };
+    };
+    Meta_getWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowDefinitionDto_Output"];
+                };
+            };
+        };
+    };
+    News_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+                q?: string;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: publishedAt, updatedAt, publishAt. */
+                sort?: string;
+                status?: string;
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsPostPageDto_Output"];
+                };
+            };
+        };
+    };
+    News_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateNewsPostDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsPostDetailDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    News_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsPostDetailDto_Output"];
+                };
+            };
+        };
+    };
+    News_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Post deleted (draft or archived only) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    News_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateNewsPostDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsPostDetailDto_Output"];
+                };
+            };
+        };
+    };
+    News_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsPostDetailDto_Output"];
+                };
+            };
+        };
+    };
+    News_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineDto_Output"][];
+                };
+            };
+        };
+    };
+    Org_costCenters: {
+        parameters: {
+            query?: {
+                active?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterDto_Output"][];
+                };
+            };
+        };
+    };
+    Org_departments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDto_Output"][];
+                };
+            };
+        };
+    };
+    Org_sites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteDto_Output"][];
+                };
+            };
+        };
+    };
+    JobRoles_list: {
+        parameters: {
+            query?: {
+                includeInactive?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRoleDto_Output"][];
+                };
+            };
+        };
+    };
+    JobRoles_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateJobRoleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRoleDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    JobRoles_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateJobRoleDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRoleDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleQueues_counts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleQueueCountsDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleRequests_list: {
+        parameters: {
+            query?: {
+                assigneeId?: "me" | "none" | string;
+                from?: string;
+                page?: number;
+                perPage?: number;
+                priority?: string;
+                q?: string;
+                scope?: "mine" | "all";
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: effectiveDate, createdAt, priority, status. */
+                sort?: string;
+                status?: string;
+                to?: string;
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleRequestPageDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleRequests_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePeopleRequestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleRequestDetailDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PeopleRequests_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleRequests_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePeopleRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleRequests_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    PeopleRequests_comments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleCommentDto_Output"][];
+                };
+            };
+        };
+    };
+    PeopleRequests_addComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePeopleCommentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeopleCommentDto_Output"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PeopleRequests_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineDto_Output"][];
+                };
+            };
+        };
+    };
+    Search_search: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponseDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingParticipations_list: {
+        parameters: {
+            query?: {
+                from?: string;
+                highPriority?: "true" | "false";
+                page?: number;
+                perPage?: number;
+                q?: string;
+                requestId?: string;
+                scope?: "mine" | "approvals" | "executive" | "deputy" | "team" | "all";
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingParticipationPageDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingParticipations_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingParticipationDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingParticipations_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingParticipationDetailDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingParticipations_putGoals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoalsDto"];
+            };
+        };
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingParticipationDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingParticipations_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingTimelineEntryDto_Output"][];
+                };
+            };
+        };
+    };
+    TrainingParticipations_exportCsv: {
+        parameters: {
+            query?: {
+                from?: string;
+                highPriority?: "true" | "false";
+                q?: string;
+                requestId?: string;
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingQueues_counts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingCountsDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRatings_list: {
+        parameters: {
+            query?: {
+                loop?: string;
+                page?: number;
+                perPage?: number;
+                q?: string;
+                scope?: "mine" | "all";
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: dueAt, submittedAt. */
+                sort?: string;
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRatingPageDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRatings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRatingDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRatings_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RatingSubmissionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRatingDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingRatings_stats: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RatingStatsDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRequests_list: {
+        parameters: {
+            query?: {
+                attendeeStatus?: string;
+                billingStatus?: string;
+                from?: string;
+                page?: number;
+                perPage?: number;
+                q?: string;
+                scope?: "created" | "all";
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: startsOn, createdAt, topic, cost. */
+                sort?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRequestPageDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRequests_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTrainingRequestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRequestDetailDto_Output"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingRequests_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRequests_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTrainingRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRequests_addAttachments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkAttachmentsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingAttachmentDto_Output"][];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingRequests_removeAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attachmentId: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Document removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingRequests_addAttendee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttendeeInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingAttendeeDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TrainingRequests_updateBackOffice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBackOfficeDto"];
+            };
+        };
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TrainingRequests_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingTimelineEntryDto_Output"][];
+                };
+            };
+        };
+    };
+    TrainingRequests_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrainingPreviewRequestDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingPreviewDto_Output"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CarClasses_list: {
+        parameters: {
+            query?: {
+                includeInactive?: "true" | "false";
+                vehicleType?: "car" | "van";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarRentalClassListDto_Output"];
+                };
+            };
+        };
+    };
+    CarClasses_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCarClassDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarRentalClassDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CarClasses_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCarClassDto"];
+            };
+        };
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarRentalClassDto_Output"];
+                };
+            };
+        };
+    };
+    TravelQueues_counts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelCountsDto_Output"];
+                };
+            };
+        };
+    };
+    TravelRequests_list: {
+        parameters: {
+            query?: {
+                from?: string;
+                highPriority?: "true" | "false";
+                kind?: string;
+                page?: number;
+                perPage?: number;
+                q?: string;
+                scope?: "mine" | "approvals" | "deputy" | "team" | "all";
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelRequestPageDto_Output"];
+                };
+            };
+        };
+    };
+    TravelRequests_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AugmentedZodDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelRequestDetailDto_Output"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TravelRequests_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelRequestDetailDto_Output"];
+                };
+            };
+        };
+    };
+    TravelRequests_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelRequestDetailDto_Output"];
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict (e.g. action not available in current state) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TravelRequests_pin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelPinDto_Output"];
+                };
+            };
+        };
+    };
+    TravelRequests_timeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelTimelineDto_Output"];
+                };
+            };
+        };
+    };
+    TravelRequests_exportCsv: {
+        parameters: {
+            query?: {
+                from?: string;
+                highPriority?: "true" | "false";
+                kind?: string;
+                q?: string;
+                sort?: string;
+                status?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description CSV with BOM */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+            /** @description Not allowed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TravelRequests_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TravelPreviewRequestDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelPreviewDto_Output"];
+                };
+            };
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    Users_list: {
+        parameters: {
+            query?: {
+                departmentId?: string;
+                includeInactive?: "true" | "false";
+                page?: number;
+                perPage?: number;
+                q?: string;
+                role?: "employee" | "manager" | "executive" | "training_office" | "travel_desk" | "asset_admin" | "people_ops" | "news_editor" | "it_admin";
+                scope?: "all" | "team";
+                siteId?: string;
+                /** @description Comma-separated fields; prefix with "-" for descending. Allowed: displayName. */
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validation failed (see `errors`) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSummaryPageDto_Output"];
+                };
+            };
+        };
+    };
+    Users_profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileDto_Output"];
+                };
+            };
+        };
+    };
+    Users_approvers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApproverChainDto_Output"];
                 };
             };
         };

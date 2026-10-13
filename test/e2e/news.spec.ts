@@ -36,14 +36,21 @@ test('Paula writes, publishes and archives a post', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Bike sheds at Campus' })).toBeVisible()
 
   await page.getByRole('button', { name: 'Publish now' }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Publish now' }).click()
   await expect(page.getByText('Published.', { exact: true })).toBeVisible()
   await expect(page.getByText('Published', { exact: true }).first()).toBeVisible()
 
+  // Cancelling the confirmation changes nothing.
   await page.getByRole('button', { name: 'Archive' }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Keep it' }).click()
+  await expect(page.getByRole('alertdialog')).toBeHidden()
+  await page.getByRole('button', { name: 'Archive' }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Archive post' }).click()
   await expect(page.getByText('Archived.', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Restore as draft' }).click()
   await expect(page.getByText('Restored as a draft.', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Publish now' }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Publish now' }).click()
   await expect(page.getByText('Published.', { exact: true })).toBeVisible()
 
   await page.goto('/news')

@@ -55,11 +55,27 @@ export const linkIcon = (icon: string | null | undefined) =>
 
 /** ActionBar config for news posts (the schedule dialog is handled by the editor page). */
 export const NEWS_ACTIONS: Record<string, ActionConfig> = {
-  // No confirm step: the shared confirm dialog resolves "cancel" today (reported); restore and
-  // unschedule undo these actions anyway.
-  publish: { label: 'Publish now', icon: Send, variant: 'primary' },
+  publish: {
+    label: 'Publish now',
+    icon: Send,
+    variant: 'primary',
+    confirm: {
+      title: 'Publish this post now?',
+      description: 'Everyone sees it in the news feed right away.',
+      confirmLabel: 'Publish now',
+    },
+  },
   unschedule: { label: 'Unschedule', icon: CalendarX },
-  archive: { label: 'Archive', icon: Archive },
+  archive: {
+    label: 'Archive',
+    icon: Archive,
+    confirm: {
+      title: 'Archive this post?',
+      description: 'It leaves the news feed. You can restore it as a draft later.',
+      confirmLabel: 'Archive post',
+      cancelLabel: 'Keep it',
+    },
+  },
   restore: { label: 'Restore as draft', icon: RotateCcw },
 }
 

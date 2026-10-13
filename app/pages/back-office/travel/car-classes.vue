@@ -129,9 +129,17 @@ async function patch(row: CarRentalClassDto, body: Partial<CarRentalClassInput>,
   }
 }
 
-// Both are reversible (make another class standard, activate again), so they run without a
-// confirmation; the toast names the consequence.
+const { confirm } = useConfirm()
+const vehicleLabel = (row: CarRentalClassDto) => (row.vehicleType === 'van' ? 'van' : 'car')
+
+// Both change what travellers can book without approval, so they ask first; activating doesn't.
 async function makeStandard(row: CarRentalClassDto) {
+  const ok = await confirm({
+    title: `Make ${row.code} the standard ${vehicleLabel(row)}?`,
+    description: `It replaces the current standard class. Requests for any other ${vehicleLabel(row)} class then need approval.`,
+    confirmLabel: 'Make standard',
+  })
+  if (!ok) return
   await patch(
     row,
     { isDefault: true },
@@ -140,6 +148,18 @@ async function makeStandard(row: CarRentalClassDto) {
 }
 
 async function toggleActive(row: CarRentalClassDto) {
+  if (
+    row.active &&
+    !(await confirm({
+      title: `Deactivate ${row.code}?`,
+      description:
+        'Nobody can choose it for new requests. Existing requests keep it. You can activate it again.',
+      confirmLabel: 'Deactivate',
+      cancelLabel: 'Keep active',
+      destructive: true,
+    }))
+  )
+    return
   await patch(
     row,
     { active: !row.active },

@@ -89,8 +89,8 @@ export const TRAVEL_ACTION_CONFIG: Record<string, ActionConfig> = {
     label: 'Confirm cancellation',
     icon: CircleX,
     variant: 'primary',
-    // A reason dialog with an optional note (API: `{ comment?: string | null }`) doubles as the
-    // confirmation of this irreversible step.
+    // The note dialog (API: `{ comment?: string | null }`, shown in the timeline) is the
+    // confirmation of this irreversible step - no extra confirm on top.
     reason: {
       title: 'Confirm the cancellation?',
       description: 'The trip is cancelled and the traveller is told. This cannot be undone.',

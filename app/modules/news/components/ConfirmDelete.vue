@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * Delete confirmation for news posts and links. A local dialog instead of the shared
- * `useConfirm()`, whose confirm button currently resolves as "cancel" (reported to the foundation).
+ * Delete confirmation for news posts and links, with a loading state on the confirm button
+ * while the delete runs (the shared `useConfirm()` closes immediately).
  */
 defineProps<{ title: string; description: string; confirmLabel: string; loading?: boolean }>()
 const open = defineModel<boolean>('open', { default: false })

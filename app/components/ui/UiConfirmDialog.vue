@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogOverlay,
@@ -14,6 +12,10 @@ import {
  * Global confirmation (useConfirm()). Destructive confirms name the consequence:
  * "Cancel this booking? The travel desk is notified and the booking number stops working."
  * [Keep booking] [Cancel booking]. Mounted once in app.vue.
+ *
+ * The buttons settle the promise themselves: Reka's AlertDialogAction/Cancel close the dialog
+ * before the click handler runs, which used to resolve every confirm as "cancel". Esc and
+ * outside clicks still go through the `open` setter and resolve false.
  */
 const { state, settle } = useConfirm()
 const open = computed({
@@ -38,18 +40,15 @@ const open = computed({
           {{ state.description }}
         </AlertDialogDescription>
         <div class="mt-2 flex flex-wrap justify-end gap-2 max-md:[&>*]:h-11 max-md:[&>*]:flex-1">
-          <AlertDialogCancel as-child>
-            <UiButton variant="secondary" @click="settle(false)">{{
-              state.cancelLabel ?? 'Cancel'
-            }}</UiButton>
-          </AlertDialogCancel>
-          <AlertDialogAction as-child>
-            <UiButton
-              :variant="state.destructive ? 'danger-solid' : 'primary'"
-              @click="settle(true)"
-              >{{ state.confirmLabel }}</UiButton
-            >
-          </AlertDialogAction>
+          <UiButton variant="secondary" data-testid="confirm-cancel" @click="settle(false)">{{
+            state.cancelLabel ?? 'Cancel'
+          }}</UiButton>
+          <UiButton
+            :variant="state.destructive ? 'danger-solid' : 'primary'"
+            data-testid="confirm-accept"
+            @click="settle(true)"
+            >{{ state.confirmLabel }}</UiButton
+          >
         </div>
       </AlertDialogContent>
     </AlertDialogPortal>

@@ -1,8 +1,10 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import StatusBadge from '~/components/workflow/StatusBadge.vue'
 import ReasonChips from '~/components/workflow/ReasonChips.vue'
 import PagePlaceholder from '~/components/data/PagePlaceholder.vue'
+import UiConfirmDialog from '~/components/ui/UiConfirmDialog.vue'
+import { useConfirm } from '~/composables/useConfirm'
 
 describe('UI kit in the Nuxt runtime', () => {
   it('StatusBadge renders the viewer-relative label and tone', async () => {
@@ -34,6 +36,26 @@ describe('UI kit in the Nuxt runtime', () => {
     })
     expect(chips.text()).toContain('Over €500')
     expect(chips.text()).toContain('Starts tomorrow')
+  })
+
+  it('UiConfirmDialog resolves true on confirm and false on cancel', async () => {
+    const wrapper = await mountSuspended(UiConfirmDialog, { attachTo: document.body })
+    const { confirm } = useConfirm()
+    const button = async (testId: string) => {
+      await vi.waitFor(() => {
+        if (!document.querySelector(`[data-testid="${testId}"]`)) throw new Error('not open')
+      })
+      return document.querySelector<HTMLButtonElement>(`[data-testid="${testId}"]`)!
+    }
+
+    const accepted = confirm({ title: 'Publish?', confirmLabel: 'Publish now' })
+    ;(await button('confirm-accept')).click()
+    expect(await accepted).toBe(true)
+
+    const cancelled = confirm({ title: 'Archive?', confirmLabel: 'Archive post' })
+    ;(await button('confirm-cancel')).click()
+    expect(await cancelled).toBe(false)
+    wrapper.unmount()
   })
 
   it('PagePlaceholder names the owning slice', async () => {
