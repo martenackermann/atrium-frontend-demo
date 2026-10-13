@@ -355,7 +355,7 @@ const route = computed<RouteStop[]>(() => {
   const stops: RouteStop[] = [
     {
       step: 'You submit',
-      who: 'After the review step',
+      who: 'After the Review step',
       initials: me?.initials,
       state: 'current',
       tone: 'you',
