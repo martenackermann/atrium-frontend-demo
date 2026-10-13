@@ -120,4 +120,16 @@ describe('HTTP client', () => {
     const api = createHttpClient({ baseUrl: 'http://api.test', getToken: () => 't', fetch })
     await expect(api.delete('/me/deputies/1')).resolves.toBeUndefined()
   })
+
+  it('rejects a 2xx that is not JSON (e.g. an SPA fallback page) instead of returning it', async () => {
+    const html = '<!DOCTYPE html><html><head><title>Atrium</title></head></html>'
+    const { fetch } = fakeFetch(
+      () => new Response(html, { status: 200, headers: { 'Content-Type': 'text/html' } }),
+    )
+    const api = createHttpClient({ baseUrl: 'http://api.test', getToken: () => 't', fetch })
+    const error = await api.post('/travel/requests/preview', {}).catch((e: unknown) => e)
+    expect(isApiError(error) && error.code).toBe('invalid_response')
+    // Explicit text and blob reads stay untouched.
+    await expect(api.get('/x', undefined, { parse: 'text' })).resolves.toBe(html)
+  })
 })

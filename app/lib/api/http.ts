@@ -1,4 +1,4 @@
-import { toApiError, toNetworkError } from './errors'
+import { ApiError, toApiError, toNetworkError } from './errors'
 
 export type QueryScalar = string | number | boolean | null | undefined
 export type QueryValue = QueryScalar | readonly (string | number | boolean)[]
@@ -112,7 +112,20 @@ export function createHttpClient(options: HttpClientOptions) {
     if (response.status === 204) return undefined as T
     if (init.parse === 'blob') return (await response.blob()) as T
     if (init.parse === 'text') return (await response.text()) as T
-    return (await readBody(response)) as T
+    const data = await readBody(response)
+    // A 2xx that isn't JSON is not an API answer - e.g. a host's SPA fallback (index.html) for a
+    // request the demo service worker let through while the page was unloading. Fail like a
+    // network error instead of handing an HTML string to code that expects a DTO.
+    if (typeof data === 'string') {
+      throw new ApiError({
+        status: 0,
+        title: 'Unexpected response',
+        detail: "Atrium's API answered with something that isn't JSON. Try again.",
+        code: 'invalid_response',
+        body: data.slice(0, 200),
+      })
+    }
+    return data as T
   }
 
   return {
