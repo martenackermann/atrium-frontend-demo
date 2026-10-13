@@ -21,12 +21,14 @@ const greeting = computed(() => `${greetingFor(now.value)}, ${firstName.value}.`
 const today = computed(() => formatLongDate(day.value?.date ?? now.value))
 
 /** One more sentence about where the user's own requests stand. */
-const followUp = computed(() => {
+const followUp = computed<{ text: string; ref: string | null } | null>(() => {
   const waiting = (people.data.value ?? []).find((r) => r.status === 'waiting_on_requester')
   if (waiting) return { text: 'People Ops is waiting for your reply on ', ref: waiting.reference }
   const pending = day.value?.upcoming.find((item) => item.status.startsWith('pending'))
-  if (pending)
-    return `Your ${pending.kind === 'training' ? 'training' : pending.kind} ${pending.title} is waiting for approval.`
+  if (pending) {
+    const kind = pending.kind === 'training' ? 'training' : pending.kind
+    return { text: `Your ${kind} ${pending.title} is waiting for approval.`, ref: null }
+  }
   const soon = day.value?.upcoming[0]
   if (soon) {
     return {
