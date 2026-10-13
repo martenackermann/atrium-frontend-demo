@@ -317,8 +317,8 @@ const resultsAnnouncement = computed(() => {
         </div>
         <div
           :id="listId"
-          role="listbox"
-          aria-label="Results"
+          :role="flatItems.length ? 'listbox' : undefined"
+          :aria-label="flatItems.length ? 'Results' : undefined"
           class="min-h-0 flex-1 overflow-y-auto p-1.5 md:max-h-[380px]"
         >
           <div

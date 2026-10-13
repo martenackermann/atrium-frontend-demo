@@ -22,7 +22,8 @@ import type { Page, RoleName, UserRef, UserSummary } from '~/types/api'
  * avatar · name · department · email. `multiple` renders chips with remove buttons (train
  * travellers). Pass `options` to restrict the choice (approver pickers: the management chain).
  * Height: 38px like Input (36px as a list filter: inside DataTable `#filters`, or `size="filter"`);
- * 40px on phones. Outside a UiField, name it with `aria-label` (it lands on the input).
+ * 40px on phones. Outside a UiField, name it with `aria-label` (it lands on the input). `class`
+ * sizes the whole picker (it is a layout wrapper: `w-56 max-md:w-full`).
  */
 const props = withDefaults(
   defineProps<{
@@ -118,6 +119,7 @@ const departmentOf = (user: UserRef | UserSummary) =>
     :reset-search-term-on-blur="!multiple"
     reset-search-term-on-select
     :by="(a: UserRef | null, b: UserRef | null) => a?.id === b?.id"
+    :class="cn('min-w-0', props.class)"
   >
     <ComboboxAnchor
       :class="
@@ -128,7 +130,6 @@ const departmentOf = (user: UserRef | UserSummary) =>
           'focus-within:border-ink focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)]',
           isInvalid ? 'border-st-negative' : 'border-field',
           disabled && 'bg-well',
-          props.class,
         )
       "
     >
@@ -159,12 +160,12 @@ const departmentOf = (user: UserRef | UserSummary) =>
         :aria-label="ariaLabel"
         :aria-invalid="isInvalid || undefined"
         :aria-describedby="field?.describedBy.value"
-        class="h-7 min-w-0 flex-1 truncate bg-transparent px-1 outline-none placeholder:text-ink-subtle"
+        class="min-h-7 min-w-0 flex-1 self-stretch truncate bg-transparent px-1 outline-none placeholder:text-ink-subtle"
         :class="!isFilter && 'min-w-[120px]'"
         @focus="open = true"
       />
       <ComboboxTrigger
-        class="grid size-7 place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink"
+        class="grid size-7 flex-none place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink max-md:size-9"
         aria-label="Show people"
       >
         <ChevronDown class="size-4" aria-hidden="true" />

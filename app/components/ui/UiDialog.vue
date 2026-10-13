@@ -26,6 +26,19 @@ const props = withDefaults(
   { size: 'md' },
 )
 const open = defineModel<boolean>('open', { default: false })
+
+/** Opening moves focus to the first field (not the close button); dialogs without fields keep
+ * Reka's default (the first button). */
+function focusFirstField(event: Event) {
+  const content = event.target as HTMLElement | null
+  const field = content?.querySelector<HTMLElement>(
+    '[data-dialog-body] :is(input:not([type="hidden"]):not([aria-hidden="true"]), textarea, [role="combobox"], [role="radio"][data-state="checked"], [role="radio"])',
+  )
+  if (field && !field.hasAttribute('disabled')) {
+    event.preventDefault()
+    field.focus()
+  }
+}
 </script>
 
 <template>
@@ -49,6 +62,7 @@ const open = defineModel<boolean>('open', { default: false })
             props.class,
           )
         "
+        @open-auto-focus="focusFirstField"
       >
         <header class="flex items-start gap-3 px-6 pt-5 pb-2">
           <div class="grid flex-1 gap-1.5">
@@ -64,7 +78,7 @@ const open = defineModel<boolean>('open', { default: false })
             <X class="size-4" aria-hidden="true" />
           </DialogClose>
         </header>
-        <div class="px-6 py-3">
+        <div class="px-6 py-3" data-dialog-body>
           <slot />
         </div>
         <footer

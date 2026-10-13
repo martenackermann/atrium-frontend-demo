@@ -94,7 +94,10 @@ async function discard() {
     <header
       class="sticky top-0 z-20 flex h-[52px] items-center gap-2.5 bg-[color-mix(in_srgb,var(--desk)_90%,transparent)] pr-2 pl-4 backdrop-blur-[8px] md:h-[60px] md:gap-3.5 md:pr-5 md:pl-6"
     >
-      <NuxtLink :to="closeTo" aria-label="Atrium, leave and keep the draft"
+      <NuxtLink
+        :to="closeTo"
+        aria-label="Atrium, leave and keep the draft"
+        class="-ml-2 grid size-10 flex-none place-items-center rounded-md"
         ><AppBrandMark class="size-6"
       /></NuxtLink>
       <div class="flex min-w-0 items-baseline gap-3.5 border-l border-rule-strong pl-2.5 md:pl-3.5">

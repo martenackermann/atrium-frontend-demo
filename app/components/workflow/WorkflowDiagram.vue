@@ -93,7 +93,12 @@ const transitionsText = computed(() =>
       </div>
       <template v-else>
         <div class="flex flex-wrap items-start gap-y-3 max-md:hidden" aria-hidden="true">
-          <template v-for="(state, index) in layout.main" :key="state.id">
+          <!-- Each arrow travels with the state after it, so a wrapped line starts "→ State"
+               instead of ending on an arrow that points at nothing. -->
+          <div v-for="(state, index) in layout.main" :key="state.id" class="flex items-start">
+            <span v-if="index > 0" class="grid h-[22px] w-7 place-items-center text-ink-subtle">
+              <ArrowRight class="size-3.5" />
+            </span>
             <div class="grid justify-items-start gap-0">
               <span
                 class="inline-flex h-[22px] items-center gap-[5px] rounded-sm border pr-2 pl-1.5 text-meta font-medium whitespace-nowrap"
@@ -125,13 +130,7 @@ const transitionsText = computed(() =>
                 </span>
               </div>
             </div>
-            <span
-              v-if="index < layout.main.length - 1"
-              class="grid h-[22px] w-7 place-items-center text-ink-subtle"
-            >
-              <ArrowRight class="size-3.5" />
-            </span>
-          </template>
+          </div>
         </div>
         <p
           v-if="layout.cancellation.length"

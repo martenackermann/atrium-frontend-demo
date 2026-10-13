@@ -106,7 +106,7 @@ const value = computed<DateRange>({
         <span v-if="part === 'start'" class="px-1 text-ink-subtle" aria-hidden="true">–</span>
       </template>
       <DateRangePickerTrigger
-        class="ml-auto grid size-8 place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink"
+        class="ml-auto grid size-8 place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink max-md:size-9"
         aria-label="Open calendar"
       >
         <CalendarDays class="size-4" aria-hidden="true" />

@@ -216,7 +216,7 @@ const save = handleSubmit(async (values) => {
           <p v-if="formError" role="alert" class="text-sm text-st-negative md:col-span-2">
             {{ formError }}
           </p>
-          <div class="flex gap-2 md:col-span-2">
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-2 md:col-span-2">
             <UiButton
               type="submit"
               variant="primary"
@@ -226,6 +226,7 @@ const save = handleSubmit(async (values) => {
             >
               Save changes
             </UiButton>
+            <span v-if="!meta.dirty" class="text-sm text-ink-subtle">Nothing changed yet.</span>
           </div>
         </form>
 

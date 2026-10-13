@@ -126,8 +126,10 @@ ol {
   color: var(--st-negative-fg);
   background: var(--st-negative-bg);
 }
+/* Skipped: a faded ring, but the struck-through monogram keeps ink-subtle contrast (≥ 4.5:1). */
 .stop-skipped .stamp {
-  opacity: 0.6;
+  border-color: color-mix(in srgb, var(--rule-strong) 55%, transparent);
+  background: transparent;
   text-decoration: line-through;
   text-decoration-thickness: 1.5px;
 }

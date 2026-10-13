@@ -288,11 +288,13 @@ const position = computed(() =>
         >
           <!-- Announces the newly selected item (J/K) without reading the whole detail. -->
           <div class="min-w-0 flex-[1_1_320px]" aria-live="polite" aria-atomic="true">
-            <h2
+            <!-- On phones the list (and its h1) is hidden behind the pushed detail: the title is the h1. -->
+            <component
+              :is="isMobile ? 'h1' : 'h2'"
               class="font-display text-[26px] leading-8 font-normal tracking-display md:text-[30px] md:leading-9"
             >
               <slot name="detail-title" :item="selected" />
-            </h2>
+            </component>
             <p class="mt-1.5 flex flex-wrap items-center gap-x-1.5 text-[13.5px] text-ink-muted">
               <slot name="detail-meta" :item="selected" />
             </p>

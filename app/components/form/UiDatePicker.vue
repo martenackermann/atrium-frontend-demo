@@ -110,7 +110,7 @@ const maxValue = computed(() => isoToCalendarDate(props.max))
         </template>
       </div>
       <DatePickerTrigger
-        class="grid size-8 place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink"
+        class="grid size-8 place-items-center rounded-md text-ink-subtle hover:bg-hover hover:text-ink max-md:size-9"
         aria-label="Open calendar"
       >
         <CalendarDays class="size-4" aria-hidden="true" />

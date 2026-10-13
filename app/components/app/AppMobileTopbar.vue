@@ -12,33 +12,34 @@ const { paletteOpen, inboxOpen } = useShell()
 const theme = useTheme()
 const { data: counts } = useInboxCounts()
 
+const bar = ref<HTMLElement | null>(null)
 const heading = ref<HTMLElement | null>(null)
 const headingVisible = ref(true)
 
+/** The page's own h1 counts as visible until it scrolls up under the 56px bar. */
+function check() {
+  const el = heading.value
+  headingVisible.value = Boolean(el?.isConnected) && el!.getBoundingClientRect().bottom > 56
+}
 function findHeading() {
   heading.value = document.querySelector<HTMLElement>('#main h1')
-  headingVisible.value = Boolean(heading.value)
+  check()
 }
 watch(
   () => route.fullPath,
   () => nextTick(() => setTimeout(findHeading, 50)),
   { immediate: true },
 )
-// Pages that load their data first render the h1 a moment later.
+// Pages that load their data first render the h1 a moment later (or replace it).
+// (Observed through the bar's own ref: #main isn't in the DOM yet while this sets up.)
 useMutationObserver(
-  () => (import.meta.client ? document.getElementById('main') : null),
+  () => bar.value?.closest('main') ?? null,
   () => {
     if (!heading.value?.isConnected) findHeading()
   },
   { childList: true, subtree: true },
 )
-useIntersectionObserver(
-  heading,
-  ([entry]) => {
-    headingVisible.value = entry?.isIntersecting ?? false
-  },
-  { rootMargin: '-56px 0px 0px 0px' },
-)
+useEventListener('scroll', useThrottleFn(check, 50, true), { passive: true })
 
 const showTitle = computed(
   () => !route.meta.hideMobileTitle && route.path !== '/' && !headingVisible.value,
@@ -47,6 +48,7 @@ const showTitle = computed(
 
 <template>
   <header
+    ref="bar"
     class="sticky top-0 z-20 flex h-14 items-center gap-0.5 border-b border-rule bg-[color-mix(in_srgb,var(--sheet)_92%,transparent)] py-2 pr-1.5 pl-2 backdrop-blur-[8px]"
   >
     <NuxtLink
