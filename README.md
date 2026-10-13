@@ -8,7 +8,7 @@ travel, company devices, onboarding and offboarding, and company news, in one ca
 ![Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82?logo=nuxt&logoColor=white)
 ![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)
 
-**[Live demo](https://atrium-demo.vercel.app)** · runs entirely in your browser, pick any persona
+**[Live demo](https://atrium-workplace.vercel.app)** · runs entirely in your browser, pick any persona
 to sign in · **[Backend repository](https://github.com/martenackermann/atrium-backend-demo)**
 (NestJS API)
 
