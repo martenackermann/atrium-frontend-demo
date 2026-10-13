@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CornerUpRight } from '@lucide/vue'
 import { useTravelRequest, useTravelTimeline } from '../api'
 import type { TravelRequestDetail, TravelRequestSummary } from '../api/types'
 import { routeStops } from '../lib/present'
@@ -23,6 +24,10 @@ const decides = computed(() => props.item.availableActions.includes('approve'))
 const words = computed(
   () => request.value?.car?.specialEquipmentReason ?? request.value?.comment ?? null,
 )
+/** The comment is already quoted in the reasons box when there is no equipment reason. */
+const commentQuoted = computed(
+  () => props.item.needsApproval && !request.value?.car?.specialEquipmentReason,
+)
 </script>
 
 <template>
@@ -34,7 +39,11 @@ const words = computed(
         :available-actions="item.availableActions"
       />
       <PriorityFlag v-if="item.isHighPriority" :starts-at="item.startsAt" high />
-      <UiMiniChip v-if="item.approverReason === 'site_manager_escalation'" label="Escalated" />
+      <UiMiniChip
+        v-if="item.approverReason === 'site_manager_escalation'"
+        :icon="CornerUpRight"
+        label="Escalated"
+      />
       <span class="ml-auto inline-flex items-center gap-2 text-[13.5px] text-ink-muted">
         Requested by
         <UiAvatar
@@ -86,8 +95,13 @@ const words = computed(
           “{{ request.bookingImpossibleReason ?? request.cancellationReason }}”
         </p>
       </section>
-      <TravelBookingCard v-if="request.booking" :request="request" />
-      <TravelRequestFacts :request="request" :hide-quote="item.needsApproval" />
+      <TravelBookingCard v-if="request.booking" :request="request" :heading-level="3" />
+      <TravelRequestFacts
+        :request="request"
+        :heading-level="3"
+        :hide-quote="item.needsApproval"
+        :hide-comment="commentQuoted"
+      />
       <section aria-labelledby="split-route">
         <h3 id="split-route" class="mb-3 text-lg font-[650]">Route</h3>
         <div class="overflow-x-auto pb-1">

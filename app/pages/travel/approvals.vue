@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ArrowRight, Users } from '@lucide/vue'
+import { ArrowRight, CornerUpRight, UsersRound } from '@lucide/vue'
 import { describeError, isApiError } from '~/lib/api'
 import { whySeeingText } from '~/lib/why'
 import type { TabItem } from '~/types/ui'
 import { travelKeys, useTravelCounts, useTravelRequests } from '~/modules/travel/api'
 import type { TravelRequestDetail, TravelRequestSummary } from '~/modules/travel/api/types'
-import { TRAVEL_ACTION_CONFIG, TRAVEL_ACTION_MESSAGES } from '~/modules/travel/constants'
+import { TRAVEL_ACTION_MESSAGES } from '~/modules/travel/constants'
 import { requestTitle, tripDates } from '~/modules/travel/lib/present'
 
 /**
@@ -176,10 +176,14 @@ const emptyText = computed(() =>
         </p>
         <div class="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 pl-[23px]">
           <PriorityFlag v-if="item.isHighPriority" :starts-at="item.startsAt" high />
-          <UiMiniChip v-if="item.approverReason === 'site_manager_escalation'" label="Escalated" />
+          <UiMiniChip
+            v-if="item.approverReason === 'site_manager_escalation'"
+            :icon="CornerUpRight"
+            label="Escalated"
+          />
           <UiMiniChip
             v-if="item.actingAs === 'deputy' && item.approver"
-            :icon="Users"
+            :icon="UsersRound"
             :label="`for ${item.approver.displayName}`"
           />
           <StatusBadge
@@ -211,7 +215,6 @@ const emptyText = computed(() =>
           v-if="item.availableActions.includes('approve')"
           variant="primary"
           kbd="A"
-          :icon="TRAVEL_ACTION_CONFIG.approve?.icon"
           :loading="pending === 'approve'"
           :disabled="Boolean(pending)"
           @click="run(item, 'approve')"

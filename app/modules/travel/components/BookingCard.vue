@@ -8,7 +8,11 @@ import type { TravelRequestDetail } from '../api/types'
  * booked by/at and the **Show PIN** action. The PIN comes from the audited
  * `GET …/booking/pin` (only with `view_pin`) and disappears again after 30 seconds.
  */
-const props = defineProps<{ request: TravelRequestDetail }>()
+const props = defineProps<{
+  request: TravelRequestDetail
+  /** 2 on the request page, 3 inside a split-view detail (whose title is the h2). */
+  headingLevel?: 2 | 3
+}>()
 const api = useApi()
 const toast = useToast()
 
@@ -56,9 +60,13 @@ const canViewPin = computed(() => props.request.availableActions.includes('view_
     class="grid gap-4 rounded-xl border border-rule bg-sheet p-5"
     aria-labelledby="booking-title"
   >
-    <h2 id="booking-title" class="flex items-center gap-2 text-lg font-[650]">
-      <TicketCheck class="size-[18px] text-st-positive" aria-hidden="true" />Booking
-    </h2>
+    <component
+      :is="`h${headingLevel ?? 2}`"
+      id="booking-title"
+      class="flex items-center gap-2 text-[14.5px] font-[650]"
+    >
+      <TicketCheck class="size-4 text-st-positive" aria-hidden="true" />Booking
+    </component>
     <dl class="grid gap-4 sm:grid-cols-[repeat(3,minmax(0,1fr))]">
       <div>
         <dt class="text-[12.5px] text-ink-subtle">Booking number</dt>
@@ -102,7 +110,9 @@ const canViewPin = computed(() => props.request.availableActions.includes('view_
       {{ request.booking.comment }}
     </p>
     <div>
-      <h3 class="mb-1.5 text-[13.5px] font-[650]">Confirmations</h3>
+      <component :is="`h${(headingLevel ?? 2) + 1}`" class="mb-1.5 text-[13.5px] font-[650]">
+        Confirmations
+      </component>
       <FileList :files="request.booking.attachments" empty="No confirmation attached." />
     </div>
     <p class="text-meta text-ink-subtle">
