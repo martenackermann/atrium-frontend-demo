@@ -583,7 +583,11 @@ export default defineMockHandlers(({ api }) => [
       pendingAcceptance: {
         total: pending.length,
         overdue: pending.filter((p) => p.open && isAcceptanceOverdue(p.open.assignedAt)).length,
-        oldest: pending.slice(0, 5).map((p) => item(p.asset, user)),
+        // "Waiting since" = the open assignment's date, not the asset's updatedAt.
+        oldest: pending.slice(0, 5).map((p) => ({
+          ...item(p.asset, user),
+          assignedAt: p.open?.assignedAt ?? p.asset.updatedAt,
+        })),
       },
       recentActivity: recent.flatMap((entry) => {
         const asset = db.assets.find(entry.entityId)

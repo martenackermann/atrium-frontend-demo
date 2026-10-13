@@ -396,6 +396,47 @@ function seedAssets(ctx: SeedContext) {
       reminders,
     })
   })
+  seedLatestDeviceNotifications(ctx)
+}
+
+/** Local calendar day of an ISO instant plus `days` (YYYY-MM-DD), like the backend due date. */
+function plusDays(iso: string, days: number): string {
+  const instant = new Date(iso)
+  const day = new Date(instant.getFullYear(), instant.getMonth(), instant.getDate() + days)
+  const pad = (value: number) => String(value).padStart(2, '0')
+  return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`
+}
+
+/** Each persona but Emma: the mail of their most recently assigned device (read), like the backend. */
+function seedLatestDeviceNotifications(ctx: SeedContext) {
+  const { db } = ctx
+  for (const persona of ['max', 'sofia', 'clara', 'tom', 'tina', 'arne', 'paula', 'ian']) {
+    const holder = userId(persona)
+    const latest = db.assetAssignments
+      .where((a) => a.userId === holder && Boolean(a.acceptedAt))
+      .sort((x, y) => y.assignedAt.localeCompare(x.assignedAt))[0]
+    if (!latest) continue
+    const asset = db.assets.find(latest.assetId)!
+    const model = db.assetModels.find(asset.modelId)!
+    const type = db.assetDeviceTypes.find(model.deviceTypeId)!
+    db.notifications.insert({
+      id: ctx.uuid(),
+      userId: holder,
+      module: 'assets',
+      ...assignmentPendingText({
+        deviceType: type.name.toLowerCase(),
+        model: model.name,
+        assetTag: assetTag(asset.number),
+        serialNumber: asset.serialNumber,
+        assignedBy: displayName(latest.assignedById),
+        dueDate: plusDays(latest.assignedAt, DUE_DAYS),
+        assetId: asset.id,
+      }),
+      priority: 'normal',
+      readAt: latest.acceptedAt,
+      createdAt: latest.assignedAt,
+    })
+  }
 }
 
 /** In-app notifications of the story records (SPEC_RESOLUTIONS #7), like the backend seed. */

@@ -13,12 +13,13 @@ import {
   backOfficeActingAs,
   canComment,
   canEdit,
+  commentAddedText,
   isBackOffice,
   isHighPriority,
   peopleReference,
   peopleSummary,
-  STATUS_LABELS,
   statusChangedText,
+  statusChangedTitle,
 } from './rules'
 import type { PeopleRequestRecord } from './types'
 
@@ -47,7 +48,7 @@ const opsOnly = (_: PeopleRequestRecord, user: MockUser) =>
 export function notifyUser(
   userId: string | null | undefined,
   row: PeopleRequestRecord,
-  input: { templateId: string; title: string; body: string },
+  input: { templateId: string; title: string; body: string; priority?: 'high' | 'normal' },
 ) {
   if (!userId) return
   db.notifications.insert({
@@ -57,7 +58,7 @@ export function notifyUser(
     title: input.title.slice(0, 140),
     body: input.body.slice(0, 500),
     link: `/people-requests/${row.id}`,
-    priority: isHighPriority(row.priority) ? 'high' : 'normal',
+    priority: input.priority ?? (isHighPriority(row.priority) ? 'high' : 'normal'),
     readAt: null,
     createdAt: new Date().toISOString(),
   })
@@ -69,7 +70,7 @@ function notifyStatus(
   actor: MockUser,
   extra: { question?: string | null; reason?: string | null; note?: string | null },
 ) {
-  const title = `${peopleReference(row.number)} is now ${STATUS_LABELS[row.status]}`
+  const title = statusChangedTitle(peopleReference(row.number), row.status)
   const body = statusChangedText(row.title, row.status, extra)
   const to = row.requesterId !== actor.id ? row.requesterId : row.assigneeId
   if (to && to !== actor.id)
@@ -91,13 +92,14 @@ export function notifyComment(row: PeopleRequestRecord, author: MockUser, text: 
     if (row.assigneeId) recipients.add(row.assigneeId)
   }
   recipients.delete(author.id)
-  for (const userId of recipients) {
-    notifyUser(userId, row, {
-      templateId: 'people.comment_added',
-      title: `New comment on ${peopleReference(row.number)}`,
-      body: `${author.displayName} on ${row.title}: ${text.slice(0, 300)}`,
-    })
-  }
+  const added = commentAddedText({
+    reference: peopleReference(row.number),
+    title: row.title,
+    authorName: author.displayName,
+    excerpt: text,
+  })
+  // The backend sends comment notifications with normal priority.
+  for (const userId of recipients) notifyUser(userId, row, { ...added, priority: 'normal' })
 }
 
 function addComment(

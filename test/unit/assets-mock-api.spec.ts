@@ -123,6 +123,19 @@ describe('assets mock API', () => {
     expect(dashboard.totals.all).toBe(118)
     expect(dashboard.pendingAcceptance).toMatchObject({ total: 4, overdue: 1 })
     expect(dashboard.recentActivity).toHaveLength(10)
+    // "Waiting since" is the assignment date, not the asset's last change.
+    const oldest = dashboard.pendingAcceptance.oldest[0]!
+    expect(oldest.model.name).toBe('Quillon Slate 11 64 GB Silver')
+    const open = db.assetAssignments.first((a) => a.assetId === oldest.id && !a.acceptedAt)!
+    const detail = await api.get<AssetDto>(`/assets/${oldest.id}`)
+    await api.patch(`/assets/${oldest.id}`, {
+      notes: 'Waits on the shelf.',
+      version: detail.version,
+    })
+    const after = await api.get<AssetDashboard>('/assets/dashboard')
+    const row = after.pendingAcceptance.oldest.find((a) => a.id === oldest.id)!
+    expect(row.assignedAt).toBe(open.assignedAt)
+    expect(row.updatedAt).not.toBe(row.assignedAt)
     const counts = await api.get<AssetCounts>('/assets/queues/counts')
     expect(counts.admin).toEqual({
       pendingAcceptance: 4,

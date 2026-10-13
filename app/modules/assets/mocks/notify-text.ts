@@ -20,8 +20,8 @@ export function assignmentPendingText(c: {
 }): NotificationText {
   return {
     templateId: 'assets.assignment_pending',
-    title: `Please confirm your new ${c.deviceType}`,
-    body: `${c.assignedBy} assigned ${c.model} (${c.assetTag}, serial ${c.serialNumber}) to you. Please accept or decline it by ${c.dueDate}.`,
+    title: `Confirm your new ${c.deviceType}`,
+    body: `${c.assignedBy} assigned ${c.model} (${c.assetTag}, serial ${c.serialNumber}) to you. Accept or decline it by ${c.dueDate}.`,
     link: `/assets/${c.assetId}`,
   }
 }
@@ -51,7 +51,7 @@ export function returnedText(c: {
   return {
     templateId: 'assets.returned',
     title: `Return confirmed: ${c.assetTag}`,
-    body: `We received ${c.model} (${c.assetTag}) back${c.condition === 'damaged' ? '. It was damaged and goes to repair' : ' in good condition'}. It is no longer assigned to you.`,
+    body: `IT support has ${c.model} (${c.assetTag}) back${c.condition === 'damaged' ? '. It was damaged and goes to repair' : ' in good condition'}. It is no longer assigned to you.`,
     link: '/assets',
   }
 }

@@ -148,7 +148,7 @@ const activity = computed(() => (d.value?.recentActivity ?? []).slice(0, isMobil
                   }}</span>
                   <span class="block truncate text-sm text-ink-muted"
                     >{{ asset.model.name }} · <span class="mono">{{ asset.assetTag }}</span> · since
-                    {{ formatDate(asset.updatedAt) }}</span
+                    {{ formatDate(asset.assignedAt) }}</span
                   >
                 </span>
                 <ChevronRight class="size-4 text-ink-subtle" aria-hidden="true" />
