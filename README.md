@@ -5,9 +5,10 @@ onboarding/offboarding requests and company news. This repository holds the sing
 the API lives in `atrium-backend-demo`. Atrium is a portfolio demo set in a fictional company,
 Acme IT Services.
 
-> **Status:** foundation done: design system, UI kit, app shell, auth, demo mode with mock data,
-> and the foundation screens (inbox, settings, admin). The module screens (training, travel,
-> devices, people requests, news, home) are placeholders that the slices replace.
+> **Status:** feature complete for the demo: design system, UI kit, app shell, auth, inbox,
+> settings and admin, plus every module - training, travel, devices, people requests, news and
+> Home "My day". Demo mode mirrors the API's seed and workflows; the same cross-module Playwright
+> flows (`test/e2e/integration.spec.ts`) pass against the mocks and against the real API.
 
 ## Stack
 
