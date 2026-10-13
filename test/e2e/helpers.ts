@@ -1,15 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 
 export type PersonaKey =
-  | 'emma'
-  | 'max'
-  | 'sofia'
-  | 'clara'
-  | 'tom'
-  | 'tina'
-  | 'arne'
-  | 'paula'
-  | 'ian'
+  'emma' | 'max' | 'sofia' | 'clara' | 'tom' | 'tina' | 'arne' | 'paula' | 'ian'
 
 export const DISPLAY_NAMES: Record<PersonaKey, string> = {
   emma: 'Emma Employee',

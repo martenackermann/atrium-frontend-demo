@@ -72,7 +72,10 @@ for (const [persona, rows] of byPersona(SLICE_PAGES)) {
     for (const [path, title] of rows) {
       await page.goto(path)
       await expect(page.getByTestId('placeholder-page'), path).toBeVisible()
-      await expect(page.getByRole('heading', { level: 1, name: title, exact: true }), path).toBeVisible()
+      await expect(
+        page.getByRole('heading', { level: 1, name: title, exact: true }),
+        path,
+      ).toBeVisible()
     }
     expect(errors).toEqual([])
   })
