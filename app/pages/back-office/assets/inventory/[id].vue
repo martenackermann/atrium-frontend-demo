@@ -72,6 +72,15 @@ const { run, isPending, variables } = useWorkflowAction<AssetDto>({
   onSuccess: (detail) => queryClient.setQueryData(assetKeys.assets.detail(detail.id), detail),
 })
 const pending = computed(() => (isPending.value ? (variables.value?.action ?? null) : null))
+// Mobile sticky bar (SCREENS §9): two actions stay inline (Decline… / Approve); with more,
+// the primary stays and the rest go into "More", so the bar never wraps over the content.
+const isMobile = useMediaQuery('(max-width: 767px)')
+const barMax = computed(() => {
+  const count = (asset.data.value?.availableActions ?? []).filter(
+    (a) => ASSET_ADMIN_ACTIONS[a],
+  ).length
+  return isMobile.value && count > 2 ? 1 : 3
+})
 
 const assignOpen = ref(false)
 const assignErrors = ref<Record<string, string | undefined>>({})
@@ -225,6 +234,7 @@ const summary = computed<FactItem[]>(() => {
             ref="actionBar"
             :actions="a.availableActions"
             :config="ASSET_ADMIN_ACTIONS"
+            :max="barMax"
             :pending="pending"
             sticky-mobile
             @run="onRun"
