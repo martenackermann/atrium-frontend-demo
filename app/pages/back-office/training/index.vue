@@ -87,13 +87,13 @@ const tabs = computed<TabItem<Queue>[]>(() => {
 
 const q = computed({
   get: () => (typeof route.query.q === 'string' ? route.query.q : ''),
-  set: (value: string) => router.replace({ query: { ...route.query, q: value || undefined } }),
+  set: (value: string) => patchQuery(router, { q: value || undefined }),
 })
 const search = ref(q.value)
 watchDebounced(search, (value) => (q.value = value.trim()), { debounce: 300 })
 const highOnly = computed({
   get: () => route.query.high === 'true',
-  set: (value) => router.replace({ query: { ...route.query, high: value ? 'true' : undefined } }),
+  set: (value) => patchQuery(router, { high: value ? 'true' : undefined }),
 })
 const range = computed({
   get: () => ({
@@ -101,9 +101,7 @@ const range = computed({
     to: typeof route.query.to === 'string' ? route.query.to : null,
   }),
   set: (value: { from: string | null; to: string | null }) =>
-    router.replace({
-      query: { ...route.query, from: value.from || undefined, to: value.to || undefined },
-    }),
+    patchQuery(router, { from: value.from || undefined, to: value.to || undefined }),
 })
 
 const filters = computed(() => ({

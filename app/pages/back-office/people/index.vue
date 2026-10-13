@@ -24,7 +24,7 @@ const counts = usePeopleCounts()
 const queryParam = (key: string, fallback: string) =>
   typeof route.query[key] === 'string' && route.query[key] ? (route.query[key] as string) : fallback
 const setQuery = (patch: Record<string, string | undefined>) =>
-  router.replace({ query: { ...route.query, ...patch, selected: undefined } })
+  patchQuery(router, { ...patch, selected: undefined })
 
 const queue = computed<OpsQueue>({
   get: () => {

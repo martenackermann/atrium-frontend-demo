@@ -20,18 +20,15 @@ const router = useRouter()
 const tab = computed({
   get: () => (route.query.tab === 'updates' ? 'updates' : 'todo'),
   set: (value) =>
-    router.replace({
-      query: { ...route.query, tab: value === 'todo' ? undefined : value, selected: undefined },
-    }),
+    patchQuery(router, { tab: value === 'todo' ? undefined : value, selected: undefined }),
 })
 const filter = computed({
   get: () => (typeof route.query.module === 'string' ? route.query.module : 'all'),
-  set: (value) =>
-    router.replace({ query: { ...route.query, module: value === 'all' ? undefined : value } }),
+  set: (value) => patchQuery(router, { module: value === 'all' ? undefined : value }),
 })
 const highOnly = computed({
   get: () => route.query.high === 'true',
-  set: (value) => router.replace({ query: { ...route.query, high: value ? 'true' : undefined } }),
+  set: (value) => patchQuery(router, { high: value ? 'true' : undefined }),
 })
 
 const inbox = useQuery({

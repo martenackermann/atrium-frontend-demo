@@ -28,13 +28,7 @@ const tab = computed<Tab>({
   get: () =>
     ['deputy', 'team'].includes(String(route.query.tab)) ? (route.query.tab as Tab) : 'approvals',
   set: (value) =>
-    router.replace({
-      query: {
-        ...route.query,
-        tab: value === 'approvals' ? undefined : value,
-        selected: undefined,
-      },
-    }),
+    patchQuery(router, { tab: value === 'approvals' ? undefined : value, selected: undefined }),
 })
 const counts = useTravelCounts()
 const tabs = computed<TabItem[]>(() => [

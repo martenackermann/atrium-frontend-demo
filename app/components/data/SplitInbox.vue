@@ -62,8 +62,13 @@ const selected = computed(() =>
 )
 
 function select(item: T | undefined, replace = true) {
-  const query = { ...route.query, [props.selectedKey]: item ? props.itemKey(item) : undefined }
-  void (replace ? router.replace({ query }) : router.push({ query }))
+  // patchQuery keeps a search/filter patch that is still being navigated to (debounced search
+  // + auto-selection of the first row used to drop the search).
+  void patchQuery(
+    router,
+    { [props.selectedKey]: item ? props.itemKey(item) : undefined },
+    replace ? 'replace' : 'push',
+  )
 }
 
 // Desktop: keep something selected; after an action the next row takes the removed row's place.

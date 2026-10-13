@@ -28,8 +28,7 @@ const QUEUE_STATUS: Record<Queue, string | undefined> = {
   approvals: 'pending_approval',
   all: undefined,
 }
-const setQuery = (patch: Record<string, string | undefined>) =>
-  router.replace({ query: { ...route.query, ...patch } })
+const setQuery = (patch: Record<string, string | undefined>) => patchQuery(router, patch)
 
 const queue = computed<Queue>({
   get: () => (String(route.query.queue) in QUEUE_STATUS ? (route.query.queue as Queue) : 'to_book'),

@@ -57,19 +57,15 @@ const tab = computed<Tab>({
     return tabs.value.some((t) => t.value === wanted) ? wanted : 'approvals'
   },
   set: (value) =>
-    router.replace({
-      query: {
-        ...route.query,
-        tab: value === 'approvals' ? undefined : value,
-        selected: undefined,
-        filter: undefined,
-      },
+    patchQuery(router, {
+      tab: value === 'approvals' ? undefined : value,
+      selected: undefined,
+      filter: undefined,
     }),
 })
 const filter = computed({
   get: () => (route.query.filter === 'all' ? 'all' : 'pending'),
-  set: (value) =>
-    router.replace({ query: { ...route.query, filter: value === 'pending' ? undefined : value } }),
+  set: (value) => patchQuery(router, { filter: value === 'pending' ? undefined : value }),
 })
 
 const params = computed(() => ({
