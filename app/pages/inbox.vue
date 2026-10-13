@@ -67,7 +67,7 @@ const tabs = computed(() => [
   {
     value: 'todo',
     label: 'To do',
-    count: inbox.data.value?.meta.total ?? null,
+    count: inbox.data.value?.meta.total || null,
     countTone: 'you' as const,
   },
   { value: 'updates', label: 'Updates', count: notifications.data.value?.meta.unread || null },

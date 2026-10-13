@@ -11,7 +11,15 @@ const THEMES = ['light', 'dark'] as const
 
 async function useTheme(page: Page, theme: (typeof THEMES)[number]) {
   await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
-  await page.addInitScript((value) => localStorage.setItem('atrium-theme', value), theme)
+  await page.addInitScript((value) => {
+    localStorage.setItem('atrium-theme', value)
+    // Hide the Nuxt DevTools launcher of `nuxt dev` (not part of the app).
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style')
+      style.textContent = '#nuxt-devtools-container, #nuxt-devtools-anchor { display: none !important; }'
+      document.head.append(style)
+    })
+  }, theme)
 }
 
 for (const theme of THEMES) {

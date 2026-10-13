@@ -1,439 +1,507 @@
 # Atrium frontend conventions
 
-This is the rulebook for everyone working in this repo, including the parallel slice agents.
-When this document and the code disagree, the code wins. Fix the document in the same change.
+The rulebook for everyone working in this repo, including the parallel slice agents (A1 training,
+A2 travel, A3 assets, A4 home/people/news). When this document and the code disagree, the code
+wins: fix the document in the same change.
 
-- [1. Ownership: what a slice may touch](#1-ownership-what-a-slice-may-touch)
-- [2. Layout](#2-layout)
-- [3. Module system](#3-module-system)
-- [4. Navigation, auth and role guards](#4-navigation-auth-and-role-guards)
-- [5. API client and Vue Query](#5-api-client-and-vue-query)
-- [6. Forms (vee-validate + zod)](#6-forms-vee-validate--zod)
-- [7. Mocks and demo mode](#7-mocks-and-demo-mode)
-- [8. Testing](#8-testing)
-- [9. UI, styling and content](#9-ui-styling-and-content)
-- [10. Tooling and commits](#10-tooling-and-commits)
-- [11. Decisions log](#11-decisions-log)
+**Spec precedence.** The spec lives in `../_spec/atrium/`: `SPEC.md`, `API.md`, `SCREENS.md`,
+`DESIGN.md` (+ `tokens.css`, comps). **`SPEC_RESOLUTIONS.md` overrides SPEC/API/SCREENS where they
+conflict** — read it first. DESIGN wins on appearance, SCREENS on behaviour.
 
-## 1. Ownership: what a slice may touch
+1. [How to build a slice (recipe)](#1-how-to-build-a-slice-recipe)
+2. [What a slice must never touch](#2-what-a-slice-must-never-touch)
+3. [Layout of the repo](#3-layout-of-the-repo)
+4. [API client, types and Vue Query](#4-api-client-types-and-vue-query)
+5. [Pages: list, detail, approvals, stepper](#5-pages-list-detail-approvals-stepper)
+6. [Forms (vee-validate + zod, 422 mapping)](#6-forms-vee-validate--zod-422-mapping)
+7. [Status, workflow and routing components](#7-status-workflow-and-routing-components)
+8. [Mocks and demo mode](#8-mocks-and-demo-mode)
+9. [Navigation, access and the shell](#9-navigation-access-and-the-shell)
+10. [UI kit reference](#10-ui-kit-reference)
+11. [Styling and content](#11-styling-and-content)
+12. [Testing](#12-testing)
+13. [Tooling and commits](#13-tooling-and-commits)
+14. [Decisions log](#14-decisions-log)
 
-A slice owns exactly these paths:
+---
 
-| Slice                   | Module folders                      | Pages                                                         |
-| ----------------------- | ----------------------------------- | ------------------------------------------------------------- |
-| A1 Training             | `app/modules/training/**`           | `app/pages/training/**`                                       |
-| A2 Travel               | `app/modules/travel/**`             | `app/pages/travel/**`                                         |
-| A3 Assets               | `app/modules/assets/**`             | `app/pages/assets/**`                                         |
-| A4 People / News / Home | `app/modules/{people,news,home}/**` | `app/pages/{people,news}/**` and `app/pages/index.vue` (home) |
+## 1. How to build a slice (recipe)
 
-Tests: `test/unit/<module>-*.spec.ts`, `test/nuxt/<module>-*.spec.ts` and `test/e2e/<module>*.spec.ts`.
+A slice owns one or more **modules** (`app/modules/<m>/`) and the **page files** listed in
+`slices.config.mjs`. The foundation already created every file below as a stub or placeholder;
+a slice **replaces their content** and adds files inside its own folders. It never edits foundation
+files to plug in: badges, commands, mocks, seeds and providers are collected by glob.
 
-**Everything else is foundation-owned:** `nuxt.config.ts`, `package.json`, the lockfile,
-`app/lib/**`, `app/mocks/*.ts` and `app/mocks/core/**`, `app/types/**`, `app/components/**`
-(UI kit), `app/layouts/**`, `app/middleware/**`, `app/plugins/**`, `app/stores/**` and
-`app/composables/**`.
+| Slice | Modules                  | Pages                                                                                                                                                     |
+| ----- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1    | `training`               | `pages/training/**`, `pages/back-office/training/**`                                                                                                      |
+| A2    | `travel`                 | `pages/travel/**`, `pages/back-office/travel/**`                                                                                                          |
+| A3    | `assets`                 | `pages/assets/**`, `pages/back-office/assets/**`                                                                                                          |
+| A4    | `people`, `news`, `home` | `pages/index.vue`, `pages/people-requests/**`, `pages/back-office/people/**`, `pages/news/**`, `pages/back-office/news/**`, `pages/back-office/links.vue` |
 
-- **Never add dependencies.** The foundation already installed everything the spec needs (see
-  `package.json`). If something is missing, it is a shared-file request.
-- **Shared-file requests** (a new role, a shared type, a UI-kit component, a helper in `app/lib`)
-  go into your final report. Never edit those files yourself.
-- Modules must not import each other. ESLint enforces this, and it covers type imports too.
-  Share through `~/lib`, `~/types`, the API schema, or global components.
+### Files of a module
 
-## 2. Layout
+```
+app/modules/<m>/
+  api/types.ts          DTOs of this module, hand-written from API.md (SPEC_RESOLUTIONS #6)
+  api/index.ts          query keys (createQueryKeys) + composables (useXxxList, useXxxDetail, useXxxCounts)
+  components/           module components → auto-registered with the module prefix:
+                        modules/travel/components/RouteCard.vue → <TravelRouteCard>
+  badges.ts             nav badge sources (defineNavBadges) — registry, no shared file
+  commands.ts           ⌘K / "New request" commands (defineCommands)
+  constants.ts          (optional) ACTION_CONFIG for ActionBar, labels, step lists
+  mocks/types.ts        (optional) record types; augment MockCollections
+  mocks/seed.ts         demo data (defineMockSeed) — SPEC §10 story records first
+  mocks/handlers.ts     MSW handlers for this module's endpoints (defineMockHandlers)
+  mocks/providers.ts    workflows, enums, inbox, search, myDay, counts, jobs (defineMockProviders)
+```
+
+### Step by step
+
+1. **Types** – write `api/types.ts` from API.md §4–§7 (request bodies, list items, detail DTOs
+   with `availableActions`, `timeline`, `route`). Shared shapes come from `~/types/api`
+   (`UserRef`, `Money`, `Page<T>`, `TimelineEntry`, `AttachmentDto`, `Decision`, …).
+2. **API layer** – in `api/index.ts`, keys via `createQueryKeys('<m>', '<resource>')`, one
+   composable per query. Counts use `summaryKey('<m>', 'counts')` so every mutation refreshes them.
+3. **Mocks** – seed (`mocks/seed.ts`), handlers (`mocks/handlers.ts`), state machine with
+   `defineMockWorkflow` (§8.3), providers (`mocks/providers.ts`). The app works in `pnpm dev:demo`
+   with no backend; the same handlers run in Vitest.
+4. **Pages** – replace the placeholders. Keep each file's `definePageMeta({ title, access })`
+   (adjust `access` only if SCREENS says otherwise). Patterns in §5.
+5. **Badges and commands** – fill `badges.ts` from `/<m>/queues/counts`; add commands.
+6. **Inbox** – contribute `inbox` items in `providers.ts` (API.md §8) with `actionsPath` and
+   `quickActions` (SPEC_RESOLUTIONS #4). The drawer, `/inbox` and the badge pick them up.
+7. **Tests** – Vitest for workflow rules and mock API behaviour (pattern:
+   `test/unit/mock-api.spec.ts`), Playwright for the main flows in `test/e2e/<m>.spec.ts`.
+8. **Verify** – `pnpm lint && pnpm typecheck && pnpm test && pnpm build:demo && pnpm test:e2e`.
+
+## 2. What a slice must never touch
+
+Slices change only their modules, their page files, their tests (`test/**/<m>*.spec.ts`,
+`test/e2e/<m>*.spec.ts`) and docs about their module. Everything else is foundation:
+
+- `app/components/**` (the UI kit), `app/layouts/**`, `app/app.vue`, `app/error.vue`
+- `app/lib/**`, `app/composables/**`, `app/stores/**`, `app/plugins/**`, `app/middleware/**`,
+  `app/utils/**`, `app/types/**`, `app/config/**`, `app/assets/**`
+- `app/mocks/*.ts` and `app/mocks/core/**` (including `users.json`)
+- `nuxt.config.ts`, `package.json`, the lockfile, `eslint.config.mjs`, `slices.config.mjs`,
+  `vitest.config.ts`, `playwright.config.ts`, CI, `vercel.json`
+- other modules' folders and pages: ESLint forbids importing another module (even types)
+
+Need something from the foundation (a kit change, a new shared type, a package)? Don't patch it
+locally: build it inside your module and list the request in your final report.
+
+## 3. Layout of the repo
 
 ```
 app/
-  app.vue, assets/css/main.css         root component, Tailwind entry (tokens in phase 2b)
-  components/                          UI kit (phase 2b), auto-registered without prefix
-  composables/                         useApi, useNavigation, useDemoMode (auto-imported)
-  layouts/  middleware/  plugins/      shell, auth.global + roles.global, demo/vue-query/api
-  lib/
-    api/                               openapi-fetch client, unwrap(), ApiError, schema.d.ts (generated)
-    query/keys.ts                      createQueryKeys(), SUMMARY_KEY
-    navigation.ts, cn.ts               nav helpers, class merge helper
-  mocks/                               MSW + in-browser mock database (demo mode, tests)
-    core/                              users/personas seed + auth handlers
-  modules/<module>/                    feature modules, one per slice (see section 3)
-  pages/                               file-based routes; pages/<module>/** belong to the module
-  stores/auth.ts                       session store (useAuthStore)
-  types/                               shared types (auth, api envelope, navigation, page meta)
-  utils/                               auto-imported helpers (safeRedirect)
-scripts/                               api:types generator + placeholder OpenAPI document
-test/unit  test/nuxt  test/e2e         Vitest (node), Vitest (Nuxt runtime), Playwright
+  assets/css/        tokens.css (DESIGN tokens, verbatim) + main.css (Tailwind v4 theme, base, motion)
+  components/        UI kit, registered WITHOUT path prefix: ui/ form/ data/ workflow/ stepper/ app/
+  composables/       useApi, useAuthStore (stores/), useListQuery, useStepper, useStepperDraft,
+                     useWorkflowAction, useEnums/usePublicConfig/useWorkflowDefinition (useMeta),
+                     useOrg, useToast, useConfirm, useTheme, useNavigation, useBreadcrumbTail, …
+  config/navigation.ts   the SCREENS §1.2 navigation (ids are badge ids)
+  lib/               framework-free logic: api/ (http, errors, upload, download), access, status,
+                     list-query, stepper, registry, query keys, workflow layout
+  mocks/             MSW + in-browser mock DB (core) — modules add theirs under modules/<m>/mocks
+  modules/<m>/       slice code (see §1)
+  pages/             file routes; placeholders show who owns them
+  types/api/         shared API types (shared.ts, core.ts); module types live in the modules
 ```
 
-Path aliases: `~/` and `@/` both point to `app/`.
+## 4. API client, types and Vue Query
 
-## 3. Module system
+- **Client:** `const api = useApi()` → `api.get<T>(path, query?)`, `post`, `put`, `patch`,
+  `delete`, `action<T>(resourcePath, action, body?)`, `upload`, `downloadUrl`, `openAttachment`.
+  Paths are relative to `/api/v1`. Lists in queries are comma-joined; empty values are dropped.
+- **Idempotency:** every POST carries an `Idempotency-Key` (fresh UUID). For a retried submit
+  of the same form, pass a stable key: `api.post(path, body, { idempotencyKey })`.
+- **Errors:** everything non-2xx throws `ApiError` (`status`, `code`, `title`, `detail`,
+  `traceId`, `fieldErrors`, `fieldError(path)`, `isValidationError`). `describeError(error)` gives
+  user-facing `{ title, detail }` (409 `invalid_transition` → "This request changed in the
+  meantime"). 401 clears the session and goes to `/login?redirect=…`. 404 also means "not visible
+  to you" (API.md) → show the 404 view.
+- **Workflow actions:** `useWorkflowAction({ resourcePath, invalidate, messages })` → `run(action,
+body)` posts `<resource>/actions/<action>`, toasts, invalidates, refetches on 409, rethrows 422.
+- **Envelope:** lists are `Page<T> = { data, meta: { page, perPage, total, totalPages } }`.
+- **Uploads:** staged — `<FileDrop v-model="attachments" purpose="travel_booking_confirmation" />`
+  uploads on drop (`POST /attachments`), deletes on remove; send `attachmentIds` with the form.
+  Downloads go through `api.openAttachment(attachment)` (signed URL, same-origin check).
+- **Types:** `pnpm api:types` regenerates `app/lib/api/schema.d.ts` from
+  `../atrium-backend-demo/openapi.json` (it strips the `/api/v1` prefix). The backend currently
+  exports only `/health` and `/files/{token}`, so DTOs are hand-written: core in `~/types/api`,
+  module DTOs in `app/modules/<m>/api/types.ts`. Switch to generated types when the export is full.
+- **Query keys:** `createQueryKeys('travel', 'requests')` → `.all`, `.lists()`, `.list(params)`,
+  `.detail(id)`. Module root `['travel']` invalidates everything of a module. Anything under
+  `['summary']` (inbox, counts, my-day) is invalidated after **every** successful mutation.
+- **Meta:** `useEnums().options('travelStatus')` / `.label(enum, value)`; `usePublicConfig()`
+  (`/meta/config` limits); `useWorkflowDefinition('travel_request')`.
 
-Each feature is a folder in `app/modules/<module>/`. Everything in it is discovered with globs,
-so adding or changing a module never touches shared files.
+## 5. Pages: list, detail, approvals, stepper
 
-| File / folder                                                                                 | Purpose                                                                       | Discovered by                                              |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `nav.ts`                                                                                      | `export default defineNavEntries([...])`                                      | `useNavigation()` (glob)                                   |
-| `api.ts`                                                                                      | Query keys and Vue Query composables for the module's endpoints               | imported by the module's pages/components                  |
-| `components/`                                                                                 | Components, auto-registered with the module prefix                            | `nuxt.config.ts` (`components.dirs`, generated per module) |
-| `mocks/handlers.ts`                                                                           | `export default defineMockHandlers(({ api }) => [...])`                       | `app/mocks/handlers.ts` (glob)                             |
-| `mocks/seed.ts`                                                                               | `export default defineMockSeed({ run(ctx) {...} })` plus the collection types | `app/mocks/seeding.ts` (glob)                              |
-| optional: `types.ts`, `schemas.ts` (zod, shared by forms and mocks), `composables/`, `utils/` | module-internal                                                               | explicit imports                                           |
+Every page sets `definePageMeta({ title, access? })`. `title` feeds breadcrumbs, the document
+title and the mobile top bar; detail pages name themselves with
+`useBreadcrumbTail(() => detail.value?.reference)`.
 
-**Component naming.** `app/modules/training/components/StatusChip.vue` becomes
-`<TrainingStatusChip>`, and `components/request/Form.vue` becomes `<TrainingRequestForm>`.
-Do not repeat the prefix in the file name.
+**List (DataTable).** Filters, sort, search and page live in the URL.
 
-**Pages.** Pages use Nuxt file routing under `app/pages/<module>/`, for example
-`app/pages/training/requests/[id].vue`. Keep pages thin: they compose module components and the
-composables from `api.ts`.
+```vue
+<script setup lang="ts">
+const list = useListQuery({
+  filters: ['status', 'kind'],
+  multi: ['status'],
+  defaultSort: '-createdAt',
+})
+const query = useQuery({
+  queryKey: computed(() => travelKeys.requests.list(list.apiQuery.value)),
+  queryFn: ({ signal }) =>
+    api.get<Page<TravelListItem>>('/travel/requests', list.apiQuery.value, { signal }),
+  placeholderData: keepPreviousData,
+})
+const columns: DataTableColumn<TravelListItem>[] = [
+  { key: 'reference', label: 'Reference', format: 'mono', required: true, mobile: 'title' },
+  { key: 'status', label: 'Status', mobile: 'status' },
+  { key: 'startsAt', label: 'Starts', sort: 'startsAt', value: (row) => formatDate(row.startsAt) },
+]
+</script>
+<template>
+  <PageBody wide>
+    <PageHeader title="My trips"><template #actions>…</template></PageHeader>
+    <DataTable
+      :columns="columns"
+      :rows="query.data.value?.data"
+      :meta="query.data.value?.meta"
+      :loading="query.isPending.value"
+      :error="query.error.value"
+      :list="list"
+      noun="trips"
+      :row-to="(row) => `/travel/requests/${row.id}`"
+      export-path="/travel/requests/export"
+      :empty="{
+        title: 'No trips yet',
+        description: 'Book a rental car, a train journey or a flight.',
+      }"
+      @retry="query.refetch()"
+    >
+      <template #filters><UiSelect … /></template>
+      <template #cell-status="{ row }"
+        ><StatusBadge
+          enum="travelStatus"
+          :value="row.status"
+          :available-actions="row.availableActions"
+      /></template>
+    </DataTable>
+  </PageBody>
+</template>
+```
 
-**Auto-imports.** Only foundation code is auto-imported: Vue, Nuxt, VueUse, Pinia stores,
-`app/composables`, `app/utils`, plus `useQuery`, `useQueries`, `useMutation`, `useQueryClient`,
-`keepPreviousData`, `useForm`, `useField`, `useFieldArray` and `toTypedSchema`. Module code is
-not auto-imported. Import it explicitly, either as `~/modules/training/api` (allowed inside the
-same module) or with a relative path.
+Select filters can't use `''` as a value (Reka): use a sentinel such as `'any'` (see
+`pages/admin/users/index.vue`).
 
-## 4. Navigation, auth and role guards
+**Detail.** `PageHeader` (title, `#meta` with type · mono reference · dates, `#status`,
+`#actions` with `ActionBar`), then `RoutingSlip variant="full"`, facts (`FactGrid`), module
+content, `FileList`, and `LifecycleTimeline :entries="detail.timeline"`. Errors: `ProblemAlert`;
+a 404 → `throw createError({ statusCode: 404 })`.
 
-```ts
-// app/modules/training/nav.ts
-import { ClipboardCheck, GraduationCap } from '@lucide/vue'
-import { defineNavEntries } from '~/lib/navigation'
+**Approvals and queues (SplitInbox).**
 
-export default defineNavEntries([
-  { id: 'training', label: 'Training', to: '/training', icon: GraduationCap, order: 20 },
+```vue
+<SplitInbox
+  v-model:tab="tab"
+  v-model:filter="filter"
+  title="Approvals"
+  :tabs="tabs"
+  :items="items"
+  :item-key="(item) => item.id"
+  :item-label="(item) => item.title"
+  :can-decide="(item) => item.availableActions.includes('approve')"
+  :item-to="(item) => `/travel/requests/${item.id}`"
+  :loading="…"
+  :error="…"
+  @approve="(item) => run(item, 'approve')"
+  @decline="openDecline"
+>
+  <template #item="{ item, selected }">…row…</template>
+  <template #detail-title="{ item }">…</template>
+  <template #detail-meta="{ item }">…</template>
+  <template #detail-actions="{ item }"><ActionBar … /></template>
+  <template #detail="{ item }"><WhySeeing … /> <ReasonChips … /> <RoutingSlip … /></template>
+</SplitInbox>
+```
+
+`?selected=<id>` is in the URL; J/K/↓/↑ move, A approves, D declines, Enter opens the full page,
+Esc closes, `?` lists shortcuts. Use `WhySeeing` ("Why you're seeing this": approver, deputy,
+manager chain) on every approval detail. Decline uses `ReasonDialog` (reason required).
+
+**Stepper (StepperPage, focus mode).**
+
+```vue
+<script setup lang="ts">
+definePageMeta({ layout: 'focus', title: 'Rent a car' })
+const { values, validateField, setValues, handleSubmit, isSubmitting } = useForm({
+  validationSchema: schema,
+  initialValues,
+})
+const stepper = useStepper(
+  () => [
+    { id: 'trip', label: 'Trip' },
+    { id: 'vehicle', label: 'Vehicle' },
+    { id: 'return', label: 'Return', skip: values.tripType === 'one_way' },
+    { id: 'review', label: 'Review' },
+  ],
   {
-    id: 'training.back-office',
-    label: 'Training office',
-    to: '/training/back-office',
-    icon: ClipboardCheck,
-    section: 'admin',
-    roles: ['training_admin'],
-    badge: () => useTrainingQueueCount(), // optional; returns a ref/getter of a number
-  },
-])
-```
-
-- `roles` means the user needs any one of the listed roles. If `roles` is omitted, every
-  signed-in user sees the entry. Children are filtered the same way.
-- `order`: home is 0, then training 20, travel 30, assets 40, people 50, news 60. Use values
-  within your module's band.
-- `badge` runs inside the shell component's setup. Put the count query under `summaryKey(...)`
-  (see section 5) so it refreshes after any mutation.
-
-**Pages:**
-
-```ts
-definePageMeta({ roles: ['training_admin'] }) // users with any of these roles, else /forbidden
-definePageMeta({ public: true }) // no sign-in required (login only)
-```
-
-- Every page is private by default. `auth.global.ts` redirects to `/login?redirect=<path>`.
-- `roles.global.ts` runs after `auth.global.ts` (alphabetical order). Parent route meta is merged
-  into child routes.
-- Role guards exist only for the user experience. The API enforces authorization, and the UI
-  shows actions according to `availableActions` (section 7), never according to roles.
-- In components, use `useAuthStore()`: `user`, `roles`, `hasRole('manager')`,
-  `hasAnyRole([...])`, `logout()`.
-
-## 5. API client and Vue Query
-
-**Client.** `useApi()` returns the openapi-fetch client typed from `app/lib/api/schema.d.ts`.
-Wrap every call in `unwrap()`. It returns the data, or throws an `ApiError` normalised from
-problem+json:
-
-```ts
-import { unwrap, isApiError, type Schema } from '~/lib/api'
-
-const api = useApi() // call synchronously in setup or at the top of a composable
-const me = await unwrap(api.GET('/me'))
-const created = await unwrap(api.POST('/training/requests', { body }))
-```
-
-- `ApiError` has `status`, `title`, `detail`, `type`, `fieldErrors` and `body`, plus
-  `isValidationError`, `isNetworkError` (status 0) and `fieldError(path)`. `fieldErrors` keys use
-  vee-validate paths (`attendees[0].email`).
-- The plugin injects the bearer token. On a 401 for an authenticated request, the session is
-  cleared and the user is redirected to `/login?redirect=...`.
-- Base URL: `runtimeConfig.public.apiBase` (`NUXT_PUBLIC_API_BASE`, default
-  `http://localhost:3100/api/v1`). Demo mode uses `/api/v1`.
-- Types: `pnpm api:types` regenerates `schema.d.ts` from `../atrium-backend-demo/openapi.json`
-  by default, or from `pnpm api:types -- <path-or-url>`, or from `ATRIUM_OPENAPI`. Never edit
-  `schema.d.ts` by hand. `Schema<'TrainingRequest'>` names a component schema.
-
-**Query keys.** Create one factory per resource in the module's `api.ts`. Every key starts with
-the module name:
-
-```ts
-// app/modules/training/api.ts
-import { unwrap } from '~/lib/api'
-import { createQueryKeys } from '~/lib/query/keys'
-import type { ListQuery } from '~/types/api'
-
-export const trainingRequestKeys = createQueryKeys('training', 'requests')
-// .module ['training'] · .all ['training','requests'] · .list(params) · .detail(id) · .scope(...)
-
-export function useTrainingRequests(params: MaybeRefOrGetter<ListQuery>) {
-  const api = useApi()
-  return useQuery({
-    queryKey: computed(() => trainingRequestKeys.list(toValue(params))),
-    queryFn: ({ signal }) =>
-      unwrap(api.GET('/training/requests', { params: { query: toValue(params) }, signal })),
-    placeholderData: keepPreviousData, // no flicker while paging
-  })
-}
-
-export function useApproveAttendee() {
-  const api = useApi()
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (input: { id: string; comment?: string }) =>
-      unwrap(
-        api.POST('/training/attendees/{id}/approve', {
-          params: { path: { id: input.id } },
-          body: { comment: input.comment },
-        }),
+    validate: async (id) =>
+      (await Promise.all(STEP_FIELDS[id].map((field) => validateField(field)))).every(
+        (r) => r.valid,
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: trainingRequestKeys.module }),
-  })
-}
-```
-
-- **Invalidation:** after a mutation, invalidate the module root (`keys.module`) or a narrower
-  key you know is affected. Use `setQueryData` only for the record you just received.
-- **Cross-module data** (home dashboard widgets, nav badges, queue counts) uses
-  `summaryKey('training', 'queues')`. Any successful mutation anywhere invalidates every
-  `['summary', ...]` query automatically, so slices never invalidate each other's keys.
-- **Defaults** (`app/plugins/10.vue-query.ts`): `staleTime` 30 s, no retry on 4xx (two retries
-  otherwise), no refetch on window focus, mutations never retry.
-- Show loading, empty and error states for every query. In phase 2b the UI kit provides
-  components for them.
-
-**List conventions** (placeholder until API.md is final, see section 11). Requests take
-`?page=1&pageSize=20&sort=-createdAt,title&q=text&status=a,b`. Responses use
-`Paginated<T> = { data: T[], meta: { page, pageSize, total, totalPages } }` (`~/types/api`).
-
-## 6. Forms (vee-validate + zod)
-
-- Use zod 4 schemas wrapped in `toTypedSchema()` (auto-imported) with `useForm`. Keep the schema
-  in the module's `schemas.ts` so the mock handler validates with the same rules (section 7).
-- Map server validation errors back onto the form:
-
-```ts
-const { handleSubmit, setErrors } = useForm({ validationSchema: toTypedSchema(requestSchema) })
-const create = useCreateTrainingRequest()
-
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    await create.mutateAsync(values)
-  } catch (error) {
-    if (isApiError(error) && error.isValidationError) setErrors(error.fieldErrors)
-    else throw error // let the page-level error UI / toast handle it
-  }
-})
-```
-
-- Multi-step wizards share one `useForm` across the steps. Validate a step with
-  `validateField` or a per-step schema before moving on.
-- Use `useFieldArray` for repeating groups (attendees, travellers).
-- Labels, help text and error text are in English and written for users. Never show a raw
-  `error.message`.
-- `@vee-validate/zod` 4.15 declares a zod 3 peer dependency, but it works with zod 4 (verified,
-  and the peer warning is silenced in `pnpm-workspace.yaml`). If `toTypedSchema` ever
-  misbehaves, `useForm({ validationSchema: zodSchema })` also works, because vee-validate accepts
-  Standard Schema.
-
-## 7. Mocks and demo mode
-
-With `NUXT_PUBLIC_DEMO_MODE=true` (`pnpm dev:demo`, `pnpm build:demo`), the client plugin
-`00.demo-mode.client.ts` starts the MSW worker before the app mounts. MSW answers every API
-request from an in-browser database (`app/mocks/db.ts`). The database is seeded
-deterministically and persisted to `localStorage` (`atrium.demo-db.v<N>`). The mocks are code
-behaviour: they emulate the real API's rules, status codes and problem responses, not just its
-happy path.
-
-**1. Declare your collections** in `mocks/seed.ts` by augmenting `MockCollections`. Prefix
-collection names with the module name. Records must be JSON-serialisable, so store dates as ISO
-strings.
-
-```ts
-// app/modules/training/mocks/seed.ts
-import { addDays } from 'date-fns'
-import { defineMockSeed } from '~/mocks/define'
-import type { TrainingRequestRecord } from '../types'
-
-declare module '~/mocks/db' {
-  interface MockCollections {
-    trainingRequests: TrainingRequestRecord
-  }
-}
-
-export default defineMockSeed({
-  order: 100,
-  run({ db, faker, refDate, uuid }) {
-    const employees = db.users.where((user) => user.roles.includes('employee'))
-    for (let index = 0; index < 25; index++) {
-      db.trainingRequests.insert({
-        id: uuid(),
-        title: faker.helpers.arrayElement(['Excel advanced', 'Project management basics']),
-        createdById: faker.helpers.arrayElement(employees).id,
-        startsAt: addDays(refDate, faker.number.int({ min: -60, max: 90 })).toISOString(),
-        status: 'pending_manager_approval',
-      })
-    }
   },
+)
+const draft = useStepperDraft('travel-car', values, { version: 1 })
+onMounted(() => {
+  const saved = draft.restore()
+  if (saved) setValues(saved)
 })
+</script>
+<template>
+  <StepperPage
+    title="Rent a car"
+    :stepper="stepper"
+    close-to="/travel"
+    :saved-at="draft.savedAt.value"
+    :submitting="isSubmitting"
+    :strip="{ title: 'Needs approval · 2 reasons', detail: '…' }"
+    @submit="onSubmit"
+    @discard="
+      draft.clear()
+      navigateTo('/travel')
+    "
+  >
+    <StepperStep v-if="stepper.current.value?.id === 'trip'" question="Where are you going?"
+      >…</StepperStep
+    >
+    <template #summary>
+      <StepperSlip
+        title="Car rental"
+        :facts="facts"
+        :reasons="previewReasons"
+        :route="previewRoute"
+        @select-reason="focusField"
+      />
+    </template>
+  </StepperPage>
+</template>
 ```
 
-Seed rules:
+`reasons` comes from the server preview (`POST …/preview`, SPEC_RESOLUTIONS #3) — `null` while
+loading, `[]` shows "No approval needed". Submitting clears the draft; closing keeps it.
 
-- Use only `faker`, `uuid()` and `refDate` from the context, never `Math.random()` or
-  `Date.now()`. That keeps the data deterministic: the same seed and reference date always give
-  the same data, and adding another module does not change yours.
-- A seed may import only `~/mocks/define` at runtime (type imports are fine). Use `ctx.db`, not
-  `import { db }`. ESLint enforces this to prevent an import cycle.
-- Core users and personas are seeded first (`db.users`; personas have `persona !== null`). The
-  persona ids are fixed (`00000000-0000-4000-8000-00000000000N`).
-- Make the data tell a story. Each persona should find something in every relevant state:
-  pending approvals, items to book, overdue ratings, and so on.
+## 6. Forms (vee-validate + zod, 422 mapping)
 
-**2. Write handlers** in `mocks/handlers.ts`:
+- Schema with zod 4, wrapped once: `const schema = toTypedSchema(z.object({ … }))`;
+  `useForm({ validationSchema: schema })`; fields via `defineField('name')`. For non-primitive
+  fields pass the value type: `defineField<'manager', UserRef | null>('manager')`.
+- Wrap each control in `UiField label hint optional :error="errors.x"`; the control picks up
+  `id`, `aria-describedby` and invalid state from the field context.
+- Messages: say what to do ("Choose a return date after the pick-up date."), no "Invalid".
+- **422 mapping:** the API returns `errors` keyed by dot paths (`legs.0.date`); `ApiError`
+  converts them to vee-validate paths (`legs[0].date`). After a failed submit:
+
+  ```ts
+  catch (error) {
+    if (isApiError(error) && error.isValidationError) { setErrors(error.fieldErrors); return }
+    formError.value = describeError(error).detail ?? describeError(error).title
+  }
+  ```
+
+  Rename keys when a form field differs from the API name (e.g. `managerId` → `manager`). Show
+  errors for fields not on screen with `<ProblemAlert :error="error" :mapped="['title', …]" />`.
+
+- Money is `Money` (integer cents, `<MoneyInput>`); dates are `IsoDate` (`UiDatePicker`,
+  `UiDateRangePicker`), timestamps `IsoDateTime` (`UiDatePicker time`).
+
+## 7. Status, workflow and routing components
+
+- **StatusBadge** (SPEC_RESOLUTIONS #8): `<StatusBadge enum="travelStatus" :value="r.status"
+:available-actions="r.availableActions" />`. Tones are DESIGN's seven: `neutral`, `waiting`,
+  `you`, `moving`, `positive`, `negative`, `blocked`. When `availableActions` holds a decision
+  action for the state, the viewer sees tone `you` and "Needs your approval" (or "Book it",
+  "Rate it", …). `actor` forces it on/off. Label/tone come from `/meta/enums`, the icon from
+  `STATUS_MAP` in `~/lib/status` (foundation; ask for additions).
+- **ActionBar:** renders `availableActions` with a per-module config
+  (`Record<action, ActionConfig>` — label, icon, `reason` dialog, `confirm`, `variant`, `kbd`).
+  Actions without config (capabilities like `edit`) are skipped. Emits `run(action, body)`.
+- **RoutingSlip** (`compact` in rows, `full` on details, `vertical` in slips): `RouteStop[]`
+  built from the DTO's `route`.
+- **LifecycleTimeline** for a record's `timeline`; **AuditTrail** for raw audit lists;
+  **WorkflowDiagram** `name="travel_request" :current="status"` from `/meta/workflows/{name}`.
+- **ReasonChips** (`pill` or `lines`), **PriorityFlag** (`high`, `starts-at`, `due-at`),
+  **PersonaCard**, **WhySeeing**, **ReasonDialog**.
+
+## 8. Mocks and demo mode
+
+`NUXT_PUBLIC_DEMO_MODE=msw` (`pnpm dev:demo`, `pnpm build:demo`) starts MSW before mount; data
+lives in `localStorage` (`atrium.demo-db.v2`) and reseeds daily or on "Reset demo data".
+`api` uses the real backend (`NUXT_PUBLIC_API_BASE`) with the demo ribbon; empty = production.
+
+### 8.1 Data and dates
+
+- The core org is `app/mocks/core/users.json`, copied from the backend export
+  (`../_spec/atrium/users.json`) by `pnpm mocks:users`: same UUIDs, handles, names and reporting
+  lines as the backend. Import ids from `~/mocks/core/seed`: `USER_IDS.emma`, `USER_IDS.hilTech1`,
+  `SEED_USERS`, `SITES`, `DEPARTMENTS`, `COST_CENTERS`, `DEFAULT_ASSET_COST_CENTER_ID`.
+- Seeds get `ctx.d(n)` (IsoDate today ± n, like the backend's `d(n)`), `ctx.at(n, hh, mm)`
+  (ISO instant), `ctx.weekday(n)` (kept off weekends), `ctx.faker` and `ctx.uuid()` (seeded,
+  deterministic). Never use `Math.random()` or `new Date()` in seeds.
+- Declare collections by augmenting `MockCollections`:
+
+  ```ts
+  declare module '~/mocks/db' {
+    interface MockCollections {
+      travelRequests: TravelRequestRecord
+    }
+  }
+  // seed: ctx.db.travelRequests.insert({ … })   handlers: db.travelRequests.where(…)
+  ```
+
+- Seeds may import at runtime only `~/mocks/define` and the pure helpers
+  `~/mocks/core/{seed,org,audit,files,enums}` (they take `db` as an argument). ESLint enforces it.
+
+### 8.2 Handlers
 
 ```ts
-// app/modules/training/mocks/handlers.ts
-import { http } from 'msw'
-import { db } from '~/mocks/db'
-import { defineMockHandlers } from '~/mocks/define'
-import { created, findOr404, ok, readJson, requireRole, requireUser } from '~/mocks/http'
-import { listResponse } from '~/mocks/list'
-import { createRequestSchema } from '../schemas'
-import { attendeeWorkflow } from './workflow'
-
 export default defineMockHandlers(({ api }) => [
-  http.get(api('/training/requests'), ({ request }) => {
-    const user = requireUser(request) // 401 problem if not signed in
-    const mine = db.trainingRequests.where((row) => row.createdById === user.id)
-    return listResponse(mine, request, {
-      search: ['title'],
-      filters: { status: 'status' },
-      sort: ['title', 'startsAt', 'createdAt'],
-      defaultSort: '-createdAt',
+  http.get(api('/travel/requests'), ({ request }) => {
+    const user = requireUser(request)                       // 401 without a valid token
+    const rows = db.travelRequests.where((row) => canView(row, user))
+    return listResponse(rows, request, {                    // page/perPage/sort/q/filters, 422 on bad sort
+      filters: { status: 'status', kind: 'kind' }, search: ['reference', 'destination'],
+      sort: ['createdAt', 'startsAt'], defaultSort: '-createdAt', map: (row) => toListItem(row, user),
     })
   }),
-
-  http.post(api('/training/requests'), async ({ request }) => {
+  http.post(api('/travel/requests'), async ({ request }) => {
     const user = requireUser(request)
-    const input = await readJson(request, createRequestSchema) // 422 problem with field errors
-    return created(db.trainingRequests.insert({ ...input, createdById: user.id, status: 'open' }))
+    const body = await readJson(request, createSchema)      // zod → 422 with dot-path errors
+    …
+    return created(toDetail(record, user), api(`/travel/requests/${record.id}`))
   }),
-
-  http.post(api('/training/attendees/:id/approve'), ({ request, params }) => {
-    const user = requireUser(request)
-    const attendee = findOr404(db.trainingAttendees, params.id, 'Attendee') // 404 problem
-    const status = attendeeWorkflow.transition(attendee, 'approve', user) // 409 / 403 problem
-    const updated = db.trainingAttendees.update(attendee.id, { status })!
-    return ok({ ...updated, availableActions: attendeeWorkflow.availableActions(updated, user) })
-  }),
-
-  http.get(api('/training/back-office/queue'), ({ request }) => {
-    requireRole(request, 'training_admin') // 403 problem for everyone else
-    // ...
+  travelWorkflow.actionsHandler(api('/travel/requests/:id/actions/:action'), {
+    collection: db.travelRequests, find: (id, user) => visible(id, user), toDto: toDetail,
   }),
 ])
 ```
 
-Helpers (`~/mocks/http`, `~/mocks/list`, `~/mocks/workflow`):
+Helpers in `~/mocks/http`: `ok`, `created`, `accepted`, `noContent`, `problem`, `notFound`,
+`forbidden`, `conflict`, `invalidTransition`, `validationProblem`, `requireUser`, `requireRole`,
+`userHasRole`, `findOr404`, `param`. Org helpers in `~/mocks/core/org`: `resolveApprover`
+(SPEC §6.1), `canDecide` (§6.2: approver, deputy, manager chain), `approverCandidates`,
+`managerChain`, `isActiveDeputy`, `userRefById`, `toUserSummary`. Audit: `recordAudit`,
+`timelineFor`, `diffFields`. Files: `linkAttachments`, `attachmentsOf`, `seedAttachment`.
 
-| Helper                                                                                 | Behaviour                                                                                |
-| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `ok`, `created`, `noContent`                                                           | JSON 200 / 201, empty 204                                                                |
-| `problem(status, { title, detail, type, errors })`                                     | RFC 9457 `application/problem+json`                                                      |
-| `badRequest`, `unauthorized`, `forbidden`, `notFound`, `conflict`, `validationProblem` | Shortcuts that return a Response. `throw` them to stop a resolver early.                 |
-| `readJson(request, zodSchema?)`                                                        | Parses the body and throws a 422 with field errors on invalid input                      |
-| `requireUser(request)`, `requireRole(request, ...roles)`, `currentUser(request)`       | Demo bearer-token auth                                                                   |
-| `findOr404(collection, id, label)`                                                     | Returns the record or throws a 404                                                       |
-| `listResult` / `listResponse(items, request, options)`                                 | Filter, search, sort (an unknown sort field is a 400) and paginate into `Paginated<T>`   |
-| `defineMockWorkflow<Entity>()({ action: { from, to, guard } })`                        | `availableActions(entity, user)`, `can(...)`, `transition(...)`, which throws 409 or 403 |
+### 8.3 Workflow engine
 
-**`availableActions` and transitions.** The real API returns `availableActions: string[]` on
-every workflow record, computed from status, role, ownership and deputies. The UI shows only
-buttons for those actions. Mocks emulate this with `defineMockWorkflow`. Keep one workflow per
-entity in `mocks/workflow.ts`, add `availableActions` to every detail and list item you return,
-and run every action endpoint through `workflow.transition(...)`. When a transition has side
-effects (audit trail entries, notifications, cascading status changes), write them to the mock
-database too, so the UI shows the same follow-up state as the real backend.
+`defineMockWorkflow<E>({ name, label, module, entityType, states, initialStates, transitions,
+capabilities })`. Each transition: `event`, `from[]`, `to` (or several + `resolveTo`), `label`,
+`actors`, `allowed(entity, user) → ActingAs | boolean`, optional zod `body`, `apply` (extra field
+updates), `summary`, `after` (notifications, cascades). It gives `availableActions(entity, user)`
+(events + capability flags), `can`, `transition(collection, entity, event, user, body)` (also for
+seeds and jobs) and `actionsHandler`. Error order matches the API: unknown action 404 → wrong state
+409 `invalid_transition` → not allowed 403 → body 422. Every transition writes the audit trail.
+Register `definition` via `providers.workflows` so `/meta/workflows/{name}` serves it.
 
-Other behaviour to know about:
+### 8.4 Providers (registry, SPEC_RESOLUTIONS #5)
 
-- **Latency:** every API request is delayed by 100–400 ms (MSW's "realistic" delay), so loading
-  states are visible. Tests run without latency.
-- **Unmocked endpoints** return a 501 problem titled "Not mocked", so gaps are obvious instead of
-  silently going to the network.
-- **Reset:** the shell calls `useDemoMode().reset()`. In the browser console, use
-  `window.__atriumDemo.reset()`, `.db.users.all()` or `.export()`.
-- Persisted data is reseeded automatically when the set of seed modules changes. Bump
-  `DEMO_DB_VERSION` in `app/mocks/db.ts` (foundation) for incompatible shape changes. During
-  development, clear the data with the reset action.
+`mocks/providers.ts` default-exports `defineMockProviders({ workflows, enums, inbox, search,
+myDay, counts, jobs })`. The foundation aggregates: `/me/inbox` (sorted: high priority, due date,
+age; ≤ 200), `/me/inbox/counts`, `/search` (≤ 5 per module), `/meta/enums`, `/meta/workflows`,
+`/<m>/queues/counts` (zeros until `counts` exists) and `/admin/jobs`. `/home/my-day` belongs to A4
+(API.md §9): its handler merges every module's fragment with `myDayFor(user)` from
+`~/mocks/registry`.
+Inbox items need `actionsPath` (resource path for quick actions, #4) and `link` (frontend route).
 
-## 8. Testing
+## 9. Navigation, access and the shell
 
-| Kind         | Where                 | Environment                                   | Use it for                                                            |
-| ------------ | --------------------- | --------------------------------------------- | --------------------------------------------------------------------- |
-| Unit         | `test/unit/*.spec.ts` | Node, `~` alias, no auto-imports              | Pure logic, mock handlers and workflows, the API client against mocks |
-| Nuxt runtime | `test/nuxt/*.spec.ts` | `@nuxt/test-utils` + happy-dom                | Components (`mountSuspended`), composables, stores, plugins           |
-| E2E          | `test/e2e/*.spec.ts`  | Playwright + Chromium against `pnpm dev:demo` | User journeys per persona                                             |
+- Navigation is `app/config/navigation.ts` (foundation). Item ids double as **badge ids**: a
+  module's `badges.ts` returns `{ count, tone: 'plain' | 'you' | 'urgent', label }` per id; a 404
+  from the counts endpoint means "no badge" (useXxxCounts returns null).
+- **Access rules** (`definePageMeta({ access })`, nav items): a list of `RoleName`, `'deputy'`
+  (active deputy today) or `'approver'` (manager ∨ executive ∨ active deputy); ANY match grants.
+  No list = every signed-in user. `it_admin` is in every `BACK_OFFICE.<m>` list. This is visibility
+  only — the API enforces permissions; hide actions by `availableActions`, never by role checks.
+- In components: `const auth = useAuthStore()` → `auth.me`, `auth.can(['manager'])`,
+  `auth.is('travel_desk')`.
+- Shell pieces a slice can use: `useToast().success/error`, `await useConfirm().confirm({ title,
+description, confirmLabel, destructive })`, `useShell()` (open palette/inbox), `?add=1`-style
+  query flags for "open the dialog" commands.
 
-- **API against mocks** (`test/unit/api-client-mocks.spec.ts` is the reference): create a
-  server with `createMockServer()` from `~/mocks/node`, which uses the same handlers as demo mode
-  without latency. Call `resetDemoData({ refDate: new Date('2026-10-01T00:00:00Z') })` in
-  `beforeEach` so results are deterministic.
-- **Components:** use `mountSuspended(Component, { props })` from `@nuxt/test-utils/runtime`.
-  Query elements by role or label text.
-- **E2E:** sign in through the persona buttons on `/login`. Every Playwright test gets a fresh
-  browser context, so the demo database is freshly seeded. Prefer `getByRole` and `getByLabel`.
-  Use `data-testid` only where no accessible name exists. Name e2e files `<module>-<flow>.spec.ts`.
-- To run e2e against a static build: `pnpm build:demo`, then
-  `npx serve -s .output/public -l 4173`, then `PLAYWRIGHT_BASE_URL=http://localhost:4173 pnpm test:e2e`.
-- `pnpm typecheck` also checks `test/unit`, `test/nuxt`, `test/e2e` and the tool configs.
+## 10. UI kit reference
 
-## 9. UI, styling and content
+Components are global (no prefix). Highlights:
 
-- Tailwind CSS v4 (`@tailwindcss/vite`). Design tokens and fonts arrive in phase 2b in
-  `app/assets/css/main.css` from `_spec/atrium/tokens.css`. Use the token-backed utilities, never
-  hard-coded colours.
-- Build screens from the UI kit in `app/components/` (phase 2b, built on Reka UI). Use raw
-  `reka-ui` primitives in a module only when the kit has nothing that fits, and then also report
-  it as a kit request.
-- Variants: `cva` from `class-variance-authority`. Merge classes with `cn()` from `~/lib/cn`.
-- Icons: `@lucide/vue` (named imports, `class="size-4"`, `aria-hidden="true"` when decorative).
-- Dates: `date-fns`. Charts: `chart.js` + `vue-chartjs`. Rich text: `@tiptap/vue-3` for editing,
-  and `dompurify` before rendering any HTML with `v-html`. Never render unsanitised HTML.
-- Content: English UI. Use only the fictional universe from `_spec/WORKSPACE.md`. Emails and URLs
-  use `example.com`. No real company, person or place names.
-- Accessibility: every control has a label, and focus is visible and managed in dialogs. Do not
-  use colour as the only signal for a status.
+| Group    | Components                                                                                                                                                                                                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ui       | UiButton (primary/secondary/ghost/danger/danger-solid; `to`, `icon`, `kbd`, `loading`), UiIconButton, UiDialog, UiConfirmDialog, UiDrawer, UiPopover, UiTooltip, UiMenu + UiMenuItem/Label/Separator/RadioGroup/RadioItem, UiTabs, UiTag, UiMiniChip, UiAvatar, UiKbd, UiSkeleton, UiSpinner, UiProgress, UiToaster |
+| form     | UiField, UiInput, UiTextarea, UiSelect, UiCheckbox, UiSwitch, UiRadioCards, UiSegmented, UiDatePicker, UiDateRangePicker, DateRangeFilter, MoneyInput, UserPicker (`/users?q=`, `multiple`, `scope="team"`, `options`), FileDrop, FileList                                                                          |
+| data     | PageBody, PageHeader, Breadcrumbs, DataTable, SplitInbox, StatCard, FactGrid, EmptyState, ProblemAlert, PersonaCard, PagePlaceholder                                                                                                                                                                                |
+| workflow | StatusBadge, ActionBar, ReasonDialog, ReasonChips, PriorityFlag, RoutingSlip, LifecycleTimeline, AuditTrail, WorkflowDiagram, WhySeeing                                                                                                                                                                             |
+| stepper  | StepperPage, StepperStep, StepperSlip                                                                                                                                                                                                                                                                               |
 
-## 10. Tooling and commits
+Canonical names follow SPEC_RESOLUTIONS #27. Formatting helpers (auto-imported from `utils/`):
+`formatDate` ("Tue 21 Oct"), `formatLongDate`, `formatTime`, `formatDateTime`,
+`formatDateRange`, `formatAge` ("2 days ago"), `formatRelativeDay`, `daysFromToday`,
+`formatMoney`, `formatBytes`, `initialsOf`; links from API data go through `internalLink()`.
 
-- pnpm only. Node 22.12 or newer (CI uses Node 24 from `.node-version`).
-- `pnpm lint` runs ESLint (`@nuxt/eslint` flat config + `eslint-config-prettier`) and
-  `prettier --check`. `pnpm lint:fix` fixes both.
-- Before you hand off, run `pnpm lint && pnpm typecheck && pnpm test`, and run `pnpm test:e2e`
-  for UI flows.
-- Use Conventional Commits (`feat(training): ...`, `fix(mocks): ...`, `test(travel): ...`). End
-  each commit message with the co-author line the orchestrator gives you.
-- Line endings are LF (`.gitattributes`, `.editorconfig`).
+## 11. Styling and content
 
-## 11. Decisions log
+- Tailwind v4 utilities on DESIGN tokens only (`bg-sheet`, `text-ink-muted`, `border-rule`,
+  `bg-st-waiting-bg`, `text-display-md`, `font-display`, …). The default Tailwind palette is
+  removed; no hex values or arbitrary colours in slices. Dark mode is `html[data-theme=dark]` and
+  works automatically through the tokens.
+- Numerals: `num` (tabular, for counts and money), `mono` (references like `TRV-000031`).
+- Icons: `@lucide/vue`, 16px / 1.75 stroke by default (`class="size-4"`).
+- Copy: sentence case, verbs on buttons ("Approve", "Book it"), English (en-GB dates), no
+  exclamation marks, no "please". Empty states teach one thing and offer one action.
+- Fictional data only: names from the seed, `example.com` emails, no real companies or places.
+- Every interactive element has an accessible name; dialogs and drawers trap focus (Reka).
+  Mobile at 375px: no horizontal scroll, the tab bar never covers content (`PageBody`).
 
-| Date       | Decision                                                                                                                                                                                                                           |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-13 | MSW pinned to **v2** (2.15) as specified. MSW 3.0 shipped two weeks earlier; evaluate it in a later phase.                                                                                                                         |
-| 2026-10-13 | **TypeScript 5.9** instead of 7.0: `openapi-typescript` 7 requires TS 5, and the native TS 7 compiler is not yet a safe base for `vue-tsc`.                                                                                        |
-| 2026-10-13 | Icons come from **`@lucide/vue`**. `lucide-vue-next` 1.0 is deprecated in favour of it, with the same icon names.                                                                                                                  |
-| 2026-10-13 | **zod 4** with `@vee-validate/zod` 4.15 (it declares a zod 3 peer, but it works; verified). See section 6.                                                                                                                         |
-| 2026-10-13 | `@tanstack/vue-query` is excluded from Vite pre-bundling. Nuxt's resolver otherwise loads `@vue/devtools-api` v6 as CommonJS in dev. Only `@tanstack/query-core` is pre-bundled.                                                   |
-| 2026-10-13 | The list envelope (`Paginated<T>`), list query parameters, role names and auth endpoints are **placeholders** until `_spec/atrium/API.md` is final. Phase 2b aligns `~/types/*`, `scripts/openapi.placeholder.json` and the mocks. |
-| 2026-10-13 | Global middleware is ordered alphabetically: `auth.global.ts`, then `roles.global.ts`.                                                                                                                                             |
-| 2026-10-13 | Node 23 (local) prints an "unsupported" warning from the Nuxt CLI, but everything works. CI and Vercel use Node 24.                                                                                                                |
-| 2026-10-13 | Vitest `fsModuleCache` is off for the `nuxt` project: Vitest 5's persistent transform cache breaks the virtual app entry of `@nuxt/test-utils` on warm runs.                                                                       |
+## 12. Testing
+
+- `pnpm test`: Vitest projects `unit` (node, `test/unit/**`) and `nuxt` (happy-dom with the Nuxt
+  runtime, `test/nuxt/**`, use `mountSuspended`).
+- Mock API tests use the real HTTP client against the MSW handlers:
+  `createMockServer()` from `~/mocks/node` + `resetDemoData({ refDate: new Date(2026, 9, 13) })`
+  for deterministic relative dates (see `test/unit/mock-api.spec.ts`).
+- `pnpm test:e2e`: Playwright (Chromium) against a demo dev server on port 3210 (`E2E_PORT`).
+  Sign in with `signInAs(page, 'emma')` from `test/e2e/helpers.ts`; prefer roles and labels over
+  test ids. `pnpm screenshots` writes review screenshots to `docs/screenshots/<folder>/`.
+
+## 13. Tooling and commits
+
+- pnpm 10, Node 22.12+ (CI: Node 24). Do not add dependencies in a slice; ask the foundation.
+- `pnpm lint` (ESLint + Prettier check), `pnpm format`, `pnpm typecheck` (vue-tsc).
+- Conventional commits (`feat(travel): …`, `fix(assets): …`, `test(training): …`), each ending
+  with the `Co-Authored-By` trailer the coordinator specifies. Never push from a slice.
+- Run `python -I ../_spec/check_blocklist.py .` before committing: `HARD hits: 0`.
+
+## 14. Decisions log
+
+| Date       | Decision                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-13 | MSW pinned to **v2** (2.15) as specified.                                                                                                                                                                                                                                                                                                                   |
+| 2026-10-13 | **TypeScript 5.9**: `openapi-typescript` 7 requires TS 5 and `vue-tsc` is not ready for TS 7.                                                                                                                                                                                                                                                               |
+| 2026-10-13 | Icons from **`@lucide/vue`** (`lucide-vue-next` is deprecated).                                                                                                                                                                                                                                                                                             |
+| 2026-10-13 | **zod 4** with `@vee-validate/zod` 4.15 (declares a zod 3 peer; works, peer rule in `pnpm-workspace.yaml`).                                                                                                                                                                                                                                                 |
+| 2026-10-13 | `@tanstack/vue-query` is excluded from Vite pre-bundling (devtools-api CJS issue in dev).                                                                                                                                                                                                                                                                   |
+| 2026-10-13 | Node 23 locally prints an "unsupported" warning; everything works. CI/Vercel use Node 24.                                                                                                                                                                                                                                                                   |
+| 2026-10-13 | Vitest `fsModuleCache` is off for the `nuxt` project (warm-run breakage with `@nuxt/test-utils`).                                                                                                                                                                                                                                                           |
+| 2026-10-13 | **API types are hand-written** (`~/types/api`, module `api/types.ts`) because the backend's `openapi.json` only has `/health` and `/files/{token}`. `pnpm api:types` strips the `/api/v1` prefix and is ready once the export is complete. The generic `api.get/post/action` helpers are primary; the openapi-fetch client stays available as `api.client`. |
+| 2026-10-13 | **users.json** is the backend's export (`_spec/atrium/users.json`), copied by `pnpm mocks:users`; the mock org (sites, departments, cost centres, users) uses the backend's UUIDs and handles.                                                                                                                                                              |
+| 2026-10-13 | **`d(n)` = today ± n days**, identical to the backend's seed context (`SEED_TODAY` ± n), so due/overdue/high-priority stay true every day; `weekday(n)` keeps a date off weekends where only the weekday matters. This is our reading of SPEC_RESOLUTIONS #5 "shift by whole weeks".                                                                        |
+| 2026-10-13 | Global middleware ordered by prefix: `01.auth.global.ts`, `02.access.global.ts`; denied routes render the 403 view (no `/forbidden` page).                                                                                                                                                                                                                  |
+| 2026-10-13 | Theme: light/dark/system stored in `localStorage['atrium-theme']`, applied as `html[data-theme]` by an inline script before paint.                                                                                                                                                                                                                          |
+| 2026-10-13 | DataTable is our own component (no TanStack Table): server-side paging/sorting via the URL is all SCREENS needs.                                                                                                                                                                                                                                            |
+| 2026-10-13 | The demo ribbon shows "Reset demo data" in MSW mode (no mailbox) and "Open demo mailbox" against the real API. `demo.reset` is listed on /admin/jobs but not runnable from the UI (CLI only).                                                                                                                                                               |
+| 2026-10-13 | Settings (Deputies, Profile) are not in the sidebar (`hideInSidebar`); they are in the account menu and ⌘K.                                                                                                                                                                                                                                                 |
+| 2026-10-13 | Steppers don't block navigation with a "leave?" prompt: the draft is saved in this browser and closing keeps it.                                                                                                                                                                                                                                            |
+| 2026-10-13 | `vue/require-default-prop` is off: type-based props model optional values as `undefined`. Boolean props that must stay `undefined` when absent need an explicit `undefined` default (Vue casts them to `false`).                                                                                                                                            |
+| 2026-10-13 | E2E uses port 3210 by default so a dev server on 3000 is never reused by accident.                                                                                                                                                                                                                                                                          |

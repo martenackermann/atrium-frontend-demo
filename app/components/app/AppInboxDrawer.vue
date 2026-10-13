@@ -45,7 +45,7 @@ const tabs = computed(() => [
   {
     value: 'todo' as const,
     label: 'To do',
-    count: inbox.data.value?.meta.total ?? null,
+    count: inbox.data.value?.meta.total || null,
     countTone: 'you' as const,
   },
   {
