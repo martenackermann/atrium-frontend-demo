@@ -110,10 +110,10 @@ describe('news mock API', () => {
   it('serves My day with inbox head, news and links', async () => {
     await as('emma')
     const day = await api.get<MyDay>('/home/my-day')
-    expect(day.inbox.top[0]).toMatchObject({
-      type: 'people.reply_required',
-      reference: 'PPL-000004',
-    })
+    // All modules contribute (same order as the API): ratings due first, the question last.
+    expect(day.inbox.total).toBe(6)
+    expect(day.inbox.top).toHaveLength(5)
+    expect(day.inbox.top[0]).toMatchObject({ type: 'training.rating_due', reference: 'TRN-000004' })
     expect(day.news.map((post) => post.title)[0]).toBe('Welcome to Atrium')
     expect(day.news).toHaveLength(3)
     expect(day.links).toHaveLength(9)
