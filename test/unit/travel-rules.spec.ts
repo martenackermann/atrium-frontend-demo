@@ -110,6 +110,7 @@ describe('travel routes, priority and references', () => {
       'Needs approval · 1 reason',
     )
     expect(approvalChip({ ...base, status: 'to_book' }).label).toBe('Approved · 1 reason')
+    expect(approvalChip({ ...base, status: 'declined' }).label).toBe('Needed approval · 1 reason')
     expect(
       approvalChip({ needsApproval: false, approvalReasons: [], approvalExemption: null }).label,
     ).toBe('No approval needed')

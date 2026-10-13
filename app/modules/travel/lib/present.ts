@@ -46,6 +46,9 @@ export function approvalChip(
   // After the decision the chip says so (desk queues show approved trips).
   if (request.status && APPROVED_STATUSES.has(request.status))
     return { label: `Approved · ${reasons}`, tone: 'positive', decided: true }
+  // Declined, or cancelled/withdrawn before a decision: the reasons are history now.
+  if (request.status === 'declined' || request.status === 'cancelled')
+    return { label: `Needed approval · ${reasons}`, tone: 'neutral', decided: true }
   return { label: `Needs approval · ${reasons}`, tone: 'waiting', decided: false }
 }
 

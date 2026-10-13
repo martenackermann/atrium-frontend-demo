@@ -58,6 +58,7 @@ const columns: DataTableColumn<TravelRequestSummary>[] = [
     label: 'Dates',
     sort: 'startsAt',
     value: (row) => tripDates(row.startsAt, row.endsAt),
+    width: '190px',
     mobile: 'meta',
   },
   { key: 'status', label: 'Status', mobile: 'status', width: '200px' },

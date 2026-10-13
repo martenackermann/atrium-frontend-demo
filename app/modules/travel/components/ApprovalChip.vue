@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 const chip = computed(() => approvalChip(props.request))
 const icon = computed(() =>
-  chip.value.tone === 'waiting' ? Stamp : chip.value.tone === 'positive' ? CircleCheck : Crown,
+  props.request.approvalExemption ? Crown : chip.value.tone === 'positive' ? CircleCheck : Stamp,
 )
 const title = computed(() =>
   props.request.approvalReasons.length
