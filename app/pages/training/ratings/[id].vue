@@ -225,7 +225,7 @@ const improvementOptions = IMPROVEMENT_OPTIONS.map((option) => ({
           <span class="mono">{{ r.training.reference }}</span>
           <span aria-hidden="true">·</span>
           <span
-            >{{ r.training.topic }},
+            >{{ r.loop === 3 ? r.training.topic : r.training.provider }},
             {{ formatDateRange(r.training.startsOn, r.training.endsOn) }}</span
           >
         </template>

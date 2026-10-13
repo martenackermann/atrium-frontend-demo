@@ -46,7 +46,7 @@ const facts = computed<FactItem[]>(() => {
     {
       label: 'Dates',
       value: formatDateRange(r.startsOn, r.endsOn, { weekday: true }),
-      detail: `Starts ${formatRelativeDay(r.startsOn)}`,
+      detail: `${(daysFromToday(r.startsOn) ?? 0) < 0 ? 'Started' : 'Starts'} ${formatRelativeDay(r.startsOn)}`,
     },
     { label: 'Format', value: FORMAT_LABEL[r.format], detail: r.location },
     { label: 'Cost per attendee', value: formatMoney(r.cost), mono: true },

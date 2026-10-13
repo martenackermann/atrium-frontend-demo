@@ -139,7 +139,7 @@ const principalOf = (item: TrainingParticipationListItem) =>
         <p class="mt-0.5 text-[14.5px] leading-5 font-semibold">{{ item.request.topic }}</p>
         <p class="text-sm text-ink-muted">
           {{ formatDateRange(item.request.startsOn, item.request.endsOn, { weekday: true }) }} ·
-          <span class="num">{{ formatMoney(item.request.cost) }}</span>
+          {{ formatMoney(item.request.cost) }}
         </p>
         <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <PriorityFlag v-if="item.isHighPriority" high :starts-at="item.request.startsOn" />

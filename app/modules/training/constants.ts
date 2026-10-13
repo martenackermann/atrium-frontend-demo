@@ -18,7 +18,7 @@ import type { AttendeeStatus, Likert, RatingLoop, TrainingFormat } from './api/t
 export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
   approve: { label: 'Approve', icon: Check, kbd: 'A', variant: 'primary' },
   decline: {
-    label: 'Decline…',
+    label: 'Decline',
     icon: X,
     kbd: 'D',
     reason: {
@@ -41,7 +41,7 @@ export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
     variant: 'danger',
   },
   request_cancellation: {
-    label: 'Request cancellation…',
+    label: 'Request cancellation',
     icon: Undo2,
     reason: {
       title: 'Ask to cancel this training?',
@@ -65,7 +65,7 @@ export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
     variant: 'primary',
   },
   reject_cancellation: {
-    label: 'Reject cancellation…',
+    label: 'Reject cancellation',
     icon: RotateCcw,
     reason: {
       title: 'Keep the participation?',
@@ -74,9 +74,9 @@ export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
       confirmLabel: 'Reject cancellation',
     },
   },
-  book: { label: 'Book it…', icon: TicketCheck, variant: 'primary' },
+  book: { label: 'Book it', icon: TicketCheck, variant: 'primary' },
   mark_booking_impossible: {
-    label: 'Booking impossible…',
+    label: 'Booking impossible',
     icon: TriangleAlert,
     reason: {
       title: 'Mark the booking as impossible?',
@@ -89,7 +89,7 @@ export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
   },
   retry_booking: { label: 'Retry booking', icon: CircleArrowRight, variant: 'primary' },
   close: {
-    label: 'Close…',
+    label: 'Close',
     icon: Ban,
     reason: {
       title: 'Close this participation?',
