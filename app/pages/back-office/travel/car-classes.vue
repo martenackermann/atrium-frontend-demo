@@ -15,7 +15,6 @@ definePageMeta({ title: 'Car classes', access: ['travel_desk', 'it_admin'] })
 const api = useApi()
 const toast = useToast()
 const queryClient = useQueryClient()
-const { confirm } = useConfirm()
 
 const classes = useCarClasses({ includeInactive: true })
 const rows = computed(() => classes.data.value ?? null)
@@ -130,30 +129,23 @@ async function patch(row: CarRentalClassDto, body: Partial<CarRentalClassInput>,
   }
 }
 
+// Both are reversible (make another class standard, activate again), so they run without a
+// confirmation; the toast names the consequence.
 async function makeStandard(row: CarRentalClassDto) {
-  const ok = await confirm({
-    title: `Make ${row.code} the standard ${row.vehicleType}?`,
-    description: `New requests with ${row.name} no longer need approval for the class; the current standard class does.`,
-    confirmLabel: 'Make standard',
-  })
-  if (ok)
-    await patch(row, { isDefault: true }, `${row.code} is now the standard ${row.vehicleType}.`)
+  await patch(
+    row,
+    { isDefault: true },
+    `${row.code} is now the standard ${row.vehicleType}. Other ${row.vehicleType} classes need approval.`,
+  )
 }
 
 async function toggleActive(row: CarRentalClassDto) {
-  if (row.active) {
-    const ok = await confirm({
-      title: `Deactivate ${row.code}?`,
-      description: 'Nobody can choose it for new requests. Existing requests keep it.',
-      confirmLabel: 'Deactivate',
-      destructive: true,
-    })
-    if (!ok) return
-  }
   await patch(
     row,
     { active: !row.active },
-    row.active ? `${row.code} deactivated.` : `${row.code} activated.`,
+    row.active
+      ? `${row.code} deactivated. Nobody can choose it for new requests.`
+      : `${row.code} activated.`,
   )
 }
 </script>

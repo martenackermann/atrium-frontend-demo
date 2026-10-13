@@ -4,11 +4,12 @@ import type { TravelRequestSummary } from '../api/types'
 import { approvalChip } from '../lib/present'
 
 /**
- * Approval chip in travel lists (SCREENS §5.1): "Needs approval · 2 reasons" / "No approval
- * needed" / "Executive exemption". The reason names are in the tooltip (title) and the detail.
+ * Approval chip in travel lists (SCREENS §5.1): "Needs approval · 2 reasons" (or "Approved · 2
+ * reasons" once decided) / "No approval needed" / "Executive exemption". The reason names are in the tooltip (title) and the detail.
  */
 const props = defineProps<{
-  request: Pick<TravelRequestSummary, 'needsApproval' | 'approvalReasons' | 'approvalExemption'>
+  request: Pick<TravelRequestSummary, 'needsApproval' | 'approvalReasons' | 'approvalExemption'> &
+    Partial<Pick<TravelRequestSummary, 'status'>>
 }>()
 const chip = computed(() => approvalChip(props.request))
 const icon = computed(() =>

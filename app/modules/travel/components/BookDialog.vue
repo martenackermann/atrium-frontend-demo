@@ -33,6 +33,11 @@ watch(open, (value) => {
   formError.value = null
 })
 
+// An error clears as soon as its field changes (re-checked on the next submit).
+watch(bookingNumber, () => (errors.value.bookingNumber = null))
+watch(pin, () => (errors.value.pin = null))
+watch(files, () => (errors.value.attachmentIds = null), { deep: true })
+
 function validate(): boolean {
   const next: Record<string, string | null> = {}
   if (!bookingNumber.value.trim())

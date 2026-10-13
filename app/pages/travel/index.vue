@@ -3,7 +3,7 @@ import { ChevronDown, Copy, Ellipsis, Eye, Plus } from '@lucide/vue'
 import { useTravelRequests } from '~/modules/travel/api'
 import type { TravelKind, TravelRequestSummary } from '~/modules/travel/api/types'
 import { KIND_META } from '~/modules/travel/constants'
-import { tripDates } from '~/modules/travel/lib/present'
+import { approvalChip, tripDates } from '~/modules/travel/lib/present'
 import type { DataTableColumn, TabItem } from '~/types/ui'
 
 /**
@@ -61,7 +61,12 @@ const columns: DataTableColumn<TravelRequestSummary>[] = [
     mobile: 'meta',
   },
   { key: 'status', label: 'Status', mobile: 'status', width: '200px' },
-  { key: 'approval', label: 'Approval', mobile: 'meta' },
+  {
+    key: 'approval',
+    label: 'Approval',
+    value: (row) => approvalChip(row).label,
+    mobile: 'meta',
+  },
   {
     key: 'approver',
     label: 'Approver',

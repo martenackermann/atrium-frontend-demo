@@ -6,7 +6,7 @@ import { Check, CircleX, Stamp, TicketCheck } from '@lucide/vue'
 import type { RouteStop } from '~/types/ui'
 import { formatDateRange, formatDateTime } from '~/utils/format'
 import { countryName, KIND_META } from '../constants'
-import type { TravelRequestDetail, TravelRequestSummary } from '../api/types'
+import type { TravelRequestDetail, TravelRequestSummary, TravelStatus } from '../api/types'
 
 /** Last word of a station/airport name: "Westbay Central" → "Westbay". */
 export function placeOf(name: string | null | undefined): string {
@@ -30,16 +30,31 @@ export function requestTitle(request: Pick<TravelRequestSummary, 'kind' | 'route
 
 /** Approval chip in lists (SCREENS §5.1). */
 export function approvalChip(
-  request: Pick<TravelRequestSummary, 'needsApproval' | 'approvalReasons' | 'approvalExemption'>,
+  request: Pick<TravelRequestSummary, 'needsApproval' | 'approvalReasons' | 'approvalExemption'> &
+    Partial<Pick<TravelRequestSummary, 'status'>>,
 ): {
   label: string
   tone: 'waiting' | 'positive' | 'neutral'
+  decided: boolean
 } {
-  if (request.approvalExemption) return { label: 'Executive exemption', tone: 'neutral' }
-  if (!request.needsApproval) return { label: 'No approval needed', tone: 'positive' }
+  if (request.approvalExemption)
+    return { label: 'Executive exemption', tone: 'neutral', decided: false }
+  if (!request.needsApproval)
+    return { label: 'No approval needed', tone: 'positive', decided: false }
   const n = request.approvalReasons.length
-  return { label: `Needs approval · ${n} reason${n === 1 ? '' : 's'}`, tone: 'waiting' }
+  const reasons = `${n} reason${n === 1 ? '' : 's'}`
+  // After the decision the chip says so (desk queues show approved trips).
+  if (request.status && APPROVED_STATUSES.has(request.status))
+    return { label: `Approved · ${reasons}`, tone: 'positive', decided: true }
+  return { label: `Needs approval · ${reasons}`, tone: 'waiting', decided: false }
 }
+
+const APPROVED_STATUSES = new Set<TravelStatus>([
+  'to_book',
+  'booked',
+  'booking_impossible',
+  'cancellation_requested',
+])
 
 /** "Tue 21 Oct, 08:00 → Wed 22 Oct, 18:00" or a one-way start. */
 export function tripWhen(startsAt: string, endsAt: string | null): string {

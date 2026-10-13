@@ -46,7 +46,10 @@ const actingLabel = computed(() => {
     </template>
     <template v-else>
       <h2 id="approval-title" class="flex items-center gap-2 text-[14.5px] font-[650]">
-        <Stamp class="size-4 text-st-waiting" aria-hidden="true" />Needs approval because…
+        <Stamp class="size-4 text-st-waiting" aria-hidden="true" />{{
+          request.status === 'pending_approval' ? 'Needs' : 'Needed'
+        }}
+        approval because…
       </h2>
       <ReasonChips :reasons="request.approvalReasons" :in-marker="marker" />
       <p v-if="request.approver" class="text-sm text-ink-muted">

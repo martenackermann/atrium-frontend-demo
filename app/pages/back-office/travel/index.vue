@@ -45,6 +45,12 @@ const highOnly = computed({
   set: (value: boolean) =>
     setQuery({ highPriority: value ? 'true' : undefined, selected: undefined }),
 })
+const range = computed(() => ({
+  from: typeof route.query.from === 'string' ? route.query.from : null,
+  to: typeof route.query.to === 'string' ? route.query.to : null,
+}))
+const setRange = (value: { from: string | null; to: string | null }) =>
+  setQuery({ from: value.from ?? undefined, to: value.to ?? undefined, selected: undefined })
 const search = ref(typeof route.query.q === 'string' ? route.query.q : '')
 watchDebounced(search, (value) => setQuery({ q: value.trim() || undefined, selected: undefined }), {
   debounce: 300,
@@ -65,7 +71,7 @@ const tabs = computed<TabItem[]>(() => [
     label: 'Booking impossible',
     count: desk.value?.bookingImpossible ?? null,
   },
-  { value: 'approvals', label: 'Awaiting approval', count: desk.value?.pendingApproval ?? null },
+  { value: 'approvals', label: 'Approvals', count: desk.value?.pendingApproval ?? null },
   { value: 'all', label: 'All' },
 ])
 
@@ -75,6 +81,8 @@ const params = computed(() => ({
   kind: kind.value === 'all' ? undefined : kind.value,
   q: typeof route.query.q === 'string' ? route.query.q : undefined,
   highPriority: highOnly.value ? 'true' : undefined,
+  from: range.value.from ?? undefined,
+  to: range.value.to ?? undefined,
   sort: queue.value === 'all' ? '-createdAt' : 'startsAt',
   perPage: 100,
 }))
@@ -164,16 +172,9 @@ const EMPTY: Record<Queue, { title: string; description: string }> = {
   <div class="flex min-h-0 flex-1 flex-col">
     <SplitInbox
       v-model:tab="queue"
-      v-model:filter="kind"
       title="Travel desk"
       :count-label="items ? `${items.length} in this queue` : undefined"
       :tabs="tabs"
-      :filters="[
-        { value: 'all', label: 'All' },
-        { value: 'car', label: 'Car' },
-        { value: 'train', label: 'Train' },
-        { value: 'flight', label: 'Flight' },
-      ]"
       :items="items"
       :item-key="(item) => item.id"
       :item-label="(item) => `${requestTitle(item)} for ${item.traveller.displayName}`"
@@ -184,27 +185,48 @@ const EMPTY: Record<Queue, { title: string; description: string }> = {
       @retry="list.refetch()"
     >
       <template #list-tools>
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="relative w-44">
-            <Search
-              class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-subtle"
-              aria-hidden="true"
+        <div class="grid w-full min-w-0 gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <UiSegmented
+              v-model="kind"
+              size="sm"
+              label="Kind"
+              :options="[
+                { value: 'all', label: 'All' },
+                { value: 'car', label: 'Car' },
+                { value: 'train', label: 'Train' },
+                { value: 'flight', label: 'Flight' },
+              ]"
             />
-            <UiInput
-              v-model="search"
-              type="search"
-              aria-label="Search by reference, route or traveller"
-              placeholder="Search"
-              class="[&_input]:h-[30px] [&_input]:pl-8 [&_input]:text-sm"
+            <UiSwitch
+              v-model="highOnly"
+              label="High priority only"
+              class="shrink-0 text-sm whitespace-nowrap"
             />
           </div>
-          <UiSwitch v-model="highOnly" label="High priority only" class="text-sm" />
-          <UiIconButton
-            :icon="Download"
-            label="Export CSV"
-            :loading="exporting"
-            @click="exportCsv"
-          />
+          <div class="flex items-center gap-2">
+            <div class="relative min-w-0 flex-1">
+              <Search
+                class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-ink-subtle"
+                aria-hidden="true"
+              />
+              <UiInput
+                v-model="search"
+                type="search"
+                aria-label="Search by reference, route or traveller"
+                placeholder="Search"
+                class="[&_input]:h-[30px] [&_input]:pl-8 [&_input]:text-sm"
+              />
+            </div>
+            <UiIconButton
+              :icon="Download"
+              label="Export CSV"
+              size="sm"
+              :disabled="exporting"
+              @click="exportCsv"
+            />
+          </div>
+          <DateRangeFilter :from="range.from" :to="range.to" label="Starts" @change="setRange" />
         </div>
       </template>
 

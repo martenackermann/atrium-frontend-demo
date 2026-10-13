@@ -56,7 +56,9 @@ const words = computed(
           : 'border-rule bg-well'
       "
     >
-      <h3 class="text-[14.5px] font-[650]">Needs approval because…</h3>
+      <h3 class="text-[14.5px] font-[650]">
+        {{ item.status === 'pending_approval' ? 'Needs' : 'Needed' }} approval because…
+      </h3>
       <ReasonChips :reasons="item.approvalReasons" :in-marker="decides" />
       <p v-if="words" class="font-display text-[17px] leading-[25px]">“{{ words }}”</p>
     </section>
