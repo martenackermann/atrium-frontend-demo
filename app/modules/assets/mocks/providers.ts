@@ -84,7 +84,7 @@ function costCenterSync() {
           to: `${to.code} ${to.name}`,
         },
       ],
-      summary: 'System synced the cost centre',
+      summary: 'Atrium synced the cost centre',
     })
     updated++
   }
@@ -132,7 +132,7 @@ function acceptanceReminders(now: Date) {
       action: 'remind',
       actorId: null,
       actingAs: 'system',
-      summary: 'System sent an acceptance reminder',
+      summary: 'Atrium sent an acceptance reminder',
     })
     reminded++
   }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sentenceCase } from '~/lib/status'
 import type { TimelineEntry } from '~/types/api'
 
 /**
@@ -30,6 +31,21 @@ function parts(entry: TimelineEntry) {
     : { name: '', rest: entry.summary }
 }
 
+const enums = useEnums()
+
+/**
+ * The quoted reason line. `auto_approve` entries carry an AutoApproval code
+ * (`requester_is_approver`, …) as their reason: show its label instead, unquoted.
+ */
+function reasonLine(entry: TimelineEntry): { text: string; quoted: boolean } | null {
+  if (!entry.reason) return null
+  if (entry.action === 'auto_approve') {
+    const option = enums.options('autoApproval').find((o) => o.value === entry.reason)
+    return { text: option?.label ?? sentenceCase(entry.reason), quoted: false }
+  }
+  return { text: entry.reason, quoted: true }
+}
+
 const show = (value: unknown) =>
   value === null || value === undefined || value === ''
     ? '—'
@@ -54,7 +70,10 @@ const show = (value: unknown) =>
           <b v-if="parts(entry).name" class="font-semibold">{{ parts(entry).name }}</b
           >{{ parts(entry).rest }}
         </p>
-        <p v-if="entry.reason" class="mt-0.5 text-ink-muted">“{{ entry.reason }}”</p>
+        <p v-if="reasonLine(entry)" class="mt-0.5 text-ink-muted">
+          <template v-if="reasonLine(entry)!.quoted">“{{ reasonLine(entry)!.text }}”</template>
+          <template v-else>{{ reasonLine(entry)!.text }}</template>
+        </p>
         <dl
           v-if="showChanges && entry.changes?.length"
           class="mt-1.5 grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-sm"

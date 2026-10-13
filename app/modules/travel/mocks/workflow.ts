@@ -3,6 +3,7 @@
  * same events, guards and permissions as the backend's XState machine.
  */
 import { z } from 'zod'
+import type { ActingAs } from '~/types/api'
 import { activeDeputiesOf } from '~/mocks/core/org'
 import type { MockUser } from '~/mocks/core/types'
 import { db } from '~/mocks/db'
@@ -44,6 +45,13 @@ export function notify(
 const link = (row: TravelRequestRecord) => `/travel/requests/${row.id}`
 const people = (row: TravelRequestRecord) => [row.travellerId, row.requesterId]
 
+/** Like the API's timeline: "(as deputy for Priya Raman)", "(as manager chain)". */
+function decisionSuffix(actingAs: ActingAs, entity: TravelRequestRecord) {
+  if (actingAs === 'deputy')
+    return ` (as deputy for ${db.users.find(entity.approverId ?? '')?.displayName ?? 'the approver'})`
+  return actingAs === 'manager_chain' ? ' (as manager chain)' : ''
+}
+
 export const travelWorkflow = defineMockWorkflow<TravelRequestRecord>({
   name: 'travel_request',
   label: 'Travel request',
@@ -80,7 +88,7 @@ export const travelWorkflow = defineMockWorkflow<TravelRequestRecord>({
         },
       }),
       summary: ({ user, actingAs, entity }) =>
-        `${user.displayName} approved the trip${actingAs === 'deputy' ? ` (as deputy for ${db.users.find(entity.approverId ?? '')?.displayName ?? 'the approver'})` : actingAs === 'manager_chain' ? ' (as manager chain)' : ''}`,
+        `${user.displayName} approved the trip${decisionSuffix(actingAs, entity)}`,
       after: ({ updated, user }) =>
         notify(people(updated), {
           templateId: 'travel.approved',
@@ -109,7 +117,8 @@ export const travelWorkflow = defineMockWorkflow<TravelRequestRecord>({
         declinedAt: now.toISOString(),
         declineReason: body.reason as string,
       }),
-      summary: ({ user }) => `${user.displayName} declined the trip`,
+      summary: ({ user, actingAs, entity }) =>
+        `${user.displayName} declined the trip${decisionSuffix(actingAs, entity)}`,
       after: ({ updated, user, body }) =>
         notify(people(updated), {
           templateId: 'travel.declined',

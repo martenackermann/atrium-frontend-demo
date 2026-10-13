@@ -135,11 +135,11 @@ const position = computed(() =>
 
 <template>
   <div
-    class="grid min-h-0 flex-1 md:grid-cols-[340px_minmax(0,1fr)] xl:grid-cols-[var(--inbox-list-w)_minmax(0,1fr)]"
+    class="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] md:grid-cols-[340px_minmax(0,1fr)] xl:grid-cols-[var(--inbox-list-w)_minmax(0,1fr)]"
   >
     <!-- List pane -->
     <section
-      class="flex min-h-0 flex-col md:rounded-bl-xl md:border-r md:border-rule md:bg-well"
+      class="flex min-h-0 min-w-0 flex-col md:rounded-bl-xl md:border-r md:border-rule md:bg-well"
       :class="isMobile && selected && 'hidden'"
       :aria-label="title"
     >

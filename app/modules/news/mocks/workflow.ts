@@ -204,7 +204,7 @@ export function publishAndExpire(at: Date = new Date()) {
       actingAs: 'system',
       fromState: 'scheduled',
       toState: 'published',
-      summary: newsSummary('System', 'auto_publish', 'system'),
+      summary: newsSummary('Atrium', 'auto_publish', 'system'),
     })
     published++
   }
@@ -227,7 +227,7 @@ export function publishAndExpire(at: Date = new Date()) {
       actingAs: 'system',
       fromState: 'published',
       toState: 'archived',
-      summary: newsSummary('System', 'auto_expire', 'system'),
+      summary: newsSummary('Atrium', 'auto_expire', 'system'),
     })
     expired++
   }

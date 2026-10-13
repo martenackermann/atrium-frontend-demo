@@ -31,6 +31,13 @@ type Entity = TrainingAttendeeRecord
 type Ctx = TransitionContext<Entity>
 
 const requestOf = (entity: Entity) => db.trainingRequests.find(entity.requestId)!
+/** Whose step a deputy decides: the executive on the executive step, else the approver. */
+const principalName = (entity: Entity) =>
+  db.users.find(
+    (entity.status === 'pending_executive_approval'
+      ? entity.executiveApproverId
+      : entity.approverId) ?? '',
+  )?.displayName ?? null
 const backOffice = (user: MockUser): ActingAs | false =>
   hasRole(user, 'it_admin') ? 'admin' : hasRole(user, 'training_office') ? 'back_office' : false
 const ownerOrRequester = (entity: Entity, user: MockUser): ActingAs | false =>
@@ -81,7 +88,13 @@ function step(
     allowed: (entity, user) =>
       (definition.guard?.(entity, user) ?? true) ? definition.permit(entity, user) : false,
     summary: (ctx) =>
-      summaryOf('training_attendee', definition.event, ctx.user.displayName, ctx.actingAs),
+      summaryOf(
+        'training_attendee',
+        definition.event,
+        ctx.user.displayName,
+        ctx.actingAs,
+        ctx.actingAs === 'deputy' ? principalName(ctx.entity) : null,
+      ),
   }
 }
 

@@ -47,7 +47,7 @@ export function assetSummary(
 ): string {
   const phrase = ASSET_PHRASES[action] ?? action.replace(/_/g, ' ')
   const target = action === 'assign' && assigneeName ? ` to ${assigneeName}` : ''
-  return `${actorName ?? 'System'} ${phrase}${target}${SUFFIX[actingAs] ?? ''}`
+  return `${actorName ?? 'Atrium'} ${phrase}${target}${SUFFIX[actingAs] ?? ''}`
 }
 
 export const assetTag = (number: number) => `AST-${String(number).padStart(5, '0')}`

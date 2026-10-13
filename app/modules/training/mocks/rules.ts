@@ -325,13 +325,18 @@ const ACTING_SUFFIX: Partial<Record<ActingAs, string>> = {
   admin: ' (as admin)',
 }
 
-/** "Max Manager approved (as deputy)" — the backend's server-rendered timeline sentence. */
+/** "Max Manager approved (as deputy for Priya Raman)" — the backend's timeline sentence. */
 export function summaryOf(
   entityType: string,
   action: string,
   actorName: string | null,
   actingAs: ActingAs,
+  onBehalfOfName: string | null = null,
 ) {
   const verb = PHRASES[entityType]?.[action] ?? action.replace(/_/g, ' ')
-  return `${actorName ?? 'System'} ${verb}${ACTING_SUFFIX[actingAs] ?? ''}`
+  const suffix =
+    actingAs === 'deputy' && onBehalfOfName
+      ? ` (as deputy for ${onBehalfOfName})`
+      : (ACTING_SUFFIX[actingAs] ?? '')
+  return `${actorName ?? 'Atrium'} ${verb}${suffix}`
 }

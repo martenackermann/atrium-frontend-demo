@@ -58,6 +58,8 @@ export interface MockTransition<E extends WorkflowEntity> {
   after?: (context: TransitionContext<E> & { to: string; updated: E }) => void
 }
 
+const textOf = (value: unknown) => (typeof value === 'string' && value.trim() !== '' ? value : null)
+
 export interface MockWorkflowConfig<E extends WorkflowEntity> {
   name: string
   label: string
@@ -203,7 +205,8 @@ export function defineMockWorkflow<E extends WorkflowEntity>(
       actingAs,
       fromState: context.from,
       toState: to,
-      reason: typeof body.reason === 'string' ? body.reason : null,
+      // Like the API: actions without a reason (approve, book, …) show their comment instead.
+      reason: textOf(body.reason) ?? textOf(body.comment),
       summary:
         step.summary?.({ ...context, to }) ??
         `${user.displayName} ${event.replace(/_/g, ' ')}${actingNote}`,
