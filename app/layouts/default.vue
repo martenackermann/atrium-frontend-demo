@@ -16,12 +16,12 @@ useHead({ title: computed(() => `${title.value} · Atrium`) })
   <div class="flex min-h-dvh flex-col bg-desk md:h-dvh">
     <AppDemoRibbon v-if="demo.enabled.value" />
     <div
-      class="md:grid md:min-h-0 md:flex-1 md:grid-cols-[var(--rail-w)_minmax(0,1fr)] lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
+      class="flex flex-1 flex-col md:grid md:min-h-0 md:grid-cols-[var(--rail-w)_minmax(0,1fr)] lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
     >
       <AppSidebar class="max-md:hidden" />
       <main
         id="main"
-        class="flex min-w-0 flex-col bg-sheet md:m-2 md:ml-0 md:min-h-0 md:overflow-hidden md:rounded-xl md:border md:border-rule md:shadow-sheet"
+        class="flex min-w-0 flex-1 flex-col bg-sheet md:m-2 md:ml-0 md:min-h-0 md:overflow-hidden md:rounded-xl md:border md:border-rule md:shadow-sheet"
       >
         <AppMobileTopbar v-if="!mobileDetail" class="md:hidden" />
         <AppTopbar class="max-md:hidden" />

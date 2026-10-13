@@ -3,7 +3,7 @@
  * `/` — placeholder from the foundation (SCREENS §3). Owned by slice A4, which
  * replaces this file; keep the route and its access rule.
  */
-definePageMeta({ title: 'Home', hideMobileTitle: true })
+definePageMeta({ title: 'Home' })
 </script>
 
 <template>

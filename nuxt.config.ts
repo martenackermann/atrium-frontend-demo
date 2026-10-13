@@ -32,7 +32,8 @@ export default defineNuxtConfig({
   // Atrium is a client-only SPA (static hosting, no Nitro server at runtime).
   ssr: false,
 
-  devtools: { enabled: true },
+  // Off for Playwright runs (E2E=1): the DevTools launcher overlaps the UI in screenshots.
+  devtools: { enabled: !process.env.E2E },
 
   modules: ['@nuxt/eslint', '@pinia/nuxt', '@vueuse/nuxt'],
 
