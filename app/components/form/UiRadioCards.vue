@@ -29,7 +29,6 @@ const field = useFieldContext()
     v-model="model"
     :aria-label="ariaLabel"
     :aria-invalid="field?.invalid.value || undefined"
-    @keydown="selectFocusedRadio"
     :class="
       cn(
         'grid gap-2.5',
@@ -38,6 +37,7 @@ const field = useFieldContext()
         props.class,
       )
     "
+    @keydown="selectFocusedRadio"
   >
     <RadioGroupItem
       v-for="option in options"

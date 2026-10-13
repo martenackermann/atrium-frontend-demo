@@ -38,7 +38,6 @@ const stringValue = computed({
     v-model="stringValue"
     :aria-label="label"
     orientation="horizontal"
-    @keydown="selectFocusedRadio"
     :class="
       cn(
         'inline-flex max-w-full gap-0.5 justify-self-start rounded-[10px] border border-rule-strong bg-well p-[3px] max-md:p-0.5',
@@ -46,6 +45,7 @@ const stringValue = computed({
         props.class,
       )
     "
+    @keydown="selectFocusedRadio"
   >
     <RadioGroupItem
       v-for="option in options"

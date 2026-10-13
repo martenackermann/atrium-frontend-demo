@@ -22,7 +22,7 @@ export function toDate(value: DateInput): Date | null {
 }
 
 /** Newer ICU writes "Sept" for en-GB short months; DESIGN §10 uses three letters ("8 Sep"). */
-const shortMonths = (text: string) => text.replace(/Sept/g, 'Sep')
+const shortMonths = (text: string) => text.replace(/\bSept\b/g, 'Sep')
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const dayDiff = (a: Date, b: Date) =>
