@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui'
 import { cn } from '~/lib/cn'
 import { useFieldContext } from '~/lib/field'
+import { selectFocusedRadio } from '~/lib/radio'
 import type { RadioCardOption } from '~/types/ui'
 
 /**
@@ -28,6 +29,7 @@ const field = useFieldContext()
     v-model="model"
     :aria-label="ariaLabel"
     :aria-invalid="field?.invalid.value || undefined"
+    @keydown="selectFocusedRadio"
     :class="
       cn(
         'grid gap-2.5',

@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'vue'
 import { RadioGroupItem, RadioGroupRoot } from 'reka-ui'
 import { cn } from '~/lib/cn'
 import { useControlSize } from '~/lib/field'
+import { selectFocusedRadio } from '~/lib/radio'
 
 /**
  * Segmented control (DESIGN §9): well track, sheet thumb. For gearbox choices, list filters and
@@ -37,6 +38,7 @@ const stringValue = computed({
     v-model="stringValue"
     :aria-label="label"
     orientation="horizontal"
+    @keydown="selectFocusedRadio"
     :class="
       cn(
         'inline-flex max-w-full gap-0.5 justify-self-start rounded-[10px] border border-rule-strong bg-well p-[3px] max-md:p-0.5',

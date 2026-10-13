@@ -48,6 +48,7 @@ provide(FIELD_CONTEXT, {
   <!-- A group (radio cards, checkbox lists) carries the hint and error on the fieldset itself. -->
   <component
     :is="group ? 'fieldset' : 'div'"
+    :id="group ? id : undefined"
     :aria-describedby="group ? describedBy : undefined"
     :class="cn('grid min-w-0 gap-1.5 border-0 p-0', props.class)"
   >
