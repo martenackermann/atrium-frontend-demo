@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { signInAs } from './helpers'
+import { dateDigitsIn, signInAs } from './helpers'
 
 /**
  * Travel screenshots (slice A2) for review against the comps, written to docs/screenshots/travel/.
@@ -50,8 +50,8 @@ for (const theme of THEMES) {
       await shot(page, `chooser-1440-${theme}`)
 
       await page.goto('/travel/new/car')
-      await typeDateTime(page, 0, '201020260800')
-      await typeDateTime(page, 1, '211020261800')
+      await typeDateTime(page, 0, `${dateDigitsIn(7)}0800`)
+      await typeDateTime(page, 1, `${dateDigitsIn(8)}1800`)
       await page.getByLabel('Destination').fill('Westbay')
       await page.getByRole('button', { name: 'Next: Vehicle' }).click()
       await page.getByRole('radio', { name: 'Automatic guaranteed' }).click()

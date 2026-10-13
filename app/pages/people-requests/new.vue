@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Lock } from '@lucide/vue'
+import { Lock, UserRound } from '@lucide/vue'
 import { z } from 'zod'
 import { describeError, isApiError } from '~/lib/api'
 import { peopleKeys, useJobRoles } from '~/modules/people/api'
@@ -144,6 +144,10 @@ const [salutation] = defineField<'salutation', Salutation | null>('salutation')
 const [firstName] = defineField('firstName')
 const [lastName] = defineField('lastName')
 const [subject] = defineField<'subject', UserRef | null>('subject')
+// The picker searches the reporting tree (scope=team), which never contains yourself.
+const chooseMe = () => {
+  if (auth.me) subject.value = auth.me
+}
 const [effectiveDate] = defineField('effectiveDate')
 const [jobRoleId] = defineField('jobRoleId')
 const [departmentId] = defineField('departmentId')
@@ -453,7 +457,20 @@ function discard() {
         hint="Names, department and site are taken from their profile."
         :error="errors.subject"
       >
-        <UserPicker v-model="subject" :scope="isBackOffice ? 'all' : 'team'" />
+        <div class="flex flex-wrap items-center gap-3">
+          <UserPicker
+            v-model="subject"
+            :scope="isBackOffice ? 'all' : 'team'"
+            class="min-w-[240px] flex-1"
+          />
+          <UiButton
+            v-if="auth.me && subject?.id !== auth.me.id"
+            :icon="UserRound"
+            data-testid="subject-me"
+            @click="chooseMe"
+            >Choose me</UiButton
+          >
+        </div>
       </UiField>
       <UiField :label="meta?.effectiveLabel ?? 'Date'" :error="errors.effectiveDate">
         <UiDatePicker v-model="effectiveDate" />

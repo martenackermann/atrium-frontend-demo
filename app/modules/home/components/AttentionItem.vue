@@ -37,6 +37,11 @@ const due = computed(() => {
   return { text: `Due ${formatDate(props.item.dueAt)}.`, overdue: false }
 })
 
+// Asset subtitles already end with the tag ("Marlowe X5 · AST-00115"): don't repeat it.
+const showReference = computed(
+  () => Boolean(props.item.reference) && !props.item.subtitle?.includes(props.item.reference!),
+)
+
 const positive = computed(() => props.item.quickActions.filter((action) => action !== 'decline'))
 const canDecline = computed(() => props.item.quickActions.includes('decline'))
 
@@ -90,8 +95,8 @@ function submitDecline() {
         }}</NuxtLink>
       </h3>
       <p class="mt-0.5 max-w-[64ch] text-[13.5px] leading-5 text-ink-muted">
-        <span v-if="item.reference" class="mono text-ink-subtle">{{ item.reference }}</span>
-        <template v-if="item.reference && item.subtitle"> · </template>
+        <span v-if="showReference" class="mono text-ink-subtle">{{ item.reference }}</span>
+        <template v-if="showReference && item.subtitle"> · </template>
         <span v-if="item.subtitle">{{ item.subtitle }}</span>
         <template v-if="due">
           {{ ' '

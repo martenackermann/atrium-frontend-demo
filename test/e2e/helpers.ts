@@ -36,3 +36,11 @@ export function trackConsoleErrors(page: Page) {
   page.on('pageerror', (error) => errors.push(error.message))
   return errors
 }
+
+/** DDMMYYYY digits of the date `days` from today, for typing into a UiDatePicker's segments. */
+export function dateDigitsIn(days: number) {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}`
+}

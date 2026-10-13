@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { signInAs, trackConsoleErrors, type PersonaKey } from './helpers'
+import { dateDigitsIn, signInAs, trackConsoleErrors, type PersonaKey } from './helpers'
 
 /**
  * Travel (slice A2) in demo mode: the main flows of SCREENS §5 against the MSW mock API.
@@ -58,8 +58,8 @@ test.describe('travel', () => {
     await expect(page.getByRole('heading', { name: /Where and when/ })).toBeVisible()
     await expect(inSlip(page, 'No approval needed')).toBeVisible()
 
-    await typeDateTime(page, 0, '201020260800')
-    await typeDateTime(page, 1, '211020261800')
+    await typeDateTime(page, 0, `${dateDigitsIn(7)}0800`)
+    await typeDateTime(page, 1, `${dateDigitsIn(8)}1800`)
     await page.getByLabel('Destination').fill('Westbay')
     await page.getByRole('button', { name: 'Next: Vehicle' }).click()
 
@@ -76,8 +76,8 @@ test.describe('travel', () => {
     await signInAndOpen(page, 'emma', '/travel/new/train')
     await page.getByLabel('From').fill('Riverton Central')
     await page.getByLabel('To', { exact: true }).fill('Northport Central')
-    await typeDateTime(page, 0, '201020260715')
-    await typeDateTime(page, 1, '211020261830')
+    await typeDateTime(page, 0, `${dateDigitsIn(7)}0715`)
+    await typeDateTime(page, 1, `${dateDigitsIn(8)}1830`)
     await page.getByRole('button', { name: 'Next: Travellers' }).click()
     await page.getByRole('button', { name: 'Next: Tickets' }).click()
     await page.getByRole('radio', { name: /Saver fare/ }).click()
