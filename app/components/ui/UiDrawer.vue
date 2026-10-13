@@ -54,7 +54,6 @@ function restoreFocus(event: Event) {
       />
       <DialogContent
         :style="{ '--drawer-w': width }"
-        @close-auto-focus="restoreFocus"
         :class="
           cn(
             'fixed inset-y-0 z-50 flex w-full flex-col bg-raised shadow-dialog outline-none md:inset-y-2 md:w-[min(var(--drawer-w),calc(100vw-16px))] md:rounded-xl',
@@ -64,6 +63,7 @@ function restoreFocus(event: Event) {
             props.class,
           )
         "
+        @close-auto-focus="restoreFocus"
       >
         <header class="flex items-center gap-2 border-b border-rule py-3 pr-3 pl-5">
           <DialogTitle
