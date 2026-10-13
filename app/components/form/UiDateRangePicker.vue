@@ -22,23 +22,30 @@ import {
   DateRangePickerTrigger,
 } from 'reka-ui'
 import { calendarDateToIso, isoToCalendarDate } from '~/lib/dates'
-import { useFieldContext } from '~/lib/field'
+import { useControlSize, useFieldContext } from '~/lib/field'
 import { cn } from '~/lib/cn'
 
 /**
  * DateRange (DESIGN §9): the selected range is filled ink with a hover-tinted middle.
  * v-model is `{ start, end }` as IsoDates (either may be null).
  */
-const props = defineProps<{
-  invalid?: boolean
-  disabled?: boolean
-  id?: string
-  class?: HTMLAttributes['class']
-}>()
+const props = withDefaults(
+  defineProps<{
+    invalid?: boolean
+    disabled?: boolean
+    id?: string
+    /** Accessible name when there is no UiField label (e.g. a list filter). */
+    ariaLabel?: string
+    class?: HTMLAttributes['class']
+  }>(),
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { invalid: undefined },
+)
 const model = defineModel<{ start: string | null; end: string | null }>({
   default: () => ({ start: null, end: null }),
 })
 const field = useFieldContext()
+const filterSize = useControlSize() === 'filter'
 const isInvalid = computed(() => props.invalid ?? field?.invalid.value ?? false)
 
 const value = computed<DateRange>({
@@ -63,12 +70,15 @@ const value = computed<DateRange>({
   >
     <DateRangePickerField
       v-slot="{ segments }"
+      :aria-label="ariaLabel"
       :aria-invalid="isInvalid || undefined"
       :aria-describedby="field?.describedBy.value"
       :class="
         cn(
-          'flex h-[38px] w-full items-center gap-1 rounded-md border bg-sheet pr-1 pl-3 text-base text-ink',
+          'flex w-full items-center gap-1 rounded-md border bg-sheet pr-1 pl-3 text-base text-ink',
           'focus-within:border-ink focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)] hover:border-ink-muted',
+          filterSize ? 'h-9' : 'h-[38px]',
+          'max-md:h-10',
           isInvalid ? 'border-st-negative' : 'border-field',
           props.class,
         )

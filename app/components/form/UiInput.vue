@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import { useFieldContext } from '~/lib/field'
+import { useControlSize, useFieldContext } from '~/lib/field'
 import { cn } from '~/lib/cn'
 
 /**
  * Input (DESIGN §9): 38px, field border, radius 8; hover ink-muted; focus ink border + 3px halo;
  * error negative border. Placeholder is an example, never the label. `suffix` renders inside
- * ("km per day"), `mono` for codes and amounts.
+ * ("km per day"), `mono` for codes and amounts. 36px in list toolbars, 40px on phones.
  */
 defineOptions({ inheritAttrs: false })
 
@@ -20,10 +20,12 @@ const props = withDefaults(
     id?: string
     class?: HTMLAttributes['class']
   }>(),
-  { type: 'text' },
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { type: 'text', invalid: undefined },
 )
 const model = defineModel<string | number | null | undefined>()
 const field = useFieldContext()
+const filterSize = useControlSize() === 'filter'
 const attrs = useAttrs()
 const input = ref<HTMLInputElement>()
 
@@ -49,7 +51,8 @@ defineExpose({ focus: () => input.value?.focus() })
       :aria-describedby="field?.describedBy.value"
       :class="
         cn(
-          'h-[38px] w-full rounded-md border bg-sheet px-3 text-base text-ink outline-none placeholder:text-ink-subtle',
+          'w-full rounded-md border bg-sheet px-3 text-base text-ink outline-none placeholder:text-ink-subtle max-md:h-10',
+          filterSize ? 'h-9' : 'h-[38px]',
           'transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-ink-muted',
           'focus-visible:border-ink focus-visible:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)]',
           'disabled:cursor-not-allowed disabled:bg-well disabled:text-ink-disabled',

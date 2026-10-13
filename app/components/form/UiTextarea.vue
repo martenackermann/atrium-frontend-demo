@@ -6,14 +6,18 @@ import { cn } from '~/lib/cn'
 /** Textarea (DESIGN §9): min 84px, vertical resize; character hint when limited (`maxlength`). */
 defineOptions({ inheritAttrs: false })
 
-const props = defineProps<{
-  invalid?: boolean
-  maxlength?: number
-  rows?: number
-  id?: string
-  autofocus?: boolean
-  class?: HTMLAttributes['class']
-}>()
+const props = withDefaults(
+  defineProps<{
+    invalid?: boolean
+    maxlength?: number
+    rows?: number
+    id?: string
+    autofocus?: boolean
+    class?: HTMLAttributes['class']
+  }>(),
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { invalid: undefined },
+)
 const model = defineModel<string | null | undefined>()
 const field = useFieldContext()
 const attrs = useAttrs()

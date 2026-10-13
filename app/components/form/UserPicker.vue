@@ -13,7 +13,7 @@ import {
   ComboboxViewport,
 } from 'reka-ui'
 import { coreKeys } from '~/lib/query/core'
-import { useFieldContext } from '~/lib/field'
+import { useControlSize, useFieldContext } from '~/lib/field'
 import { cn } from '~/lib/cn'
 import type { Page, RoleName, UserRef, UserSummary } from '~/types/api'
 
@@ -21,6 +21,8 @@ import type { Page, RoleName, UserRef, UserSummary } from '~/types/api'
  * UserPicker (DESIGN §9 Combobox): searches `/users?q=` by name or email (debounced), options show
  * avatar · name · department · email. `multiple` renders chips with remove buttons (train
  * travellers). Pass `options` to restrict the choice (approver pickers: the management chain).
+ * Height: 38px like Input (36px as a list filter: inside DataTable `#filters`, or `size="filter"`);
+ * 40px on phones. Outside a UiField, name it with `aria-label` (it lands on the input).
  */
 const props = withDefaults(
   defineProps<{
@@ -36,12 +38,18 @@ const props = withDefaults(
     invalid?: boolean
     disabled?: boolean
     id?: string
+    /** `filter` = 36px, to sit next to toolbar Selects (automatic inside DataTable filters). */
+    size?: 'md' | 'filter'
+    ariaLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { scope: 'all', placeholder: 'Search by name or email' },
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { scope: 'all', placeholder: 'Search by name or email', invalid: undefined, size: undefined },
 )
 const model = defineModel<UserRef | UserRef[] | null>({ default: null })
 const field = useFieldContext()
+const toolbar = useControlSize()
+const isFilter = computed(() => (props.size ?? toolbar) === 'filter')
 const api = useApi()
 const isInvalid = computed(() => props.invalid ?? field?.invalid.value ?? false)
 
@@ -114,7 +122,8 @@ const departmentOf = (user: UserRef | UserSummary) =>
     <ComboboxAnchor
       :class="
         cn(
-          'flex min-h-[38px] w-full flex-wrap items-center gap-1.5 rounded-md border bg-sheet py-1 pr-1 pl-2 text-base',
+          'flex w-full items-center gap-1.5 rounded-md border bg-sheet pr-1 pl-2 text-base max-md:min-h-10',
+          isFilter ? 'h-9 flex-nowrap py-0 text-sm' : 'min-h-[38px] flex-wrap py-1',
           'transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-ink-muted',
           'focus-within:border-ink focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)]',
           isInvalid ? 'border-st-negative' : 'border-field',
@@ -147,9 +156,11 @@ const departmentOf = (user: UserRef | UserSummary) =>
         v-model="term"
         :display-value="(user: UserRef | null) => (multiple ? '' : (user?.displayName ?? ''))"
         :placeholder="selectedList.length ? '' : placeholder"
+        :aria-label="ariaLabel"
         :aria-invalid="isInvalid || undefined"
         :aria-describedby="field?.describedBy.value"
-        class="h-7 min-w-[120px] flex-1 bg-transparent px-1 outline-none placeholder:text-ink-subtle"
+        class="h-7 min-w-0 flex-1 truncate bg-transparent px-1 outline-none placeholder:text-ink-subtle"
+        :class="!isFilter && 'min-w-[120px]'"
         @focus="open = true"
       />
       <ComboboxTrigger
@@ -171,7 +182,7 @@ const departmentOf = (user: UserRef | UserSummary) =>
             v-for="user in results"
             :key="user.id"
             :value="toRef(user)"
-            class="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 outline-none data-highlighted:bg-marker-tint"
+            class="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 outline-none data-highlighted:bg-marker-tint max-md:min-h-11"
           >
             <UiAvatar :initials="user.initials" size="md" />
             <span class="grid min-w-0 leading-[18px]">

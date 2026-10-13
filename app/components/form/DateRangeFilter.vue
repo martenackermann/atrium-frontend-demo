@@ -14,7 +14,9 @@ const range = computed({
 
 <template>
   <div class="grid gap-1">
-    <span v-if="label" class="text-meta font-semibold text-ink-subtle">{{ label }}</span>
-    <UiDateRangePicker v-model="range" class="min-w-[250px]" />
+    <span v-if="label" class="text-meta font-semibold text-ink-subtle" aria-hidden="true">{{
+      label
+    }}</span>
+    <UiDateRangePicker v-model="range" :aria-label="label ?? 'Dates'" class="min-w-[250px]" />
   </div>
 </template>

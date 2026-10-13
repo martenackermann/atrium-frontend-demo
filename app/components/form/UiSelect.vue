@@ -12,11 +12,14 @@ import {
   SelectValue,
   SelectViewport,
 } from 'reka-ui'
-import { useFieldContext } from '~/lib/field'
+import { useControlSize, useFieldContext } from '~/lib/field'
 import { cn } from '~/lib/cn'
 import type { SelectOption } from '~/types/ui'
 
-/** Select (DESIGN §9): trigger like Input + chevron; level-2 content; checked item; typeahead. */
+/**
+ * Select (DESIGN §9): trigger like Input + chevron; level-2 content; checked item; typeahead.
+ * 38px (md) / 30px (sm); 36px in list toolbars; 40px on phones.
+ */
 const props = withDefaults(
   defineProps<{
     options: readonly SelectOption<T>[]
@@ -28,10 +31,13 @@ const props = withDefaults(
     class?: HTMLAttributes['class']
     ariaLabel?: string
   }>(),
-  { placeholder: 'Choose…', size: 'md' },
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { placeholder: 'Choose…', size: 'md', invalid: undefined },
 )
 const model = defineModel<T | null | undefined>()
 const field = useFieldContext()
+// In a list toolbar every filter control is 36px, whatever size the page passed.
+const filterSize = useControlSize() === 'filter'
 const isInvalid = computed(() => props.invalid ?? field?.invalid.value ?? false)
 
 // Reka's Select works with string values; map numbers through their string form.
@@ -56,7 +62,8 @@ const stringValue = computed({
           'transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-ink-muted',
           'focus-visible:border-ink focus-visible:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)]',
           'data-disabled:bg-well data-disabled:text-ink-disabled data-placeholder:text-ink-subtle',
-          size === 'md' ? 'h-[38px] text-base' : 'h-[30px] text-sm',
+          filterSize ? 'h-9 text-sm' : size === 'md' ? 'h-[38px] text-base' : 'h-[30px] text-sm',
+          'max-md:h-10',
           isInvalid ? 'border-st-negative' : 'border-field',
           props.class,
         )
@@ -77,7 +84,7 @@ const stringValue = computed({
             :key="String(option.value)"
             :value="String(option.value)"
             :disabled="option.disabled"
-            class="relative flex min-h-9 cursor-pointer items-start gap-2 rounded-md py-2 pr-8 pl-2.5 text-base outline-none select-none data-disabled:opacity-45 data-highlighted:bg-hover"
+            class="relative flex min-h-9 cursor-pointer max-md:min-h-11 items-start gap-2 rounded-md py-2 pr-8 pl-2.5 text-base outline-none select-none data-disabled:opacity-45 data-highlighted:bg-hover"
           >
             <div class="grid">
               <SelectItemText>{{ option.label }}</SelectItemText>

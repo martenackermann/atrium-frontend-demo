@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from 'vue'
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui'
 import { cn } from '~/lib/cn'
+import { useFieldContext } from '~/lib/field'
 import type { RadioCardOption } from '~/types/ui'
 
 /**
@@ -18,12 +19,15 @@ const props = withDefaults(
   { columns: 2 },
 )
 const model = defineModel<T | undefined>()
+// Inside <UiField group>: the fieldset carries hint and error; the group reports invalid.
+const field = useFieldContext()
 </script>
 
 <template>
   <RadioGroupRoot
     v-model="model"
     :aria-label="ariaLabel"
+    :aria-invalid="field?.invalid.value || undefined"
     :class="
       cn(
         'grid gap-2.5',
@@ -38,7 +42,8 @@ const model = defineModel<T | undefined>()
       :key="option.value"
       :value="option.value"
       :disabled="option.disabled"
-      class="group grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 rounded-lg border border-rule-strong bg-sheet p-3.5 text-left transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-field focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus data-disabled:cursor-not-allowed data-disabled:opacity-45 data-[state=checked]:border-ink data-[state=checked]:shadow-[inset_0_0_0_1px_var(--ink)]"
+      :class="field?.invalid.value ? 'border-st-negative-line' : 'border-rule-strong'"
+      class="group grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 rounded-lg border bg-sheet p-3.5 text-left transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-field focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus data-disabled:cursor-not-allowed data-disabled:opacity-45 data-[state=checked]:border-ink data-[state=checked]:shadow-[inset_0_0_0_1px_var(--ink)]"
     >
       <span
         class="mt-0.5 grid size-[18px] place-items-center rounded-full border border-field bg-sheet group-data-[state=checked]:border-primary group-data-[state=checked]:bg-primary"

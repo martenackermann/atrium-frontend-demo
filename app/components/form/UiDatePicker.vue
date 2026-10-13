@@ -27,7 +27,7 @@ import {
   isoToCalendarDate,
   isoToCalendarDateTime,
 } from '~/lib/dates'
-import { useFieldContext } from '~/lib/field'
+import { useControlSize, useFieldContext } from '~/lib/field'
 import { cn } from '~/lib/cn'
 
 /**
@@ -35,17 +35,22 @@ import { cn } from '~/lib/cn'
  * ringed, weekends muted, en-GB order. v-model is an IsoDate ('2026-10-21'), or an IsoDateTime
  * (UTC) with `time`.
  */
-const props = defineProps<{
-  time?: boolean
-  min?: string | null
-  max?: string | null
-  invalid?: boolean
-  disabled?: boolean
-  id?: string
-  class?: HTMLAttributes['class']
-}>()
+const props = withDefaults(
+  defineProps<{
+    time?: boolean
+    min?: string | null
+    max?: string | null
+    invalid?: boolean
+    disabled?: boolean
+    id?: string
+    class?: HTMLAttributes['class']
+  }>(),
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { invalid: undefined },
+)
 const model = defineModel<string | null | undefined>()
 const field = useFieldContext()
+const filterSize = useControlSize() === 'filter'
 const isInvalid = computed(() => props.invalid ?? field?.invalid.value ?? false)
 
 const value = computed<DateValue | undefined>({
@@ -77,10 +82,12 @@ const maxValue = computed(() => isoToCalendarDate(props.max))
       :aria-describedby="field?.describedBy.value"
       :class="
         cn(
-          'flex h-[38px] w-full items-center rounded-md border bg-sheet pr-1 pl-3 text-base text-ink',
+          'flex w-full items-center rounded-md border bg-sheet pr-1 pl-3 text-base text-ink',
           'transition-[border-color,box-shadow] duration-(--dur-1) ease-standard hover:border-ink-muted',
           'focus-within:border-ink focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--focus)_28%,transparent)]',
           'data-disabled:bg-well data-disabled:text-ink-disabled',
+          filterSize ? 'h-9' : 'h-[38px]',
+          'max-md:h-10',
           isInvalid ? 'border-st-negative' : 'border-field',
           props.class,
         )

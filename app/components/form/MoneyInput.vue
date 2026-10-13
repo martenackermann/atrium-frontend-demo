@@ -5,7 +5,11 @@ import type { Money } from '~/types/api'
  * MoneyInput (SCREENS §1.6): euros typed as "1,890.50", stored as `Money` (integer cents, EUR).
  * Mono figures; the € prefix sits inside the field.
  */
-defineProps<{ invalid?: boolean; disabled?: boolean; placeholder?: string; id?: string }>()
+withDefaults(
+  defineProps<{ invalid?: boolean; disabled?: boolean; placeholder?: string; id?: string }>(),
+  // `invalid` stays undefined when absent so the field context decides (Vue casts to false).
+  { invalid: undefined },
+)
 const model = defineModel<Money | null | undefined>()
 
 const format = (cents: number) =>
