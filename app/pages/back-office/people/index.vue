@@ -71,8 +71,8 @@ const tabs = computed<TabItem[]>(() => {
   ]
 })
 const assigneeFilters = [
-  { value: 'any', label: 'Anyone' },
-  { value: 'me', label: 'Me' },
+  { value: 'any', label: 'Any assignee' },
+  { value: 'me', label: 'Assigned to me' },
   { value: 'none', label: 'Unassigned' },
 ]
 const typeOptions = [
@@ -104,13 +104,11 @@ const empty = computed(() =>
   <div class="flex min-h-0 flex-1 flex-col">
     <SplitInbox
       v-model:tab="queue"
-      v-model:filter="assignee"
       title="People Ops"
       :count-label="
         requests.data.value ? `${requests.data.value.meta.total} in this queue` : undefined
       "
       :tabs="tabs"
-      :filters="assigneeFilters"
       :items="requests.data.value?.data"
       :item-key="(item: PeopleRequestSummary) => item.id"
       :item-label="(item: PeopleRequestSummary) => `${item.reference} ${item.title}`"
@@ -121,8 +119,8 @@ const empty = computed(() =>
       @retry="requests.refetch()"
     >
       <template #list-tools>
-        <div class="flex flex-wrap gap-2">
-          <label class="relative">
+        <div class="grid w-full grid-cols-3 gap-2">
+          <label class="relative col-span-3">
             <span class="sr">Search requests</span>
             <Search
               class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-subtle"
@@ -131,11 +129,12 @@ const empty = computed(() =>
             <input
               v-model="search"
               type="search"
-              placeholder="Reference or name"
-              class="h-[30px] w-40 rounded-md border border-field bg-sheet pr-2 pl-8 text-sm text-ink outline-none placeholder:text-ink-subtle focus-visible:border-ink"
+              placeholder="Search reference, title or name"
+              class="h-[30px] w-full rounded-md border border-field bg-sheet pr-2 pl-8 text-sm text-ink outline-none placeholder:text-ink-subtle focus-visible:border-ink"
               data-testid="ops-search"
             />
           </label>
+          <UiSelect v-model="assignee" :options="assigneeFilters" size="sm" aria-label="Assignee" />
           <UiSelect v-model="type" :options="typeOptions" size="sm" aria-label="Type" />
           <UiSelect v-model="priority" :options="priorityOptions" size="sm" aria-label="Priority" />
         </div>

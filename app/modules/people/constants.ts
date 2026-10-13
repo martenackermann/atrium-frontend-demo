@@ -118,7 +118,7 @@ export const PEOPLE_ACTIONS: Record<string, ActionConfig> = {
     },
   },
   reject: {
-    label: 'Reject…',
+    label: 'Reject',
     icon: X,
     reason: {
       title: 'Reject this request?',
@@ -129,7 +129,7 @@ export const PEOPLE_ACTIONS: Record<string, ActionConfig> = {
     },
   },
   cancel: {
-    label: 'Cancel request…',
+    label: 'Cancel request',
     icon: Ban,
     reason: {
       title: 'Cancel this request?',
@@ -140,7 +140,7 @@ export const PEOPLE_ACTIONS: Record<string, ActionConfig> = {
     },
   },
   reopen: {
-    label: 'Reopen…',
+    label: 'Reopen',
     icon: RotateCcw,
     reason: {
       title: 'Reopen this request?',

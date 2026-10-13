@@ -2,7 +2,7 @@
 import { MessageCircleQuestion, Plus, UserPlus } from '@lucide/vue'
 import { usePeopleCounts, usePeopleRequests } from '~/modules/people/api'
 import type { PeopleRequestSummary } from '~/modules/people/api/types'
-import { TYPE_META } from '~/modules/people/constants'
+import { PRIORITY_LABELS, TYPE_META } from '~/modules/people/constants'
 import type { DataTableColumn } from '~/types/ui'
 
 /**
@@ -129,8 +129,20 @@ const columns: DataTableColumn<PeopleRequestSummary>[] = [
       @retry="requests.refetch()"
     >
       <template #filters>
-        <UiSelect v-model="typeFilter" :options="typeOptions" size="sm" aria-label="Type" />
-        <UiSelect v-model="statusFilter" :options="statusOptions" size="sm" aria-label="Status" />
+        <UiSelect
+          v-model="typeFilter"
+          :options="typeOptions"
+          size="sm"
+          aria-label="Type"
+          class="w-48"
+        />
+        <UiSelect
+          v-model="statusFilter"
+          :options="statusOptions"
+          size="sm"
+          aria-label="Status"
+          class="w-48"
+        />
       </template>
       <template #cell-type="{ row }">
         <span class="inline-flex items-center gap-1.5 text-sm text-ink-muted">
@@ -158,7 +170,9 @@ const columns: DataTableColumn<PeopleRequestSummary>[] = [
         />
       </template>
       <template #cell-priority="{ row }">
-        <PriorityFlag :level="row.priority" show-label />
+        <span class="inline-flex items-center gap-1.5 text-sm">
+          <PriorityFlag :level="row.priority" />{{ PRIORITY_LABELS[row.priority] }}
+        </span>
       </template>
       <template #empty>
         <EmptyState

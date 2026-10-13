@@ -268,7 +268,7 @@ const facts = computed<FactItem[]>(() => [
     label: 'Manager',
     value:
       values.manager?.displayName ??
-      (values.type === 'onboarding' ? null : 'Their current manager'),
+      (values.type && values.type !== 'onboarding' ? 'Their current manager' : null),
   },
   { label: 'Visible to', value: 'You, the manager and People Ops' },
 ])
