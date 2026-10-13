@@ -202,7 +202,7 @@ const columns: DataTableColumn<AssetListItem>[] = [
       export-path="/assets/export.csv"
       export-filename="assets.csv"
       :empty="{
-        title: 'No assets match these filters.',
+        title: 'No assets match these filters',
         description: 'Change or clear the filters to see more.',
       }"
       @retry="assets.refetch()"

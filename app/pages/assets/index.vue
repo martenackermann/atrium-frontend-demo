@@ -53,7 +53,7 @@ const pendingTitle = computed(() =>
         <EmptyState
           v-if="!active.length"
           :icon="Laptop"
-          title="No devices are assigned to you yet."
+          title="No devices are assigned to you yet"
           description="When IT support hands you a laptop, phone or monitor, it shows up here for you to accept."
         />
         <ul v-else class="m-0 list-none border-t border-ink p-0">

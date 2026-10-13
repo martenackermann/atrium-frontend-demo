@@ -138,7 +138,7 @@ async function remove(model: AssetModelDto) {
       search-placeholder="Model or manufacturer"
       caption="Models"
       :empty="{
-        title: 'No models match these filters.',
+        title: 'No models match these filters',
         description: 'Change the filters, or add a model with New model.',
       }"
       @retry="models.refetch()"

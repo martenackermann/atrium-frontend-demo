@@ -223,7 +223,7 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
       search-placeholder="Search training, attendee or TRN-…"
       caption="All ratings"
       :empty="{
-        title: 'No ratings in this period.',
+        title: 'No ratings in this period',
         description: 'Rounds open when booked trainings end.',
       }"
       @retry="ratings.refetch()"

@@ -128,7 +128,7 @@ const activity = computed(() => (d.value?.recentActivity ?? []).slice(0, isMobil
             v-else-if="d && !d.pendingAcceptance.oldest.length"
             compact
             tone="positive"
-            title="Nothing waits for acceptance."
+            title="Nothing waits for acceptance"
             description="Assigned devices show up here until their new owner accepts them."
           />
           <ul v-else-if="d" class="m-0 list-none border-t border-ink p-0">

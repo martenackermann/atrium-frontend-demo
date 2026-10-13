@@ -27,22 +27,22 @@ const QUEUE_STATUS: Record<Queue, string | undefined> = {
 }
 const EMPTY: Record<Queue, { title: string; description: string }> = {
   to_book: {
-    title: 'Nothing to book right now.',
+    title: 'Nothing to book right now',
     description: 'Approved trainings land here; high-priority ones come first.',
   },
   cancellations: {
-    title: 'No cancellation requests.',
+    title: 'No cancellation requests',
     description: 'When an attendee asks to cancel, you confirm or reject it here.',
   },
   booking_impossible: {
-    title: 'No failed bookings.',
+    title: 'No failed bookings',
     description: 'Bookings you mark as impossible wait here for a retry.',
   },
   approvals: {
-    title: 'Nothing waiting for approval.',
+    title: 'Nothing waiting for approval',
     description: 'Requests awaiting a manager or an executive show here, read-only.',
   },
-  all: { title: 'No participations match.', description: 'Clear the search or the dates.' },
+  all: { title: 'No participations match', description: 'Clear the search or the dates.' },
 }
 
 const api = useApi()

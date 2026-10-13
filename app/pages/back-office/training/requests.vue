@@ -81,7 +81,7 @@ const columns: DataTableColumn<TrainingRequestSummary>[] = [
       search-placeholder="Search topic, provider or TRN-…"
       caption="All training requests"
       :empty="{
-        title: 'No training requests match these filters.',
+        title: 'No training requests match these filters',
         description: 'Clear a filter to see more.',
       }"
       @retry="requests.refetch()"
