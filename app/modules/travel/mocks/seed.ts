@@ -46,7 +46,24 @@ const NOTIFICATION_TEMPLATES = {
   approved: 'travel.approved',
   declined: 'travel.declined',
   booked: 'travel.booked',
+  booking_impossible: 'travel.booking_impossible',
 } as const
+
+/** "Thu, 22 Oct 2026, 09:00" in local time, like the backend's formatDateTime (en-GB). */
+const dateTime = (iso: string) =>
+  new Intl.DateTimeFormat('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(new Date(iso))
+
+/** Trip dates as the backend notifications print them (start – end, or the start only). */
+const tripWhen = (startsAt: string, endsAt: string | null) =>
+  endsAt ? `${dateTime(startsAt)} – ${dateTime(endsAt)}` : dateTime(startsAt)
 
 export default defineMockSeed({
   order: 120,
@@ -165,6 +182,7 @@ export default defineMockSeed({
 
       let decisionAt: string | null = null
       let bookedAt: string | null = null
+      let impossibleAt: string | null = null
       for (const event of spec.events ?? []) {
         const next: TravelStatus | undefined = NEXT[status]?.[event.type]
         if (!next)
@@ -265,6 +283,7 @@ export default defineMockSeed({
           }
           case 'mark_booking_impossible':
             record.bookingImpossibleReason = event.reason
+            impossibleAt = when
             audit({
               at: when,
               actorId: tom.id,
@@ -340,17 +359,20 @@ export default defineMockSeed({
             ? decisionAt!
             : note.kind === 'booked'
               ? bookedAt!
-              : createdAt
+              : note.kind === 'booking_impossible'
+                ? impossibleAt!
+                : createdAt
+        const tripDates = tripWhen(record.startsAt, record.endsAt)
         const content = {
           approval_requested: {
             title: `Travel approval needed: ${traveller.displayName} – ${kind} ${record.route}`,
-            body: `${traveller.displayName} asks for a ${kind} trip ${record.route}. Needs approval because: ${reasons.map((r) => APPROVAL_REASON_LABELS[r]).join(', ')}.`,
+            body: `${traveller.displayName} asks for a ${kind} trip ${record.route} (${tripDates}). Needs approval because: ${reasons.map((r) => APPROVAL_REASON_LABELS[r]).join(', ')}.`,
             link: `/travel/approvals?tab=approvals&selected=${record.id}`,
             high: isHighPriority('pending_approval', record.startsAt, new Date(createdAt)),
           },
           submitted_to_desk: {
             title: `To book: ${kind} ${record.route} for ${traveller.displayName}`,
-            body: `The ${kind} trip ${record.route} needs no approval${exempt ? ' (Executive travellers approve their own trips)' : ''} and goes straight to the travel desk.`,
+            body: `The ${kind} trip ${record.route} (${tripDates}) needs no approval${exempt ? ' (Executive travellers approve their own trips)' : ''} and goes straight to the travel desk.`,
             link: `/travel/requests/${record.id}`,
             high: isHighPriority('to_book', record.startsAt, new Date(createdAt)),
           },
@@ -369,6 +391,12 @@ export default defineMockSeed({
           booked: {
             title: `Booked: ${kind} ${record.route}`,
             body: `The ${kind} trip ${record.route} is booked. Booking number ${record.booking?.bookingNumber ?? ''}.${record.booking?.pin ? ' The PIN is available in Atrium.' : ''}`,
+            link: `/travel/requests/${record.id}`,
+            high: false,
+          },
+          booking_impossible: {
+            title: `Booking not possible: ${record.route}`,
+            body: `The travel desk could not book ${record.route}: ${record.bookingImpossibleReason ?? ''}`,
             link: `/travel/requests/${record.id}`,
             high: false,
           },

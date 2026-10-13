@@ -16,7 +16,7 @@ import {
   summaryOf,
   TRAINING_CONFIG,
 } from './rules'
-import { type At, TRAINING_STORY, TRAINING_STORY_NOTIFICATIONS } from './story'
+import { type At, type StoryStep, TRAINING_STORY, TRAINING_STORY_NOTIFICATIONS } from './story'
 import type { TrainingAttendeeRecord, TrainingRatingRecord } from './types'
 
 /**
@@ -577,6 +577,9 @@ function seedTraining(ctx: SeedContext) {
     const approver = user(plan.approver).displayName
     const range = formatRange(ctx.d(spec.startsOn), ctx.d(spec.endsOn))
     const ref = reference(spec.number)
+    const withdrawn = plan.steps.find(
+      (step): step is Extract<StoryStep, { kind: 'withdraw' }> => step.kind === 'withdraw',
+    )
     const decider = row.managerDecisionById
       ? (db.users.find(row.managerDecisionById)?.displayName ?? approver)
       : approver
@@ -605,6 +608,13 @@ function seedTraining(ctx: SeedContext) {
         title: `Executive approval needed (≥ ${euros(TRAINING_CONFIG.thresholdCents)}): ${spec.topic}`,
         body: `${attendee} · ${range} · ${euros(spec.costCents)}. Approved by ${decider}.`,
         link: `/training/approvals?tab=executive&selected=${row.id}`,
+      },
+      'training.participation_withdrawn': {
+        title: `Withdrawn: ${attendee} – ${spec.topic}`,
+        body: withdrawn
+          ? `${user(withdrawn.by).displayName} withdrew the request.${withdrawn.reason ? ` Reason: ${withdrawn.reason}` : ''} No decision is needed.`
+          : '',
+        link: `/training/participations/${row.id}`,
       },
     }
     const text = texts[n.template]!

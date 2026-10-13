@@ -162,7 +162,12 @@ export type SeedEvent =
   | { type: 'close'; at: At; reason: string }
 
 export type InAppKind =
-  'approval_requested' | 'submitted_to_desk' | 'approved' | 'declined' | 'booked'
+  | 'approval_requested'
+  | 'submitted_to_desk'
+  | 'approved'
+  | 'declined'
+  | 'booked'
+  | 'booking_impossible'
 
 export interface TripSpec {
   n: number
@@ -491,10 +496,11 @@ export const TRIPS: TripSpec[] = [
   },
 
   // ---------------------------------------------------------------- filler: to book
+  // 17, 18, 21, 26 and 35 belong to back-office personas: their in-app notifications (SPEC §10.1).
   {
     n: 17,
     kind: 'car',
-    traveller: 'ito2',
+    traveller: 'ian',
     status: 'to_book',
     created: [-4, 10],
     car: {
@@ -506,11 +512,12 @@ export const TRIPS: TripSpec[] = [
       reason: 'Two colleagues and server hardware for the Highmoor office.',
     },
     events: [{ type: 'approve', at: [-3, 9] }],
+    inApp: [{ to: 'ian', kind: 'approved' }],
   },
   {
     n: 18,
     kind: 'car',
-    traveller: 'fin1',
+    traveller: 'tom',
     status: 'to_book',
     created: [-5, 14],
     car: {
@@ -523,6 +530,7 @@ export const TRIPS: TripSpec[] = [
       reason: 'Automatic preferred for city traffic in Oakridge.',
     },
     events: [{ type: 'approve', at: [-4, 10] }],
+    inApp: [{ to: 'tom', kind: 'approved' }],
   },
   {
     n: 19,
@@ -578,6 +586,7 @@ export const TRIPS: TripSpec[] = [
       ret: [26, 18, 0],
     },
     events: [{ type: 'approve', at: [-5, 15] }],
+    inApp: [{ to: 'paula', kind: 'approved', read: true }],
   },
 
   // ---------------------------------------------------------------- filler: booked
@@ -663,7 +672,11 @@ export const TRIPS: TripSpec[] = [
       handover: branch('Riverton'),
       equipment: { childSeat: true },
     },
-    events: [{ type: 'book', at: [-10, 11], bookingNumber: 'RC48710' }],
+    events: [{ type: 'book', at: [-2, 11], bookingNumber: 'RC48710' }],
+    inApp: [
+      { to: 'arne', kind: 'submitted_to_desk', read: true },
+      { to: 'arne', kind: 'booked' },
+    ],
   },
   {
     n: 27,
@@ -816,7 +829,7 @@ export const TRIPS: TripSpec[] = [
   {
     n: 35,
     kind: 'train',
-    traveller: 'ppl4',
+    traveller: 'tina',
     status: 'booking_impossible',
     created: [-4, 9],
     train: {
@@ -834,6 +847,10 @@ export const TRIPS: TripSpec[] = [
         at: [-2, 15],
         reason: 'Seat reservations are sold out for this connection.',
       },
+    ],
+    inApp: [
+      { to: 'tina', kind: 'submitted_to_desk', read: true },
+      { to: 'tina', kind: 'booking_impossible' },
     ],
   },
 

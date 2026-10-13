@@ -212,15 +212,30 @@ function seedUsers({ db, at }: SeedContext) {
 /** S-D1 Priya → Max (d-2…d+12), S-D2 Max → Sofia (d+7…d+21), S-D3 Clara → Helen (permanent). */
 function seedDeputies(context: SeedContext) {
   const { db, d, at } = context
+  // Same days, times and texts as the backend core seed (core.deputy_assigned template).
   const rows = [
-    { principal: 'priya', deputy: 'max', from: d(-2), to: d(12), note: 'Annual leave', at: -9 },
-    { principal: 'max', deputy: 'sofia', from: d(7), to: d(21), note: 'Conference week', at: -3 },
-    { principal: 'clara', deputy: 'helen', from: null, to: null, note: null, at: -120 },
+    {
+      principal: 'priya',
+      deputy: 'max',
+      from: d(-2),
+      to: d(12),
+      note: 'Annual leave',
+      at: [-5, 10],
+    },
+    {
+      principal: 'max',
+      deputy: 'sofia',
+      from: d(7),
+      to: d(21),
+      note: 'Conference week',
+      at: [-3, 14],
+    },
+    { principal: 'clara', deputy: 'helen', from: null, to: null, note: null, at: [-200, 9] },
   ] as const
   for (const row of rows) {
     const principal = db.users.find(USER_IDS[row.principal])!
     const deputy = db.users.find(USER_IDS[row.deputy])!
-    const createdAt = at(row.at, 10)
+    const createdAt = at(row.at[0], row.at[1])
     const created = db.deputies.insert({
       principalId: principal.id,
       deputyId: deputy.id,
@@ -242,16 +257,17 @@ function seedDeputies(context: SeedContext) {
       occurredAt: createdAt,
     })
     const window =
-      row.from && row.to ? `From ${row.from} to ${row.to}.` : 'Permanent, until removed.'
+      row.from && row.to ? `from ${row.from} to ${row.to}` : 'permanently (no end date)'
     db.notifications.insert({
       userId: deputy.id,
       templateId: 'core.deputy_assigned',
       module: 'core',
       title: `${principal.displayName} named you as deputy`,
-      body: `${window}${row.note ? ` Note: ${row.note}.` : ''} You can approve training and travel requests for ${principal.firstName} during the window.`,
+      body: `You can approve training and travel requests for ${principal.displayName} ${window}.${row.note ? ` Note: ${row.note}` : ''}`,
       link: '/settings/deputies',
       priority: 'normal',
-      readAt: row.at < -5 ? createdAt : null,
+      // The permanent deputy (S-D3) read it long ago; the two recent ones are unread.
+      readAt: row.from ? null : at(row.at[0] + 1, row.at[1]),
       createdAt,
     })
   }

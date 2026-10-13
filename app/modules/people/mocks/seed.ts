@@ -3,11 +3,13 @@ import { recordAudit } from '~/mocks/core/audit'
 import { DEPARTMENTS, SEED_USERS, SITES, USER_IDS } from '~/mocks/core/seed'
 import type { PeopleRequestStatus } from '../api/types'
 import {
+  commentAddedText,
+  isHighPriority,
   peopleReference,
   peopleSummary,
-  STATUS_LABELS,
+  requestCreatedText,
   statusChangedText,
-  TYPE_LABELS,
+  statusChangedTitle,
 } from './rules'
 import { type At, JOB_ROLES, PEOPLE_STORY, type StoryEvent } from './story'
 import './types'
@@ -121,25 +123,26 @@ function seedPeople(ctx: SeedContext) {
     })
 
     const label = `${reference} ${story.title}`
+    /** One in-app row; title and body follow the backend templates (./rules). */
     const notify = (
       to: string | null,
-      title: string,
-      body: string,
+      text: { templateId: string; title: string; body: string },
       when: string,
-      templateId: string,
+      options: { high?: boolean; read?: boolean } = {},
     ) => {
       if (!to) return
+      // Older updates are read; the last three days are still unread (unless stated).
+      const read = options.read ?? when < ctx.at(-3, 0, 0)
       db.notifications.insert({
         id: ctx.uuid(),
         userId: to,
-        templateId,
+        templateId: text.templateId,
         module: 'people',
-        title,
-        body,
+        title: text.title.slice(0, 140),
+        body: text.body.slice(0, 500),
         link: `/people-requests/${row.id}`,
-        priority: story.priority === 'critical' || story.priority === 'high' ? 'high' : 'normal',
-        // Older updates are read; the last three days are still unread.
-        readAt: when < ctx.at(-3, 0, 0) ? when : null,
+        priority: (options.high ?? isHighPriority(story.priority)) ? 'high' : 'normal',
+        readAt: read ? new Date(new Date(when).getTime() + 3_600_000).toISOString() : null,
         createdAt: when,
       })
     }
@@ -157,14 +160,17 @@ function seedPeople(ctx: SeedContext) {
       summary: peopleSummary(displayName(story.requester), 'create', 'requester'),
       correlationId: 'seed',
     })
-    const subjectName = `${row.firstName} ${row.lastName}`
-    const typeLabel = TYPE_LABELS[story.type].toLowerCase()
-    const createdTitle = `New ${typeLabel} request: ${story.title}`
-    const createdBody = `${displayName(story.requester)} requested ${typeLabel} for ${subjectName} (${reference}). Effective: ${formatShort(row.effectiveDate)}.`
-    notify(row.requesterId, createdTitle, createdBody, createdAt, 'people.request_created')
-    if (managerId && managerId !== row.requesterId) {
-      notify(managerId, createdTitle, createdBody, createdAt, 'people.request_created')
-    }
+    const created = requestCreatedText({
+      reference,
+      type: story.type,
+      title: story.title,
+      effectiveDate: row.effectiveDate,
+      priority: story.priority,
+      requesterName: displayName(story.requester),
+      subjectName: `${row.firstName} ${row.lastName}`,
+    })
+    notify(row.requesterId, created, createdAt)
+    if (managerId && managerId !== row.requesterId) notify(managerId, created, createdAt)
 
     let from: PeopleRequestStatus = 'open'
     for (const event of story.history) {
@@ -199,22 +205,24 @@ function seedPeople(ctx: SeedContext) {
           createdAt: when,
         })
       }
-      const title = `${reference} is now ${STATUS_LABELS[to]}`
-      const body = statusChangedText(story.title, to, {
-        question: event.question,
-        reason: event.reason,
-        note: event.action === 'wait_internal' ? null : event.note,
-      })
-      if (actorId !== row.requesterId) {
-        notify(row.requesterId, title, body, when, 'people.status_changed')
+      const changed = {
+        templateId: 'people.status_changed',
+        title: statusChangedTitle(reference, to),
+        body: statusChangedText(story.title, to, {
+          question: event.question,
+          reason: event.reason,
+          note: event.action === 'wait_internal' ? null : event.note,
+        }),
       }
+      if (actorId !== row.requesterId) notify(row.requesterId, changed, when)
       if (managerId && managerId !== actorId && managerId !== row.requesterId) {
-        notify(managerId, title, body, when, 'people.status_changed')
+        notify(managerId, changed, when)
       }
       from = to
     }
 
     for (const comment of story.comments) {
+      const when = at(comment.at)
       db.peopleComments.insert({
         id: ctx.uuid(),
         requestId: row.id,
@@ -222,18 +230,20 @@ function seedPeople(ctx: SeedContext) {
         body: comment.body,
         internal: comment.internal ?? false,
         kind: 'comment',
-        createdAt: at(comment.at),
+        createdAt: when,
       })
+      // Public comments notify the other party (people.comment_added, normal priority).
+      const added = commentAddedText({
+        reference,
+        title: story.title,
+        authorName: displayName(comment.by),
+        excerpt: comment.body,
+      })
+      for (const recipient of comment.inApp ?? []) {
+        notify(userId(recipient.to), added, when, { high: false, read: recipient.read ?? false })
+      }
     }
   }
-}
-
-/** "Tue 27 Oct" (seeds run outside the Nuxt runtime, so no auto-imported utils here). */
-function formatShort(isoDate: string): string {
-  const [year, month, day] = isoDate.split('-').map(Number)
-  return new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
-    .format(new Date(year!, month! - 1, day!))
-    .replace(',', '')
 }
 
 export default defineMockSeed({ order: 100, run: seedPeople })
