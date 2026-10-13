@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { describeError, isApiError } from '~/lib/api'
+import { dueLabel, namesDate } from '~/lib/due'
 import { inboxIcon } from '~/lib/inbox'
 import type { InboxItem } from '~/types/api'
 import { QUICK_ACTION_LABELS, todoCta } from '../constants'
@@ -21,20 +22,10 @@ const reason = ref('')
 const reasonError = ref<string | null>(null)
 
 const due = computed(() => {
-  const days = daysFromToday(props.item.dueAt)
-  if (days === null) return null
+  const label = dueLabel(props.item.dueAt)
   // The subtitle already names the date (e.g. "effective Sun 18 Oct"): only flag it when overdue.
-  const named = props.item.subtitle?.includes(formatDate(props.item.dueAt)) ?? false
-  if (named && days >= 0) return null
-  if (days < -1)
-    return {
-      text: `Overdue since ${formatDate(props.item.dueAt, { weekday: false })}.`,
-      overdue: true,
-    }
-  if (days === -1) return { text: 'Due yesterday.', overdue: true }
-  if (days === 0) return { text: 'Due today.', overdue: false }
-  if (days === 1) return { text: 'Due tomorrow.', overdue: false }
-  return { text: `Due ${formatDate(props.item.dueAt)}.`, overdue: false }
+  if (!label || (namesDate(props.item.subtitle, props.item.dueAt) && !label.overdue)) return null
+  return label
 })
 
 // Asset subtitles already end with the tag ("Marlowe X5 · AST-00115"): don't repeat it.
@@ -94,17 +85,23 @@ function submitDecline() {
           item.title
         }}</NuxtLink>
       </h3>
+      <!-- Meta line (DESIGN §8.1): mono ID · subtitle · due · urgency, one "·" between parts. -->
       <p class="mt-0.5 max-w-[64ch] text-[13.5px] leading-5 text-ink-muted">
         <span v-if="showReference" class="mono text-ink-subtle">{{ item.reference }}</span>
-        <template v-if="showReference && item.subtitle"> · </template>
-        <span v-if="item.subtitle">{{ item.subtitle }}</span>
-        <template v-if="due">
-          {{ ' '
-          }}<span :class="due.overdue && 'font-semibold text-st-negative'">{{ due.text }}</span>
-        </template>
-        <template v-if="item.priority === 'high'">
-          {{ ' ' }}<span class="font-semibold text-st-negative">High priority.</span>
-        </template>
+        <template v-if="item.subtitle"
+          ><span v-if="showReference" aria-hidden="true"> · </span
+          ><span>{{ item.subtitle }}</span></template
+        >
+        <template v-if="due"
+          ><span v-if="showReference || item.subtitle" aria-hidden="true"> · </span
+          ><span :class="due.overdue && 'font-semibold text-st-negative'">{{
+            due.text
+          }}</span></template
+        >
+        <template v-if="item.priority === 'high'"
+          ><span aria-hidden="true"> · </span
+          ><span class="font-semibold text-st-negative">High priority</span></template
+        >
       </p>
     </div>
     <div class="task-act">

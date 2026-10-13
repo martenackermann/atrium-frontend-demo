@@ -121,19 +121,6 @@ defineExpose({ trigger, setReasonError, done })
       )
     "
   >
-    <UiMenu v-if="overflow.length">
-      <template #trigger>
-        <UiIconButton :icon="Ellipsis" label="More actions" />
-      </template>
-      <UiMenuItem
-        v-for="action in overflow"
-        :key="action"
-        :icon="config[action]?.icon"
-        :destructive="variantOf(action) === 'danger'"
-        @select="trigger(action)"
-        >{{ config[action]?.label }}…</UiMenuItem
-      >
-    </UiMenu>
     <UiButton
       v-for="action in inline"
       :key="action"
@@ -147,6 +134,26 @@ defineExpose({ trigger, setReasonError, done })
       >{{ config[action]?.label
       }}{{ config[action]?.reason || config[action]?.confirm ? '…' : '' }}</UiButton
     >
+
+    <!-- The overflow menu sits after the buttons (DESIGN comps); first in the mobile sticky bar. -->
+    <UiMenu v-if="overflow.length">
+      <template #trigger>
+        <UiIconButton
+          :icon="Ellipsis"
+          label="More actions"
+          :class="stickyMobile && 'max-md:order-first'"
+        />
+      </template>
+      <UiMenuItem
+        v-for="action in overflow"
+        :key="action"
+        :icon="config[action]?.icon"
+        :destructive="variantOf(action) === 'danger'"
+        @select="trigger(action)"
+        >{{ config[action]?.label
+        }}{{ config[action]?.reason || config[action]?.confirm ? '…' : '' }}</UiMenuItem
+      >
+    </UiMenu>
 
     <ReasonDialog
       v-if="activeReason"

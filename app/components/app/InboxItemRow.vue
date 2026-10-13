@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { describeError, isApiError } from '~/lib/api'
+import { dueLabel } from '~/lib/due'
 import { inboxIcon } from '~/lib/inbox'
 import type { InboxItem } from '~/types/api'
 
@@ -18,21 +19,7 @@ const pending = ref<string | null>(null)
 const declineOpen = ref(false)
 const declineError = ref<string | null>(null)
 
-const due = computed(() => {
-  const days = daysFromToday(props.item.dueAt)
-  if (days === null) return null
-  if (days < 0)
-    return {
-      text:
-        days === -1
-          ? 'Due yesterday'
-          : `Overdue since ${formatDate(props.item.dueAt, { weekday: false })}`,
-      overdue: true,
-    }
-  if (days === 0) return { text: 'Due today', overdue: false }
-  if (days === 1) return { text: 'Due tomorrow', overdue: false }
-  return { text: `Due ${formatDate(props.item.dueAt)}`, overdue: false }
-})
+const due = computed(() => dueLabel(props.item.dueAt))
 
 async function run(action: string, body: Record<string, unknown> = {}) {
   pending.value = action

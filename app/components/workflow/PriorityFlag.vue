@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { AlarmClock, Signal, SignalHigh, SignalLow, SignalMedium } from '@lucide/vue'
+import { dueLabel } from '~/lib/due'
 
 /**
  * PriorityFlag (DESIGN §2.4 flags) — never a coloured stripe:
  * - `startsAt` + `high`: negative text + alarm-clock + "Starts in 2 days" (travel/training urgency)
  * - `dueAt`: "Due yesterday" / "Overdue since 8 Oct" in negative when past, muted otherwise
- * - `level`: people-request priority as a signal icon with the word (tooltip on desktop)
+ * - `level`: people-request priority as a signal meter with the word (tooltip on desktop)
  */
 const props = defineProps<{
   startsAt?: string | null
@@ -25,22 +26,15 @@ const startsLabel = computed(() => {
   return `Starts in ${days} days`
 })
 
-const due = computed(() => {
-  const days = daysFromToday(props.dueAt)
-  if (days === null) return null
-  if (days === 0) return { text: 'Due today', overdue: false }
-  if (days === -1) return { text: 'Due yesterday', overdue: true }
-  if (days < -1)
-    return { text: `Overdue since ${formatDate(props.dueAt, { weekday: false })}`, overdue: true }
-  if (days === 1) return { text: 'Due tomorrow', overdue: false }
-  return { text: `Due ${formatDate(props.dueAt)}`, overdue: false }
-})
+const due = computed(() => dueLabel(props.dueAt))
 
+// Drawn as a meter: a faint full `signal` track with the level's bars inked on top (low = the
+// empty track), so a single short bar never reads as a stray comma.
 const LEVELS = {
   critical: { icon: SignalHigh, label: 'Critical priority', class: 'text-st-negative' },
   high: { icon: SignalMedium, label: 'High priority', class: 'text-ink' },
   normal: { icon: SignalLow, label: 'Normal priority', class: 'text-ink-muted' },
-  low: { icon: Signal, label: 'Low priority', class: 'text-ink-subtle' },
+  low: { icon: null, label: 'Low priority', class: 'text-ink-subtle' },
 } as const
 const level = computed(() => (props.level ? LEVELS[props.level] : null))
 </script>
@@ -60,7 +54,15 @@ const level = computed(() => (props.level ? LEVELS[props.level] : null))
   >
   <UiTooltip v-else-if="level" :content="level.label" :disabled="showLabel">
     <span class="inline-flex items-center gap-1 text-sm" :class="level.class">
-      <component :is="level.icon" class="size-4" aria-hidden="true" />
+      <span class="relative grid size-4 flex-none" aria-hidden="true">
+        <Signal class="col-start-1 row-start-1 size-4 text-rule-strong" />
+        <component
+          :is="level.icon"
+          v-if="level.icon"
+          class="col-start-1 row-start-1 size-4"
+          :stroke-width="2"
+        />
+      </span>
       <span :class="showLabel ? '' : 'sr'">{{ level.label }}</span>
     </span>
   </UiTooltip>

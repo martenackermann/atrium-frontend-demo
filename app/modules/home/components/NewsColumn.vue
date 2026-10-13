@@ -109,8 +109,9 @@ const ICONS: Record<string, Component> = {
             <span class="min-w-0 flex-1 truncate">{{ link.title }}</span>
             <ExternalLink
               class="size-3.5 text-ink-subtle group-hover:text-ink"
-              aria-label="opens in a new tab"
+              aria-hidden="true"
             />
+            <span class="sr">(opens in a new tab)</span>
           </a>
         </li>
       </ul>

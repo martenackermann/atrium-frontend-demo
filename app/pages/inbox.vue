@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ArrowRight, BellOff, CheckCheck } from '@lucide/vue'
 import { describeError, isApiError } from '~/lib/api'
+import { dueLabel } from '~/lib/due'
 import { inboxIcon } from '~/lib/inbox'
 import { coreKeys } from '~/lib/query/core'
 import type { InboxItem, InboxResponse, NotificationPage } from '~/types/api'
@@ -111,12 +112,11 @@ function decline(item: InboxItem) {
   declining.value = item
 }
 
-const dueText = (item: InboxItem) => {
-  const days = daysFromToday(item.dueAt)
-  if (days === null) return null
-  if (days < 0) return { text: days === -1 ? 'Overdue' : `${-days} days overdue`, overdue: true }
-  if (days === 0) return { text: 'Due today', overdue: false }
-  return { text: `Due ${formatDate(item.dueAt)}`, overdue: false }
+const dueText = (item: InboxItem) => dueLabel(item.dueAt)
+/** The fact grid's second line only when it says more than the date itself. */
+const dueDetail = (item: InboxItem) => {
+  const label = dueLabel(item.dueAt)
+  return label && !label.text.startsWith('Due ') ? label.text : undefined
 }
 </script>
 
@@ -148,7 +148,7 @@ const dueText = (item: InboxItem) => {
       @retry="inbox.refetch()"
     >
       <template #list-tools>
-        <UiSwitch v-model="highOnly" label="High priority only" class="text-sm" />
+        <UiSwitch v-model="highOnly" label="High priority only" class="text-sm whitespace-nowrap" />
       </template>
       <template #item="{ item }">
         <div class="flex items-center gap-2 text-sm text-ink-muted">
@@ -228,7 +228,7 @@ const dueText = (item: InboxItem) => {
       </template>
       <template #detail="{ item }">
         <div class="grid gap-5">
-          <p v-if="item.subtitle" class="font-display text-[17px] leading-[25px]">
+          <p v-if="item.subtitle" class="max-w-[64ch] text-md leading-[23px] text-ink-muted">
             {{ item.subtitle }}
           </p>
           <FactGrid
@@ -236,7 +236,7 @@ const dueText = (item: InboxItem) => {
               {
                 label: 'Due',
                 value: item.dueAt ? formatDate(item.dueAt) : 'No due date',
-                detail: dueText(item)?.text,
+                detail: dueDetail(item),
               },
               { label: 'Priority', value: item.priority === 'high' ? 'High' : 'Normal' },
               { label: 'Reference', value: item.reference ?? '—', mono: Boolean(item.reference) },
@@ -269,9 +269,10 @@ const dueText = (item: InboxItem) => {
           :class="!notification.readAt && 'bg-marker-tint'"
         >
           <span class="grid gap-0.5">
-            <span :class="!notification.readAt ? 'font-semibold' : 'font-medium'">{{
-              notification.title
-            }}</span>
+            <span :class="!notification.readAt ? 'font-semibold' : 'font-medium'"
+              ><span v-if="!notification.readAt" class="sr">Unread: </span
+              >{{ notification.title }}</span
+            >
             <span class="text-sm text-ink-muted">{{ notification.body }}</span>
           </span>
           <time class="text-meta text-ink-subtle" :datetime="notification.createdAt">{{
