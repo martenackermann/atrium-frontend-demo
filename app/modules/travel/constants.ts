@@ -4,7 +4,6 @@ import {
   CircleX,
   Plane,
   RotateCcw,
-  Stamp,
   TicketCheck,
   TrainFront,
   TriangleAlert,
@@ -48,11 +47,11 @@ export const KIND_META: Record<
  * (booking number, PIN, confirmation PDFs) — pages intercept it.
  */
 export const TRAVEL_ACTION_CONFIG: Record<string, ActionConfig> = {
-  approve: { label: 'Approve', icon: Stamp, kbd: 'A', variant: 'primary' },
+  approve: { label: 'Approve', kbd: 'A', variant: 'primary' },
   decline: {
     label: 'Decline',
-    icon: X,
     kbd: 'D',
+    variant: 'secondary',
     reason: {
       title: 'Decline this trip?',
       description: 'The traveller is told why and can duplicate the request with changes.',

@@ -1,13 +1,4 @@
-import {
-  Ban,
-  Check,
-  CircleArrowRight,
-  RotateCcw,
-  TicketCheck,
-  TriangleAlert,
-  Undo2,
-  X,
-} from '@lucide/vue'
+import { Ban, CircleArrowRight, RotateCcw, TicketCheck, TriangleAlert, Undo2 } from '@lucide/vue'
 import type { ActionConfig } from '~/types/ui'
 import type { AttendeeStatus, Likert, RatingLoop, TrainingFormat } from './api/types'
 
@@ -16,11 +7,11 @@ import type { AttendeeStatus, Likert, RatingLoop, TrainingFormat } from './api/t
  * (reference + documents) instead of running directly — see TrainingParticipationActions.
  */
 export const TRAINING_ACTIONS: Record<string, ActionConfig> = {
-  approve: { label: 'Approve', icon: Check, kbd: 'A', variant: 'primary' },
+  approve: { label: 'Approve', kbd: 'A', variant: 'primary' },
   decline: {
     label: 'Decline',
-    icon: X,
     kbd: 'D',
+    variant: 'secondary',
     reason: {
       title: 'Decline this training?',
       description: 'The attendee and the requester are told why. Nothing is booked.',
