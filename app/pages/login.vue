@@ -73,7 +73,10 @@ async function signInAs(persona: Persona) {
 </script>
 
 <template>
-  <main id="main" class="mx-auto grid max-w-[1180px] gap-10 px-4 pt-10 pb-16 md:px-10 md:pt-14">
+  <main
+    id="main"
+    class="mx-auto outline-none grid max-w-[1180px] gap-10 px-4 pt-10 pb-16 md:px-10 md:pt-14"
+  >
     <header class="flex items-start gap-3">
       <AppBrandMark class="mt-[3px] size-8" />
       <div>

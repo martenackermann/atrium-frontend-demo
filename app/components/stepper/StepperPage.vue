@@ -126,7 +126,7 @@ async function discard() {
       </div>
     </header>
 
-    <main id="main" class="flex-1 min-[901px]:px-6 min-[901px]:pt-1 min-[901px]:pb-10">
+    <main id="main" class="flex-1 outline-none min-[901px]:px-6 min-[901px]:pt-1 min-[901px]:pb-10">
       <div
         class="mx-auto max-w-[1180px] bg-sheet min-[901px]:grid min-[901px]:grid-cols-[minmax(0,1fr)_320px] min-[901px]:items-start min-[901px]:rounded-xl min-[901px]:border min-[901px]:border-rule min-[901px]:shadow-sheet min-[1101px]:grid-cols-[minmax(0,1fr)_var(--summary-w)]"
       >

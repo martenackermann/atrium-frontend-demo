@@ -29,6 +29,20 @@ const props = withDefaults(
   { side: 'right', width: '420px' },
 )
 const open = defineModel<boolean>('open', { default: false })
+
+// Overlays opened from code (shortcuts, the top bar, a row action) have no Reka trigger to
+// return to: give focus back to whatever had it when they opened.
+let returnTo: HTMLElement | null = null
+watch(open, (value) => {
+  if (value) returnTo = document.activeElement as HTMLElement | null
+})
+function restoreFocus(event: Event) {
+  if (returnTo?.isConnected && returnTo !== document.body) {
+    event.preventDefault()
+    returnTo.focus()
+  }
+  returnTo = null
+}
 </script>
 
 <template>
@@ -40,6 +54,7 @@ const open = defineModel<boolean>('open', { default: false })
       />
       <DialogContent
         :style="{ '--drawer-w': width }"
+        @close-auto-focus="restoreFocus"
         :class="
           cn(
             'fixed inset-y-0 z-50 flex w-full flex-col bg-raised shadow-dialog outline-none md:inset-y-2 md:w-[min(var(--drawer-w),calc(100vw-16px))] md:rounded-xl',

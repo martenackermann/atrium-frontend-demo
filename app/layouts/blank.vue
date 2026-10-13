@@ -7,7 +7,7 @@ useHead({ title: computed(() => (route.meta.title ? `${route.meta.title} · Atri
 
 <template>
   <div class="min-h-dvh bg-desk">
-    <a href="#main" class="skip-link">Skip to content</a>
+    <AppSkipLink />
     <AppDemoRibbon v-if="demo.enabled.value" />
     <slot />
   </div>

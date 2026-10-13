@@ -27,6 +27,20 @@ const props = withDefaults(
 )
 const open = defineModel<boolean>('open', { default: false })
 
+// Overlays opened from code (shortcuts, the top bar, a row action) have no Reka trigger to
+// return to: give focus back to whatever had it when they opened.
+let returnTo: HTMLElement | null = null
+watch(open, (value) => {
+  if (value) returnTo = document.activeElement as HTMLElement | null
+})
+function restoreFocus(event: Event) {
+  if (returnTo?.isConnected && returnTo !== document.body) {
+    event.preventDefault()
+    returnTo.focus()
+  }
+  returnTo = null
+}
+
 /** Opening moves focus to the first field (not the close button); dialogs without fields keep
  * Reka's default (the first button). */
 function focusFirstField(event: Event) {
@@ -63,6 +77,7 @@ function focusFirstField(event: Event) {
           )
         "
         @open-auto-focus="focusFirstField"
+        @close-auto-focus="restoreFocus"
       >
         <header class="flex items-start gap-3 px-6 pt-5 pb-2">
           <div class="grid flex-1 gap-1.5">

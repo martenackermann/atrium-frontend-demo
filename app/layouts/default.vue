@@ -14,7 +14,7 @@ useHead({ title: computed(() => `${title.value} · Atrium`) })
 
 <template>
   <div class="flex min-h-dvh flex-col bg-desk md:h-dvh">
-    <a href="#main" class="skip-link">Skip to content</a>
+    <AppSkipLink />
     <AppDemoRibbon v-if="demo.enabled.value" />
     <div
       class="flex flex-1 flex-col md:grid md:min-h-0 md:grid-cols-[var(--rail-w)_minmax(0,1fr)] lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"

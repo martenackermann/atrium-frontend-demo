@@ -60,12 +60,22 @@ const query = ref('')
 const active = ref(0)
 const listId = useId()
 const debounced = refDebounced(query, 250)
+// ⌘K can open the palette from anywhere: on close, focus goes back where it was.
+let returnTo: HTMLElement | null = null
 watch(paletteOpen, (open) => {
   if (open) {
     query.value = ''
     active.value = 0
+    returnTo = document.activeElement as HTMLElement | null
   }
 })
+function restoreFocus(event: Event) {
+  if (returnTo?.isConnected && returnTo !== document.body) {
+    event.preventDefault()
+    returnTo.focus()
+  }
+  returnTo = null
+}
 
 const inbox = useQuery({
   queryKey: coreKeys.inbox(),
@@ -286,6 +296,7 @@ const resultsAnnouncement = computed(() => {
         class="fixed inset-0 z-50 flex flex-col overflow-hidden bg-raised shadow-dialog outline-none md:inset-auto md:top-[14vh] md:left-1/2 md:max-h-[min(560px,80dvh)] md:w-[min(640px,calc(100vw-32px))] md:-translate-x-1/2 md:rounded-xl md:data-[state=open]:animate-[atrium-pop_var(--dur-2)_var(--curve-out)]"
         data-testid="command-palette"
         @open-auto-focus.prevent="($event.target as HTMLElement)?.querySelector('input')?.focus()"
+        @close-auto-focus="restoreFocus"
       >
         <DialogTitle class="sr">Search or jump to</DialogTitle>
         <DialogDescription class="sr"

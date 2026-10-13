@@ -108,9 +108,9 @@ function move(delta: number) {
   })
 }
 
-/** Arrow keys move the selection only from the list (or nowhere in particular), so they still
- * scroll the detail pane and work inside menus, tabs and segmented controls. */
-function arrowsBelongToList(event: KeyboardEvent) {
+/** Arrow keys (and Enter) act on the list only from the list (or nowhere in particular), so they
+ * still scroll the detail pane and work inside menus, tabs, segmented controls and buttons. */
+function fromList(event: KeyboardEvent) {
   const target = event.target as HTMLElement | null
   if (!target || target === document.body) return true
   if (!listPane.value?.contains(target)) return false
@@ -122,7 +122,7 @@ useEventListener('keydown', (event: KeyboardEvent) => {
   if (isTypingContext(event)) return
   const key = event.key
   const arrow = key === 'ArrowDown' || key === 'ArrowUp'
-  if (arrow && !arrowsBelongToList(event)) return
+  if (arrow && !fromList(event)) return
   if (key === 'j' || key === 'J' || key === 'ArrowDown') {
     event.preventDefault()
     move(1)
@@ -135,7 +135,14 @@ useEventListener('keydown', (event: KeyboardEvent) => {
   } else if ((key === 'd' || key === 'D') && selected.value && props.canDecide?.(selected.value)) {
     event.preventDefault()
     emit('decline', selected.value)
-  } else if (key === 'Enter' && selected.value && props.itemTo) {
+  } else if (
+    key === 'Enter' &&
+    selected.value &&
+    props.itemTo &&
+    fromList(event) &&
+    !(event.target as HTMLElement | null)?.closest('a,button,[role="button"],summary')
+  ) {
+    // Only from the list (or nowhere): Enter on a focused link or button keeps its own job.
     event.preventDefault()
     void navigateTo(props.itemTo(selected.value))
   } else if (key === 'Escape' && selected.value) {
