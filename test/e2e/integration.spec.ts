@@ -13,7 +13,8 @@ import {
  * Demo mode (default): runs against the MSW mock API; every test starts from fresh demo data.
  * API mode: point PLAYWRIGHT_BASE_URL at a frontend built with NUXT_PUBLIC_DEMO_MODE=api against a
  * freshly seeded backend (`pnpm demo:reset`) and set E2E_API=1. Records are named uniquely, so
- * the suite can run more than once against the same database. With E2E_MAILPIT_URL
+ * the suite can run more than once against the same database (the Home "My day" counts run
+ * only with E2E_FRESH_SEED=1, i.e. right after `pnpm demo:reset`). With E2E_MAILPIT_URL
  * (e.g. http://localhost:8025) the emails each step sends are checked in Mailpit too.
  */
 
@@ -197,7 +198,10 @@ test('people: Emma asks for access, Paula works it, asks a question, Emma replie
   await page.getByRole('button', { name: 'Send to People Ops' }).click()
   await expect(toast(page, /sent to People Ops\./)).toBeVisible()
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible()
-  await expectMail('people-ops@example.com', /^New role change request: Access to the fleet/)
+  await expectMail(
+    'people-ops@example.com',
+    /^New role or access change request: Access to the fleet/,
+  )
 
   await switchTo(page, 'paula', '/back-office/people')
   const queue = page.getByRole('listbox', { name: 'People Ops' })
@@ -390,7 +394,7 @@ const DAYS: Array<[PersonaKey, RegExp, string[]]> = [
 
 for (const [persona, count, texts] of DAYS) {
   test(`Home "My day" for ${DISPLAY_NAMES[persona]}`, async ({ page }) => {
-    test.skip(API_MODE, 'counts depend on the seeded state')
+    test.skip(API_MODE && !process.env.E2E_FRESH_SEED, 'counts need a freshly seeded database')
     const errors = trackConsoleErrors(page)
     await signInAs(page, persona)
     await expect(page.getByTestId('greeting')).toContainText(count)
