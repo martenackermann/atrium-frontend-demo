@@ -94,14 +94,36 @@ export function peopleSummary(actorName: string, action: string, actingAs: Actin
 
 const STATUS_TEXT: Partial<Record<PeopleRequestStatus, string>> = {
   in_progress: 'People Ops is working on it.',
-  waiting_internal:
-    'People Ops is waiting on another team. You will hear from us when it moves on.',
+  waiting_internal: 'People Ops is waiting on another team and tells you when it moves on.',
   waiting_on_requester: 'People Ops needs your reply before they can continue.',
   reopened: 'The request was reopened.',
   completed: 'The request is complete.',
   rejected: 'The request was rejected.',
   cancelled: 'The request was cancelled.',
 }
+
+export const PRIORITY_LABELS: Record<Priority, string> = {
+  critical: 'Critical',
+  high: 'High',
+  normal: 'Normal',
+  low: 'Low',
+}
+
+/** The backend's `truncate`: at most `max` characters, with an ellipsis when cut. */
+const truncate = (text: string, max: number) =>
+  text.length <= max ? text : `${text.slice(0, max - 1)}…`
+
+/** "Tue 27 Oct" for a calendar date (en-GB, like the backend `shortDate`). */
+export function shortDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split('-').map(Number)
+  return new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+    .format(new Date(year!, month! - 1, day!))
+    .replace(',', '')
+}
+
+/** In-app title of `people.status_changed`: sentence case, the label reads lower case. */
+export const statusChangedTitle = (reference: string, status: PeopleRequestStatus) =>
+  `${reference} is now ${STATUS_LABELS[status].toLowerCase()}`
 
 /** In-app text of `people.status_changed` (internal notes never included, #19). */
 export function statusChangedText(
@@ -110,13 +132,45 @@ export function statusChangedText(
   extra: { question?: string | null; reason?: string | null; note?: string | null },
 ) {
   return [
-    `${title}: ${STATUS_TEXT[status] ?? ''}`,
+    `${title}: ${STATUS_TEXT[status] ?? `Now ${STATUS_LABELS[status].toLowerCase()}.`}`,
     extra.question ? `Question: ${extra.question}` : null,
     extra.reason ? `Reason: ${extra.reason}` : null,
     extra.note ? `Note: ${extra.note}` : null,
   ]
     .filter(Boolean)
     .join(' ')
+}
+
+/** In-app title and body of `people.request_created` (no personal data). */
+export function requestCreatedText(c: {
+  reference: string
+  type: PeopleRequestType
+  title: string
+  effectiveDate: string
+  priority: Priority
+  requesterName: string
+  subjectName: string
+}) {
+  const typeLabel = TYPE_LABELS[c.type].toLowerCase()
+  return {
+    templateId: 'people.request_created',
+    title: `New ${typeLabel} request: ${c.title}`,
+    body: `${c.requesterName} requested ${typeLabel} for ${c.subjectName} (${c.reference}). ${EFFECTIVE_LABELS[c.type]}: ${shortDate(c.effectiveDate)}. Priority: ${PRIORITY_LABELS[c.priority]}.`,
+  }
+}
+
+/** In-app title and body of `people.comment_added` (excerpt ≤ 300 characters). */
+export function commentAddedText(c: {
+  reference: string
+  title: string
+  authorName: string
+  excerpt: string
+}) {
+  return {
+    templateId: 'people.comment_added',
+    title: `New comment on ${c.reference}`,
+    body: `${c.authorName} on ${c.title}: ${truncate(c.excerpt, 300)}`,
+  }
 }
 
 export const EFFECTIVE_LABELS: Record<PeopleRequestType, string> = {

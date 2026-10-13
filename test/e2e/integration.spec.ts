@@ -157,7 +157,7 @@ test('assets: Arne assigns a device in stock to Emma, Emma accepts it', async ({
   await page.getByRole('option', { name: /Emma Employee/ }).click()
   await dialog.getByRole('button', { name: 'Assign device' }).click()
   await expect(toast(page, 'Assigned. They get an email to accept the device.')).toBeVisible()
-  await expectMail('emma.employee@example.com', /^Please confirm your new /)
+  await expectMail('emma.employee@example.com', /^Confirm your new /)
 
   await switchTo(page, 'emma', '/assets')
   const pending = page.getByRole('region', { name: /devices? wait/ })

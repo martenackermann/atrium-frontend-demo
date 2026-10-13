@@ -33,7 +33,7 @@ import {
   parsePeopleReference,
   peopleReference,
   peopleSummary,
-  TYPE_LABELS,
+  requestCreatedText,
 } from './rules'
 import type { PeopleRequestRecord } from './types'
 import { addComment, notifyComment, notifyUser, peopleWorkflow, requesterReplied } from './workflow'
@@ -451,12 +451,15 @@ export default defineMockHandlers(({ api }) => [
       toState: 'open',
       summary: peopleSummary(user.displayName, 'create', 'requester'),
     })
-    const typeLabel = TYPE_LABELS[row.type].toLowerCase()
-    const notification = {
-      templateId: 'people.request_created',
-      title: `New ${typeLabel} request: ${row.title}`,
-      body: `${user.displayName} requested ${typeLabel} for ${row.firstName} ${row.lastName} (${peopleReference(row.number)}).`,
-    }
+    const notification = requestCreatedText({
+      reference: peopleReference(row.number),
+      type: row.type,
+      title: row.title,
+      effectiveDate: row.effectiveDate,
+      priority: row.priority,
+      requesterName: user.displayName,
+      subjectName: `${row.firstName} ${row.lastName}`,
+    })
     notifyUser(row.requesterId, row, notification)
     if (row.managerId && row.managerId !== row.requesterId) {
       notifyUser(row.managerId, row, notification)
