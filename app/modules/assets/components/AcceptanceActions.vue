@@ -79,6 +79,7 @@ async function decline(reason: string) {
     <UiButton
       v-if="canDecline"
       variant="secondary"
+      :class="block && 'max-md:h-11'"
       :disabled="Boolean(pending)"
       :loading="pending === 'decline'"
       @click="declineOpen = true"
@@ -88,6 +89,7 @@ async function decline(reason: string) {
       v-if="canAccept"
       variant="primary"
       :icon="Check"
+      :class="block && 'max-md:h-11'"
       :loading="pending === 'accept' && !acceptOpen"
       :disabled="Boolean(pending)"
       @click="startAccept"

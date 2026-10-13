@@ -147,7 +147,7 @@ async function reload() {
     </div>
 
     <section class="grid gap-4" aria-labelledby="edit-device-heading">
-      <h3 id="edit-device-heading" class="text-md font-semibold">Device</h3>
+      <h2 id="edit-device-heading" class="text-md font-semibold">Device</h2>
       <AssetsDevicePickers
         v-model:device-type-id="deviceTypeId"
         v-model:manufacturer-id="manufacturerId"
@@ -157,7 +157,7 @@ async function reload() {
         :current="{ model: asset.model, platform: asset.platform }"
         platform-hint="Set by the user on accept; correct it here if needed."
       />
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid gap-4 md:grid-cols-2 md:items-end">
         <UiField label="Serial number" :error="errors.serialNumber">
           <UiInput v-model="serialNumber" mono autocomplete="off" />
         </UiField>
@@ -168,8 +168,8 @@ async function reload() {
     </section>
 
     <section class="grid gap-4" aria-labelledby="edit-purchase-heading">
-      <h3 id="edit-purchase-heading" class="text-md font-semibold">Purchase &amp; accounting</h3>
-      <div class="grid gap-4 md:grid-cols-2">
+      <h2 id="edit-purchase-heading" class="text-md font-semibold">Purchase &amp; accounting</h2>
+      <div class="grid gap-4 md:grid-cols-2 md:items-end">
         <UiField label="Purchase date" optional :error="errors.purchaseDate">
           <UiDatePicker v-model="purchaseDate" />
         </UiField>
@@ -193,7 +193,7 @@ async function reload() {
     </section>
 
     <section class="grid gap-4" aria-labelledby="edit-notes-heading">
-      <h3 id="edit-notes-heading" class="text-md font-semibold">Notes</h3>
+      <h2 id="edit-notes-heading" class="text-md font-semibold">Notes</h2>
       <UiField label="Notes" optional hint="Only asset admins see notes." :error="errors.notes">
         <UiTextarea v-model="notes" :maxlength="2000" :rows="3" />
       </UiField>

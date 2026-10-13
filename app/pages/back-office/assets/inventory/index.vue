@@ -47,6 +47,12 @@ const selectModel = (key: string, dependents: string[] = []) =>
       }),
   })
 const statusFilter = selectModel('status')
+// A stale or hand-edited URL must not break the list: drop a status the API would reject.
+watchEffect(() => {
+  const status = filter('status')
+  if (status && !(ASSET_STATUS_ORDER as readonly string[]).includes(status))
+    list.setFilter('status', undefined)
+})
 const typeFilter = selectModel('deviceTypeId', ['manufacturerId', 'modelId'])
 const manufacturerFilter = selectModel('manufacturerId', ['modelId'])
 const modelFilter = selectModel('modelId')
@@ -196,7 +202,7 @@ const columns: DataTableColumn<AssetListItem>[] = [
       export-path="/assets/export.csv"
       export-filename="assets.csv"
       :empty="{
-        title: 'No assets match these filters.',
+        title: 'No assets match these filters',
         description: 'Change or clear the filters to see more.',
       }"
       @retry="assets.refetch()"
@@ -213,7 +219,6 @@ const columns: DataTableColumn<AssetListItem>[] = [
         >
         <UiSelect
           v-model="statusFilter"
-          size="sm"
           aria-label="Status"
           :options="statusOptions"
           class="w-48 max-md:w-full"
@@ -221,7 +226,6 @@ const columns: DataTableColumn<AssetListItem>[] = [
         />
         <UiSelect
           v-model="typeFilter"
-          size="sm"
           aria-label="Device type"
           :options="typeOptions"
           class="w-44 max-md:w-full"
@@ -229,7 +233,6 @@ const columns: DataTableColumn<AssetListItem>[] = [
         />
         <UiSelect
           v-model="manufacturerFilter"
-          size="sm"
           aria-label="Manufacturer"
           :options="manufacturerOptions"
           class="w-48 max-md:w-full"
@@ -237,22 +240,21 @@ const columns: DataTableColumn<AssetListItem>[] = [
         />
         <UiSelect
           v-model="modelFilter"
-          size="sm"
           aria-label="Model"
           :options="modelOptions"
           class="w-56 max-md:w-full"
           :class="!showFilters && 'max-md:hidden'"
         />
+        <label for="inventory-assigned-user" class="sr">Assigned to</label>
         <UserPicker
+          id="inventory-assigned-user"
           v-model="assignedUser"
           placeholder="Assigned to…"
           class="w-56 max-md:w-full"
           :class="!showFilters && 'max-md:hidden'"
-          aria-label="Assigned user"
         />
         <UiSelect
           v-model="costCenterFilter"
-          size="sm"
           aria-label="Cost centre"
           :options="costCenterOptions"
           class="w-56 max-md:w-full"
@@ -268,7 +270,7 @@ const columns: DataTableColumn<AssetListItem>[] = [
         <UiCheckbox
           v-model="includeDeleted"
           label="Include deleted"
-          class="h-[30px]"
+          class="h-[38px] items-center"
           :class="!showFilters && 'max-md:hidden'"
         />
       </template>

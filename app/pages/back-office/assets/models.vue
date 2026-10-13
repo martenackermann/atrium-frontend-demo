@@ -138,7 +138,7 @@ async function remove(model: AssetModelDto) {
       search-placeholder="Model or manufacturer"
       caption="Models"
       :empty="{
-        title: 'No models match these filters.',
+        title: 'No models match these filters',
         description: 'Change the filters, or add a model with New model.',
       }"
       @retry="models.refetch()"
@@ -146,7 +146,6 @@ async function remove(model: AssetModelDto) {
       <template #filters>
         <UiSelect
           v-model="typeFilter"
-          size="sm"
           aria-label="Device type"
           class="w-44"
           :options="[
@@ -156,7 +155,6 @@ async function remove(model: AssetModelDto) {
         />
         <UiSelect
           v-model="manufacturerFilter"
-          size="sm"
           aria-label="Manufacturer"
           class="w-48"
           :options="[
@@ -164,10 +162,15 @@ async function remove(model: AssetModelDto) {
             ...(manufacturers.data.value ?? []).map((m) => ({ value: m.id, label: m.name })),
           ]"
         />
-        <UiCheckbox v-model="includeArchived" label="Include archived" class="h-[30px]" />
+        <UiCheckbox
+          v-model="includeArchived"
+          label="Include archived"
+          class="h-[38px] items-center"
+        />
       </template>
       <template #cell-archived="{ row }">
         <UiTag v-if="row.archived" tone="neutral" :icon="Archive">Archived</UiTag>
+        <span v-else class="text-ink-muted">Active</span>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex justify-end" @click.stop>

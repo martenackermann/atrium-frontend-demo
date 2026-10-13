@@ -14,7 +14,12 @@ const props = defineProps<{
   columns?: 2 | 3
   /** Hide the quoted special-equipment reason (already shown in a reasons box). */
   hideQuote?: boolean
+  /** Hide the requester's comment (already quoted in a reasons box). */
+  hideComment?: boolean
+  /** 2 on the request page, 3 inside a split-view detail (whose title is the h2). */
+  headingLevel?: 2 | 3
 }>()
+const heading = computed(() => `h${props.headingLevel ?? 2}`)
 
 const addressLine = (address: Address | null) =>
   address
@@ -185,9 +190,9 @@ const costFacts = computed<FactItem[]>(() => [
 <template>
   <div class="grid gap-8">
     <section v-if="request.car" aria-labelledby="facts-car">
-      <h2 id="facts-car" class="mb-3 text-lg font-[650]">
+      <component :is="heading" id="facts-car" class="mb-3 text-lg font-[650] tracking-heading">
         {{ request.car.vehicleType === 'van' ? 'Van rental' : 'Car rental' }}
-      </h2>
+      </component>
       <FactGrid :items="carFacts" :columns="columns ?? 3" />
       <blockquote
         v-if="request.car.specialEquipmentReason && !hideQuote"
@@ -199,7 +204,9 @@ const costFacts = computed<FactItem[]>(() => [
     </section>
 
     <section v-if="request.car" aria-labelledby="facts-driver">
-      <h2 id="facts-driver" class="mb-3 text-lg font-[650]">Driver</h2>
+      <component :is="heading" id="facts-driver" class="mb-3 text-lg font-[650] tracking-heading">
+        Driver
+      </component>
       <FactGrid v-if="driverFacts.length" :items="driverFacts" :columns="columns ?? 3" />
       <p v-else class="border-t border-ink pt-3 text-sm text-ink-muted">
         Driver details are only visible to the traveller, requester, approver and travel desk.
@@ -207,19 +214,25 @@ const costFacts = computed<FactItem[]>(() => [
     </section>
 
     <section v-if="request.train" aria-labelledby="facts-train">
-      <h2 id="facts-train" class="mb-3 text-lg font-[650]">Journey and tickets</h2>
+      <component :is="heading" id="facts-train" class="mb-3 text-lg font-[650] tracking-heading">
+        Journey and tickets
+      </component>
       <FactGrid :items="trainFacts" :columns="columns ?? 3" />
     </section>
 
     <section v-if="request.flight" aria-labelledby="facts-flight">
-      <h2 id="facts-flight" class="mb-3 text-lg font-[650]">Flights</h2>
+      <component :is="heading" id="facts-flight" class="mb-3 text-lg font-[650] tracking-heading">
+        Flights
+      </component>
       <FactGrid :items="flightFacts" :columns="columns ?? 3" />
     </section>
 
     <section aria-labelledby="facts-costs">
-      <h2 id="facts-costs" class="mb-3 text-lg font-[650]">Costs</h2>
+      <component :is="heading" id="facts-costs" class="mb-3 text-lg font-[650] tracking-heading">
+        Costs
+      </component>
       <FactGrid :items="costFacts" :columns="columns ?? 3" />
-      <p v-if="request.comment" class="mt-4 text-sm text-ink-muted">
+      <p v-if="request.comment && !hideComment" class="mt-4 text-sm text-ink-muted">
         <span class="font-semibold text-ink">Comment:</span> {{ request.comment }}
       </p>
     </section>

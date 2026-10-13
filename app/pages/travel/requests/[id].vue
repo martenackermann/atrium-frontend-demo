@@ -35,6 +35,15 @@ watch(
 const actionBar = ref<{ setReasonError: (e: unknown) => void; done: () => void } | null>(null)
 const bookOpen = ref(false)
 const pending = ref<string | null>(null)
+// Mobile sticky bar (SCREENS §9): two actions stay inline (Decline… / Approve); with more,
+// the primary stays and the rest go into "More", so the bar never wraps over the content.
+const isMobile = useMediaQuery('(max-width: 767px)')
+const barMax = computed(() => {
+  const count = (request.value?.availableActions ?? []).filter(
+    (a) => TRAVEL_ACTION_CONFIG[a],
+  ).length
+  return isMobile.value && count > 2 ? 1 : 3
+})
 
 async function run(action: string, body: Record<string, unknown>) {
   if (action === 'book') {
@@ -120,6 +129,7 @@ const statusNote = computed(() => {
             ref="actionBar"
             :actions="request.availableActions"
             :config="TRAVEL_ACTION_CONFIG"
+            :max="barMax"
             :pending="pending"
             sticky-mobile
             @run="run"

@@ -197,12 +197,10 @@ async function removeType(row: DeviceTypeDto) {
           @retry="deviceTypes.refetch()"
         >
           <template #cell-requiresPlatform="{ row }">
-            <Check
-              v-if="row.requiresPlatform"
-              class="mx-auto size-4"
-              aria-label="Requires a platform"
-            />
-            <span v-else class="sr">No platform</span>
+            <template v-if="row.requiresPlatform">
+              <Check class="mx-auto size-4" aria-hidden="true" /><span class="sr">Yes</span>
+            </template>
+            <span v-else class="sr">No</span>
           </template>
           <template #cell-actions="{ row }">
             <div class="flex justify-end" @click.stop>
@@ -238,6 +236,7 @@ async function removeType(row: DeviceTypeDto) {
         >
           <template #cell-archived="{ row }">
             <UiTag v-if="row.archived" tone="neutral" :icon="Archive">Archived</UiTag>
+            <span v-else class="text-ink-muted">Active</span>
           </template>
           <template #cell-actions="{ row }">
             <div class="flex justify-end" @click.stop>
@@ -279,6 +278,7 @@ async function removeType(row: DeviceTypeDto) {
         >
           <template #cell-archived="{ row }">
             <UiTag v-if="row.archived" tone="neutral" :icon="Archive">Archived</UiTag>
+            <span v-else class="text-ink-muted">Active</span>
           </template>
           <template #cell-actions="{ row }">
             <div class="flex justify-end" @click.stop>

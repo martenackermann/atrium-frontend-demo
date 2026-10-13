@@ -67,7 +67,10 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
     key: 'dueAt',
     label: 'Due',
     sort: 'dueAt',
-    value: (row) => formatDate(row.dueAt),
+    value: (row) =>
+      row.state === 'overdue'
+        ? `Overdue since ${formatDate(row.dueAt)}`
+        : `Due ${formatDate(row.dueAt)}`,
     mobile: 'meta',
   },
   {
@@ -120,6 +123,12 @@ const columns: DataTableColumn<TrainingRatingDto>[] = [
         <span class="block text-meta text-ink-subtle">
           <span class="mono">{{ row.training.reference }}</span> · {{ row.training.provider }}
         </span>
+      </template>
+      <template #cell-dueAt="{ row }">
+        <span v-if="row.state === 'overdue'" class="font-medium text-st-negative">
+          Overdue since {{ formatDate(row.dueAt) }}
+        </span>
+        <template v-else>{{ formatDate(row.dueAt) }}</template>
       </template>
       <template #cell-state="{ row }">
         <StatusBadge

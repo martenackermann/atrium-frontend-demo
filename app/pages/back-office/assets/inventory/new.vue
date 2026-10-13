@@ -127,7 +127,7 @@ const submit = handleSubmit(async (values) => {
           v-model:platform-id="platformId"
           :errors="errors"
         />
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2 md:items-end">
           <UiField
             label="Serial number"
             hint="From the label on the device."
@@ -153,7 +153,7 @@ const submit = handleSubmit(async (values) => {
         >
           Purchase &amp; accounting
         </h2>
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2 md:items-end">
           <UiField label="Purchase date" optional :error="errors.purchaseDate">
             <UiDatePicker v-model="purchaseDate" />
           </UiField>

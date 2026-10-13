@@ -27,7 +27,7 @@ function outcome(row: AssetAssignmentDto): {
     <EmptyState
       v-else-if="!rows?.length"
       compact
-      title="Never assigned."
+      title="Never assigned"
       description="When you assign the device, every hand-over shows up here."
     />
     <ol v-else class="m-0 list-none border-t border-ink p-0">

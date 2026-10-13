@@ -190,11 +190,23 @@ export function useTravelSubmit(options: {
 /** Focus the field behind a reason chip (DESIGN §8.2: clicking a reason focuses its field). */
 export function focusField(id: string) {
   void nextTick(() => {
-    const element = document.getElementById(id)
-    element?.scrollIntoView({ block: 'center', behavior: 'smooth' })
-    ;(element as HTMLElement | null)?.focus({ preventScroll: true })
+    // Group fields render the id on no element; they carry `data-field` on their wrapper.
+    const element =
+      document.getElementById(id) ?? document.querySelector<HTMLElement>(`[data-field="${id}"]`)
+    if (!element) return
+    element.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    // Group fields (radio cards, segmented, switches) carry the id on a wrapper that can't take
+    // focus: focus the chosen option, else the first control inside.
+    const target = element.matches(FOCUSABLE)
+      ? element
+      : (element.querySelector<HTMLElement>(
+          '[role="radio"][aria-checked="true"], [role="radio"][data-state="checked"]',
+        ) ?? element.querySelector<HTMLElement>(FOCUSABLE))
+    target?.focus({ preventScroll: true })
   })
 }
+const FOCUSABLE =
+  'input:not([type="hidden"]):not([disabled]), select, textarea, button:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 /** "CC-2100 · Field Services Riverton" for a cost-centre id (review steps). */
 export function useCostCenterLabel() {

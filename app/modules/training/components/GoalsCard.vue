@@ -59,7 +59,7 @@ async function save() {
 <template>
   <section id="goals" class="scroll-mt-24" aria-labelledby="goals-title">
     <div class="flex flex-wrap items-baseline gap-x-3">
-      <h2 id="goals-title" class="flex items-center gap-2 font-display text-[20px] leading-7">
+      <h2 id="goals-title" class="flex items-center gap-2 text-lg font-[650] tracking-heading">
         <Target class="size-4 text-ink-muted" aria-hidden="true" /> Learning goals
       </h2>
       <span v-if="savedAt" class="flex items-center gap-1 text-meta text-ink-subtle">

@@ -92,7 +92,7 @@ function setManufacturer(value: string | null | undefined) {
 </script>
 
 <template>
-  <div class="grid gap-4 md:grid-cols-2">
+  <div class="grid gap-4 md:grid-cols-2 md:items-end">
     <UiField label="Device type" :error="errors?.deviceTypeId">
       <UiSelect
         :model-value="deviceTypeId"
@@ -102,29 +102,21 @@ function setManufacturer(value: string | null | undefined) {
         @update:model-value="setType"
       />
     </UiField>
-    <UiField
-      label="Manufacturer"
-      :error="errors?.manufacturerId"
-      :hint="deviceTypeId ? undefined : 'Choose the device type first.'"
-    >
+    <UiField label="Manufacturer" :error="errors?.manufacturerId">
       <UiSelect
         :model-value="manufacturerId"
         :options="manufacturerOptions"
         :disabled="disabled || !deviceTypeId"
-        placeholder="Choose a manufacturer…"
+        :placeholder="deviceTypeId ? 'Choose a manufacturer…' : 'Choose the device type first'"
         @update:model-value="setManufacturer"
       />
     </UiField>
-    <UiField
-      label="Model"
-      :error="errors?.modelId"
-      :hint="manufacturerId ? undefined : 'Choose the manufacturer first.'"
-    >
+    <UiField label="Model" :error="errors?.modelId">
       <UiSelect
         v-model="modelId"
         :options="modelOptions"
         :disabled="disabled || !manufacturerId"
-        placeholder="Choose a model…"
+        :placeholder="manufacturerId ? 'Choose a model…' : 'Choose the manufacturer first'"
       />
     </UiField>
     <UiField

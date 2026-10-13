@@ -29,6 +29,13 @@ const bar = ref<{
   trigger: (action: string) => void
 }>()
 const pending = ref<string | null>(null)
+// Mobile sticky bar (SCREENS §9): two actions stay inline (Decline… / Approve); with more,
+// the primary stays and the rest go into "More", so the bar never wraps over the content.
+const isMobile = useMediaQuery('(max-width: 767px)')
+const barMax = computed(() => {
+  const count = props.actions.filter((a) => TRAINING_ACTIONS[a]).length
+  return props.stickyMobile && isMobile.value && count > 2 ? 1 : props.max
+})
 const { run } = useWorkflowAction<TrainingParticipationDetail>({
   resourcePath: () => `/training/participations/${props.participationId}`,
   invalidate: [trainingKeys.module],
@@ -97,7 +104,7 @@ defineExpose({ trigger: (action: string) => bar.value?.trigger(action) })
     :actions="actions"
     :config="TRAINING_ACTIONS"
     :pending="pending"
-    :max="max"
+    :max="barMax"
     :sticky-mobile="stickyMobile"
     @run="execute"
   />
@@ -131,7 +138,7 @@ defineExpose({ trigger: (action: string) => bar.value?.trigger(action) })
       </UiField>
       <p v-if="bookError" role="alert" class="text-sm text-st-negative">{{ bookError }}</p>
       <div class="flex justify-end gap-2">
-        <UiButton variant="ghost" @click="bookOpen = false">Cancel</UiButton>
+        <UiButton variant="secondary" @click="bookOpen = false">Cancel</UiButton>
         <UiButton
           type="submit"
           variant="primary"

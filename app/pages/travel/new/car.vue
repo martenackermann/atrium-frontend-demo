@@ -776,7 +776,13 @@ const reviewFacts = computed(() => ({
       question="Which car do you need?"
       lede="The standard class with a manual gearbox goes straight to the travel desk. Anything more is approved by your manager first."
     >
-      <UiField id="carClassId" label="Class" group :error="errors.carClassId">
+      <UiField
+        id="carClassId"
+        data-field="carClassId"
+        label="Class"
+        group
+        :error="errors.carClassId"
+      >
         <UiRadioCards
           v-if="classOptions.length"
           :model-value="carClassId ?? undefined"
@@ -788,6 +794,7 @@ const reviewFacts = computed(() => ({
       </UiField>
       <UiField
         id="gearbox"
+        data-field="gearbox"
         label="Gearbox"
         hint="“Preferred” lets the desk book a manual car if no automatic is free. Both automatic options need approval."
       >
@@ -875,7 +882,7 @@ const reviewFacts = computed(() => ({
       question="Where do you pick it up and return it?"
       lede="Picking up and returning at a branch needs no approval. Delivery to or collection from an address does."
     >
-      <UiField id="handover-mode" label="Handover" group>
+      <UiField id="handover-mode" data-field="handover-mode" label="Handover" group>
         <UiRadioCards
           v-model="handoverMode"
           :columns="2"
@@ -909,7 +916,7 @@ const reviewFacts = computed(() => ({
       </UiField>
       <TravelAddressFields v-else prefix="handover.address" id-prefix="handover" />
 
-      <UiField id="dropoff-mode" label="Return" group>
+      <UiField id="dropoff-mode" data-field="dropoff-mode" label="Return" group>
         <UiRadioCards
           v-model="dropOffMode"
           :columns="2"

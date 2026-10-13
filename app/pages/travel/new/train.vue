@@ -491,7 +491,7 @@ const reviewFacts = computed(() => ({
       question="Which tickets?"
       lede="Flex fares go straight to the travel desk. Saver fares and separate tickets need approval."
     >
-      <UiField id="fareType" label="Fare" group>
+      <UiField id="fareType" data-field="fareType" label="Fare" group>
         <UiRadioCards v-model="fareType" :options="fareOptions" aria-label="Fare" />
       </UiField>
       <UiField id="seatReservations" label="Seat reservations" hint="0–6 seats, reserved together.">

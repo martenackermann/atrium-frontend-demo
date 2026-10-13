@@ -157,7 +157,7 @@ async function removeDocument(file: AttachmentDto) {
           </section>
 
           <section aria-labelledby="attendees-title">
-            <h2 id="attendees-title" class="font-display text-[20px] leading-7">Attendees</h2>
+            <h2 id="attendees-title" class="text-lg font-[650] tracking-heading">Attendees</h2>
             <p v-if="r.attendees.length < r.attendeeCount" class="mt-1 text-sm text-ink-muted">
               You see {{ r.attendees.length }} of {{ r.attendeeCount }} attendees — the others are
               not in your team.
@@ -211,7 +211,7 @@ async function removeDocument(file: AttachmentDto) {
           </section>
 
           <section aria-labelledby="docs-title">
-            <h2 id="docs-title" class="font-display text-[20px] leading-7">Documents</h2>
+            <h2 id="docs-title" class="text-lg font-[650] tracking-heading">Documents</h2>
             <FileList
               class="mt-3"
               :files="r.attachments"

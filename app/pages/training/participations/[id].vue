@@ -171,7 +171,7 @@ const statusNote = computed(() => {
           </div>
 
           <section aria-labelledby="training-title">
-            <h2 id="training-title" class="font-display text-[20px] leading-7">Training</h2>
+            <h2 id="training-title" class="text-lg font-[650] tracking-heading">Training</h2>
             <FactGrid class="mt-3" :items="facts" />
             <p v-if="p.request.registrationUrl" class="mt-3 text-sm">
               <a
@@ -199,7 +199,7 @@ const statusNote = computed(() => {
           </section>
 
           <section aria-labelledby="path-title">
-            <h2 id="path-title" class="font-display text-[20px] leading-7">Approval path</h2>
+            <h2 id="path-title" class="text-lg font-[650] tracking-heading">Approval path</h2>
             <RoutingSlip class="mt-4" :stops="stops" variant="full" />
             <ul v-if="decisions.length" class="mt-4 grid gap-2 text-sm">
               <li v-for="row in decisions" :key="row.text!">
@@ -214,7 +214,10 @@ const statusNote = computed(() => {
           </section>
 
           <section v-if="p.hotel" aria-labelledby="hotel-title">
-            <h2 id="hotel-title" class="flex items-center gap-2 font-display text-[20px] leading-7">
+            <h2
+              id="hotel-title"
+              class="flex items-center gap-2 text-lg font-[650] tracking-heading"
+            >
               <Hotel class="size-4 text-ink-muted" aria-hidden="true" /> Hotel
             </h2>
             <p class="mt-2">
@@ -230,7 +233,7 @@ const statusNote = computed(() => {
           <section v-if="p.bookedAt || p.attachments.length" aria-labelledby="booking-title">
             <h2
               id="booking-title"
-              class="flex items-center gap-2 font-display text-[20px] leading-7"
+              class="flex items-center gap-2 text-lg font-[650] tracking-heading"
             >
               <TicketCheck class="size-4 text-ink-muted" aria-hidden="true" /> Booking
             </h2>
@@ -244,7 +247,7 @@ const statusNote = computed(() => {
           </section>
 
           <section aria-labelledby="ratings-title">
-            <h2 id="ratings-title" class="font-display text-[20px] leading-7">Feedback</h2>
+            <h2 id="ratings-title" class="text-lg font-[650] tracking-heading">Feedback</h2>
             <p class="mt-1 text-sm text-ink-muted">
               Three short rounds: right after the training, two months later, and your manager's
               view a month after that.
