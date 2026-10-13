@@ -60,14 +60,17 @@ const params = computed(() => ({
 }))
 const requests = usePeopleRequests(params)
 
+// The split view's list pane is as wide as its tabs on phones: "All" stays a desktop tab.
+const isPhone = useMediaQuery('(max-width: 400px)')
 const tabs = computed<TabItem[]>(() => {
   const ops = counts.data.value?.ops
+  const all: TabItem[] = isPhone.value ? [] : [{ value: 'all', label: 'All' }]
   return [
     { value: 'open', label: 'Open', count: ops ? ops.open + ops.reopened : null, countTone: 'you' },
-    { value: 'in_progress', label: 'In progress', count: ops?.inProgress ?? null },
+    { value: 'in_progress', label: 'Working', count: ops?.inProgress ?? null },
     { value: 'waiting', label: 'Waiting', count: ops?.waiting ?? null },
     { value: 'closed', label: 'Closed' },
-    { value: 'all', label: 'All' },
+    ...all,
   ]
 })
 const assigneeFilters = [
@@ -119,7 +122,7 @@ const empty = computed(() =>
       @retry="requests.refetch()"
     >
       <template #list-tools>
-        <div class="grid w-full grid-cols-3 gap-2">
+        <div class="grid w-full min-w-0 flex-1 grid-cols-[repeat(3,minmax(0,1fr))] gap-2">
           <label class="relative col-span-3">
             <span class="sr">Search requests</span>
             <Search

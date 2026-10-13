@@ -23,6 +23,9 @@ const reasonError = ref<string | null>(null)
 const due = computed(() => {
   const days = daysFromToday(props.item.dueAt)
   if (days === null) return null
+  // The subtitle already names the date (e.g. "effective Sun 18 Oct"): only flag it when overdue.
+  const named = props.item.subtitle?.includes(formatDate(props.item.dueAt)) ?? false
+  if (named && days >= 0) return null
   if (days < -1)
     return {
       text: `Overdue since ${formatDate(props.item.dueAt, { weekday: false })}.`,

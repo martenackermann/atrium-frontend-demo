@@ -23,12 +23,17 @@ const today = computed(() => formatLongDate(day.value?.date ?? now.value))
 /** One more sentence about where the user's own requests stand. */
 const followUp = computed(() => {
   const waiting = (people.data.value ?? []).find((r) => r.status === 'waiting_on_requester')
-  if (waiting) return `People Ops is waiting for your reply on ${waiting.reference}.`
+  if (waiting) return { text: 'People Ops is waiting for your reply on ', ref: waiting.reference }
   const pending = day.value?.upcoming.find((item) => item.status.startsWith('pending'))
   if (pending)
     return `Your ${pending.kind === 'training' ? 'training' : pending.kind} ${pending.title} is waiting for approval.`
   const soon = day.value?.upcoming[0]
-  if (soon) return `Next up: ${soon.title}, ${formatRelativeDay(soon.startsAt).toLowerCase()}.`
+  if (soon) {
+    return {
+      text: `Next up: ${soon.title}, ${formatRelativeDay(soon.startsAt).toLowerCase()}.`,
+      ref: null,
+    }
+  }
   return null
 })
 const needs = computed(() => day.value?.inbox.total ?? 0)
@@ -44,7 +49,13 @@ const needs = computed(() => day.value?.inbox.total ?? 0)
           >{{ needs }} {{ needs === 1 ? 'thing needs' : 'things need' }} you</mark
         ><template v-if="needs > 0"> today.</template>
         <template v-else>Nothing needs you right now.</template>
-        <template v-if="followUp"> {{ followUp }}</template>
+        <template v-if="followUp"
+          >{{ ' ' + followUp.text
+          }}<template v-if="followUp.ref"
+            ><span class="mono whitespace-nowrap">{{ followUp.ref }}</span
+            >.</template
+          ></template
+        >
       </p>
       <UiSkeleton v-else class="mt-3 h-6 w-2/3" />
     </header>
