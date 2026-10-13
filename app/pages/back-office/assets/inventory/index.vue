@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus } from '@lucide/vue'
+import { Plus, SlidersHorizontal } from '@lucide/vue'
 import { useAssetList, useDeviceTypes, useManufacturers, useModels } from '~/modules/assets/api'
 import type { AssetListItem } from '~/modules/assets/api/types'
 import { ASSET_STATUS_ORDER } from '~/modules/assets/constants'
@@ -115,6 +115,13 @@ watch(assignedUser, (user) => {
   if ((user?.id ?? '') !== filter('assignedUserId')) list.setFilter('assignedUserId', user?.id)
 })
 
+// Below 768px the filters fold behind a "Filters (n)" button (SCREENS §9).
+const showFilters = ref(false)
+const activeFilters = computed(
+  () =>
+    Object.values(list.state.value.filters).filter((value) => String(value ?? '') !== '').length,
+)
+
 const columns: DataTableColumn<AssetListItem>[] = [
   {
     key: 'assetTag',
@@ -195,38 +202,52 @@ const columns: DataTableColumn<AssetListItem>[] = [
       @retry="assets.refetch()"
     >
       <template #filters>
+        <UiButton
+          size="sm"
+          variant="secondary"
+          :icon="SlidersHorizontal"
+          class="md:hidden"
+          :aria-expanded="showFilters"
+          @click="showFilters = !showFilters"
+          >Filters{{ activeFilters ? ` (${activeFilters})` : '' }}</UiButton
+        >
         <UiSelect
           v-model="statusFilter"
           size="sm"
           aria-label="Status"
           :options="statusOptions"
-          class="w-48"
+          class="w-48 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
         />
         <UiSelect
           v-model="typeFilter"
           size="sm"
           aria-label="Device type"
           :options="typeOptions"
-          class="w-44"
+          class="w-44 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
         />
         <UiSelect
           v-model="manufacturerFilter"
           size="sm"
           aria-label="Manufacturer"
           :options="manufacturerOptions"
-          class="w-48"
+          class="w-48 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
         />
         <UiSelect
           v-model="modelFilter"
           size="sm"
           aria-label="Model"
           :options="modelOptions"
-          class="w-56"
+          class="w-56 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
         />
         <UserPicker
           v-model="assignedUser"
           placeholder="Assigned to…"
-          class="w-56"
+          class="w-56 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
           aria-label="Assigned user"
         />
         <UiSelect
@@ -234,15 +255,22 @@ const columns: DataTableColumn<AssetListItem>[] = [
           size="sm"
           aria-label="Cost centre"
           :options="costCenterOptions"
-          class="w-56"
+          class="w-56 max-md:w-full"
+          :class="!showFilters && 'max-md:hidden'"
         />
         <DateRangeFilter
+          :class="!showFilters && 'max-md:hidden'"
           label="Purchased"
           :from="filter('from') || null"
           :to="filter('to') || null"
           @change="({ from, to }) => list.update({ filters: { from: from ?? '', to: to ?? '' } })"
         />
-        <UiCheckbox v-model="includeDeleted" label="Include deleted" class="h-[30px]" />
+        <UiCheckbox
+          v-model="includeDeleted"
+          label="Include deleted"
+          class="h-[30px]"
+          :class="!showFilters && 'max-md:hidden'"
+        />
       </template>
       <template #cell-status="{ row }">
         <span class="inline-flex items-center gap-1.5">
