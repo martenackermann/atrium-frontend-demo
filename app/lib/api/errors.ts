@@ -232,7 +232,7 @@ export function describeError(error: unknown): { title: string; detail?: string 
     return { title: error.title, detail: error.detail }
   }
   return {
-    title: 'Something did not work',
+    title: "That didn't work",
     detail: error instanceof Error ? error.message : undefined,
   }
 }

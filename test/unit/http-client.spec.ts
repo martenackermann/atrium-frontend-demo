@@ -115,10 +115,10 @@ describe('HTTP client', () => {
     expect(onUnauthorized).toHaveBeenCalledTimes(1)
   })
 
-  it('returns undefined for 204', async () => {
+  it('returns null for 204 (Vue Query rejects undefined data)', async () => {
     const { fetch } = fakeFetch(() => new Response(null, { status: 204 }))
     const api = createHttpClient({ baseUrl: 'http://api.test', getToken: () => 't', fetch })
-    await expect(api.delete('/me/deputies/1')).resolves.toBeUndefined()
+    await expect(api.delete('/me/deputies/1')).resolves.toBeNull()
   })
 
   it('rejects a 2xx that is not JSON (e.g. an SPA fallback page) instead of returning it', async () => {

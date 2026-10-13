@@ -21,6 +21,9 @@ export function toDate(value: DateInput): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+/** Newer ICU writes "Sept" for en-GB short months; DESIGN §10 uses three letters ("8 Sep"). */
+const shortMonths = (text: string) => text.replace(/Sept/g, 'Sep')
+
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const dayDiff = (a: Date, b: Date) =>
   Math.round((startOfDay(a).getTime() - startOfDay(b).getTime()) / 86_400_000)
@@ -33,14 +36,13 @@ export function formatDate(
   const date = toDate(value)
   if (!date) return ''
   const withYear = options.year === 'always' || date.getFullYear() !== new Date().getFullYear()
-  return new Intl.DateTimeFormat('en-GB', {
+  const formatter = new Intl.DateTimeFormat('en-GB', {
     weekday: options.weekday === false ? undefined : 'short',
     day: 'numeric',
     month: 'short',
     year: withYear ? 'numeric' : undefined,
   })
-    .format(date)
-    .replace(',', '')
+  return shortMonths(formatter.format(date).replace(',', ''))
 }
 
 /** "Tuesday, 13 October" (greetings, headings). */
@@ -80,7 +82,7 @@ export function formatDateRange(
   if (!to || dayDiff(to, from) === 0) return formatDate(from, { weekday: options.weekday })
   const sameMonth = from.getMonth() === to.getMonth() && from.getFullYear() === to.getFullYear()
   const fmt = (date: Date, parts: Intl.DateTimeFormatOptions) =>
-    new Intl.DateTimeFormat('en-GB', parts).format(date).replace(',', '')
+    shortMonths(new Intl.DateTimeFormat('en-GB', parts).format(date).replace(',', ''))
   const year = to.getFullYear() !== new Date().getFullYear() ? ' ' + to.getFullYear() : ''
   if (options.weekday) {
     const left = fmt(

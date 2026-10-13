@@ -33,7 +33,7 @@ export interface RequestOptions {
   signal?: AbortSignal
   /** POST only. Defaults to a fresh UUID; pass a stable key to make a retried submit safe. */
   idempotencyKey?: string
-  /** How to read a successful body. Defaults to JSON (empty/204 → undefined). */
+  /** How to read a successful body. Defaults to JSON (empty/204 → null). */
   parse?: 'json' | 'text' | 'blob'
 }
 
@@ -109,7 +109,8 @@ export function createHttpClient(options: HttpClientOptions) {
       throw toApiError(response, errorBody)
     }
 
-    if (response.status === 204) return undefined as T
+    // null, not undefined: Vue Query rejects `undefined` as query data.
+    if (response.status === 204) return null as T
     if (init.parse === 'blob') return (await response.blob()) as T
     if (init.parse === 'text') return (await response.text()) as T
     const data = await readBody(response)
@@ -125,7 +126,7 @@ export function createHttpClient(options: HttpClientOptions) {
         body: data.slice(0, 200),
       })
     }
-    return data as T
+    return (data ?? null) as T
   }
 
   return {
