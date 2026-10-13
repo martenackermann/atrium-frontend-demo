@@ -21,11 +21,9 @@ const meta = computed(() => NEWS_TYPE_META[props.post.type])
       aria-hidden="true"
       class="block overflow-hidden rounded-lg border border-rule bg-well"
     >
-      <img
-        :src="post.coverImage.url"
-        alt=""
+      <NewsCover
+        :image="post.coverImage"
         class="aspect-[2/1] w-full object-cover transition-transform duration-(--dur-3) ease-out group-hover:scale-[1.01]"
-        loading="lazy"
       />
     </NuxtLink>
     <div class="grid content-start gap-2">

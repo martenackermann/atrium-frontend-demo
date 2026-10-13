@@ -34,10 +34,9 @@ watch(
     </div>
     <ProblemAlert v-else-if="post.error.value" :error="post.error.value" class="mt-6" />
     <article v-else-if="detail" class="mt-6 grid max-w-[760px] gap-6">
-      <img
+      <NewsCover
         v-if="detail.coverImage"
-        :src="detail.coverImage.url"
-        alt=""
+        :image="detail.coverImage"
         class="aspect-[2/1] w-full rounded-xl border border-rule object-cover"
       />
       <header class="grid gap-3">

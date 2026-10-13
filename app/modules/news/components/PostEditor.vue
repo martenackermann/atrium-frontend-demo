@@ -227,8 +227,8 @@ async function remove() {
         </UiField>
         <UiField label="Cover image" optional hint="PNG, JPEG or WebP. Shown at 2:1.">
           <div v-if="currentCover" class="flex items-center gap-3">
-            <img
-              :src="currentCover.url"
+            <NewsCover
+              :image="currentCover"
               alt="Current cover"
               class="h-16 w-32 rounded-md border border-rule object-cover"
             />
