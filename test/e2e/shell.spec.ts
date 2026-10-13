@@ -8,8 +8,10 @@ test.describe('navigation follows the role (SCREENS §1.2)', () => {
     await signInAs(page, 'emma')
     const main = page.getByRole('complementary', { name: 'Main' })
     const work = main.getByRole('navigation', { name: 'My work' })
+    // Badges add their count to the accessible name ("Training 3 …"), so match the label start.
     for (const label of WORK) {
-      await expect(work.getByRole('link', { name: label, exact: true })).toBeVisible()
+      const name = new RegExp(`^${label}(\\s|$)`)
+      await expect(work.getByRole('link', { name })).toBeVisible()
     }
     await expect(main.getByRole('link', { name: 'Approvals' })).toHaveCount(0)
     await expect(main.getByRole('navigation', { name: 'Back office' })).toHaveCount(0)
@@ -27,8 +29,8 @@ test.describe('navigation follows the role (SCREENS §1.2)', () => {
     await signInAs(page, 'paula')
     const main = page.getByRole('complementary', { name: 'Main' })
     const backOffice = main.getByRole('navigation', { name: 'Back office' })
-    await expect(backOffice.getByRole('link', { name: 'People ops', exact: true })).toBeVisible()
-    await expect(backOffice.getByRole('link', { name: 'News', exact: true })).toBeVisible()
+    await expect(backOffice.getByRole('link', { name: /^People ops\b/ })).toBeVisible()
+    await expect(backOffice.getByRole('link', { name: /^News\b/ })).toBeVisible()
     await expect(backOffice.getByRole('link', { name: 'Travel desk' })).toHaveCount(0)
     await expect(backOffice.getByRole('link', { name: 'Training office' })).toHaveCount(0)
     await expect(main.getByRole('navigation', { name: 'Admin' })).toHaveCount(0)

@@ -32,7 +32,7 @@ test('Emma signs in with her persona card and the session survives a reload', as
   const errors = trackConsoleErrors(page)
   await signInAs(page, 'emma')
   await expect(page).toHaveURL(/\/$/)
-  await expect(page.getByTestId('placeholder-page')).toBeVisible()
+  await expect(page.getByTestId('greeting')).toContainText('Emma.')
   await page.reload()
   await expect(page.getByTestId('current-user').first()).toHaveText('Emma Employee')
   expect(errors).toEqual([])
